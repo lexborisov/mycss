@@ -61,7 +61,7 @@ mycss_status_t mycss_tokenizer_process(mycss_entry_t* entry, const char* css, si
      
      As well, this mimics the behavior of HTML’s <meta charset> attribute.
      */
-    if(entry->encoding == MyHTML_ENCODING_UTF_16LE && entry->encoding == MyHTML_ENCODING_UTF_16BE)
+    if(entry->encoding == MyHTML_ENCODING_UTF_16LE || entry->encoding == MyHTML_ENCODING_UTF_16BE)
         entry->encoding = MyHTML_ENCODING_UTF_8;
     
     mycss_t* mycss = entry->mycss;
