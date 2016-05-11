@@ -145,10 +145,12 @@ You should have received a copy of the GNU Lesser General Public License along w
 See the [LICENSE] file.
 
 
+[CSS3 specification]: https://www.w3.org/TR/css-syntax-3/
 [MyHTML]: https://github.com/lexborisov/myhtml
 [parsing by chunks]: https://github.com/lexborisov/mycss/blob/master/examples/tokenizer_chunk_high_level.c
 [encoding.spec.whatwg.org]: https://encoding.spec.whatwg.org/
 [support encodings]: https://github.com/lexborisov/myhtml#support-encodings-for-inputstream
+[examples]: https://github.com/lexborisov/mycss/blob/master/examples/
 [Selectors Level 4]: https://www.w3.org/TR/selectors4/
 [Media Queries Level 4]: https://www.w3.org/TR/mediaqueries-4/
 [CSS Backgrounds and Borders Module Level 3]: https://www.w3.org/TR/css3-background/
