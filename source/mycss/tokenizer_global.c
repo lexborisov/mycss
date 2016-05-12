@@ -231,7 +231,7 @@ size_t mycss_tokenizer_global_state_number_decimal(mycss_entry_t* entry, mycss_t
 
 size_t mycss_tokenizer_global_state_number_e(mycss_entry_t* entry, mycss_token_t* token, const char* css, size_t css_offset, size_t css_size)
 {
-    if(css[css_offset] == '+' && css[css_offset] == '-') {
+    if(css[css_offset] == '+' || css[css_offset] == '-') {
         entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_NUMBER_E_PLUS_MINUS;
         css_offset++;
     }
