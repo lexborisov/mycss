@@ -447,12 +447,13 @@ size_t mycss_tokenizer_global_state_string_double_quoted(mycss_entry_t* entry, m
 {
     while(css_offset < css_size)
     {
-        if(css[css_offset] == '"') {
-            css_offset++;
-            
+        if(css[css_offset] == '"')
+        {
             token->type   = MyCSS_TOKEN_TYPE_STRING;
             token->length = (entry->current_buffer->offset + css_offset) - token->begin;
             
+            // skip QUOTATION MARK (")
+            ++css_offset;
             entry->state = entry->state_back;
             break;
         }
@@ -501,11 +502,13 @@ size_t mycss_tokenizer_global_state_string_single_quoted(mycss_entry_t* entry, m
 {
     while(css_offset < css_size)
     {
-        if(css[css_offset] == '\'') {
-            css_offset++;
-            
+        if(css[css_offset] == '\'')
+        {
             token->type   = MyCSS_TOKEN_TYPE_STRING;
             token->length = (entry->current_buffer->offset + css_offset) - token->begin;
+            
+            // skip APOSTROPHE (')
+            ++css_offset;
             
             entry->state = entry->state_back;
             break;

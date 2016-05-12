@@ -186,6 +186,9 @@ size_t mycss_tokenizer_state_whitespace(mycss_entry_t* entry, mycss_token_t* tok
 /////////////////////////////////////////////////////////
 size_t mycss_tokenizer_state_quotation_mark(mycss_entry_t* entry, mycss_token_t* token, const char* css, size_t css_offset, size_t css_size)
 {
+    // skip QUOTATION MARK (")
+    token->begin += 1;
+    
     entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_STRING_DOUBLE_QUOTED;
     entry->state_back = MyCSS_TOKENIZER_STATE_QUOTATION_MARK_BACK;
     
@@ -310,6 +313,9 @@ size_t mycss_tokenizer_state_dollar_sign(mycss_entry_t* entry, mycss_token_t* to
 /////////////////////////////////////////////////////////
 size_t mycss_tokenizer_state_apostrophe(mycss_entry_t* entry, mycss_token_t* token, const char* css, size_t css_offset, size_t css_size)
 {
+    // skip APOSTROPHE (')
+    token->begin += 1;
+    
     entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_STRING_SINGLE_QUOTED;
     entry->state_back = MyCSS_TOKENIZER_STATE_QUOTATION_MARK_BACK;
     
