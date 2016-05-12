@@ -437,6 +437,56 @@ mycss_encoding_get(mycss_entry_t* entry);
 myhtml_encoding_t
 mycss_encoding_check_charset_rule(const char* css, size_t size);
 
+/***********************************************************************************
+ *
+ * MyCSS_CONVERT
+ *
+ * @description It is inherited from the main project MyHTML
+ *   See https://github.com/lexborisov/myhtml
+ *
+ ***********************************************************************************/
+
+/**
+ * Convert data to double number
+ *
+ * @param[in]  data to convert
+ * @param[in]  data size
+ * @param[out] converting result
+ *
+ * @return length of data converting
+ */
+size_t
+mycss_convert_data_to_double(const char* data, size_t size, double* return_num);
+
+/**
+ * Convert data to unicode range code point
+ * See https://www.w3.org/TR/css-syntax-3/#unicode-range-token-diagram
+ * See https://www.w3.org/TR/css-syntax-3/#consume-a-unicode-range-token
+ *
+ * @param[in]  data to convert
+ * @param[in]  data size
+ * @param[out] start range converting result
+ * @param[out] end range converting result
+ *
+ * @return length of data converting
+ */
+size_t
+mycss_convert_unicode_range_to_codepoint(const char *data, size_t size, size_t *start, size_t *end);
+
+/**
+ * Convert hex data to code point
+ *
+ * @param[in]  data to convert
+ * @param[in]  data size
+ * @param[out] result codepoint
+ * @param[in]  how much length can be consumed
+ *
+ * @return length of data converting
+ */
+size_t
+mycss_convert_hex_to_codepoint(const char *data, size_t size, size_t *codepoint, unsigned int max_consumed);
+
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

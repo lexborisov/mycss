@@ -18,25 +18,22 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#ifndef MyHTML_MyCSS_PARSER_H
-#define MyHTML_MyCSS_PARSER_H
+#ifndef MyHTML_MyCSS_CONVERT_H
+#define MyHTML_MyCSS_CONVERT_H
 #pragma once
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+    
 #include "mycss/myosi.h"
-#include "mycss/mycss.h"
-#include "mycss/entry.h"
-#include "mycss/mystring.h"
-#include "mycss/convert.h"
-#include "myhtml/incoming.h"
 
-mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry, mycss_token_t* token);
+size_t mycss_convert_data_to_double(const char *data, size_t size, double *return_num);
+size_t mycss_convert_unicode_range_to_codepoint(const char *data, size_t size, size_t *start, size_t *end);
+size_t mycss_convert_hex_to_codepoint(const char *data, size_t size, size_t *codepoint, unsigned int max_consumed);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* MyHTML_MyCSS_PARSER_H */
+#endif /* MyHTML_MyCSS_CONVERT_H */

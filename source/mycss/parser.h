@@ -30,6 +30,7 @@ extern "C" {
 #include "mycss/mycss.h"
 #include "mycss/entry.h"
 #include "mycss/mystring.h"
+#include "mycss/convert.h"
 #include "myhtml/incoming.h"
 
 mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry, mycss_token_t* token);

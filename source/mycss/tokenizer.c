@@ -1033,7 +1033,7 @@ size_t mycss_tokenizer_state_digit(mycss_entry_t* entry, mycss_token_t* token, c
 size_t mycss_tokenizer_state_letter_u(mycss_entry_t* entry, mycss_token_t* token, const char* css, size_t css_offset, size_t css_size)
 {
     if(css[css_offset] == '+') {
-        css_offset++;
+        ++css_offset;
         
         if(css_offset >= css_size) {
             entry->state = MyCSS_TOKENIZER_STATE_LETTER_U_NEXT;
@@ -1043,7 +1043,9 @@ size_t mycss_tokenizer_state_letter_u(mycss_entry_t* entry, mycss_token_t* token
         if(myhtml_string_chars_hex_map[ (const unsigned char)(css[css_offset]) ] != 0xff ||
            css[css_offset] == '?')
         {
-            css_offset++;
+            token->begin += 2;
+            
+            ++css_offset;
             entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_UNICODE_RANGE_BEFORE;
         }
         else {
@@ -1064,7 +1066,9 @@ size_t mycss_tokenizer_state_letter_u_next(mycss_entry_t* entry, mycss_token_t* 
     if(myhtml_string_chars_hex_map[ (const unsigned char)(css[css_offset]) ] != 0xff ||
        css[css_offset] == '?')
     {
-        css_offset++;
+        token->begin += 2;
+        
+        ++css_offset;
         entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_UNICODE_RANGE_BEFORE;
     }
     else {

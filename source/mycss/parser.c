@@ -25,21 +25,30 @@ mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry,
 {
     //mycss_token_t* new_token = mcobject_async_malloc(entry->mcasync_token, entry->token_id, NULL);
     
-//    if(token->type == MyCSS_TOKEN_TYPE_IDENT ||
-//       token->type == MyCSS_TOKEN_TYPE_STRING ||
-//       token->type == MyCSS_TOKEN_TYPE_URL ||
-//       token->type == MyCSS_TOKEN_TYPE_FUNCTION)
-//    {
     myhtml_string_t str;
     mycss_token_data_to_string(entry, token, &str);
     
-    printf("%s", str.data);
+    if(token->type == MyCSS_TOKEN_TYPE_NUMBER)
+    {
+        double return_num;
+        mycss_convert_data_to_double(str.data, str.length, &return_num);
+        
+        printf("Number %s: %f\n", str.data, return_num);
+    }
+    else if(token->type == MyCSS_TOKEN_TYPE_UNICODE_RANGE)
+    {
+        size_t start, end;
+        mycss_convert_unicode_range_to_codepoint(str.data, str.length, &start, &end);
+        
+        if(end)
+            printf("Unicode range: %zu-%zu\n", start, end);
+        else
+            printf("Unicode range: %zu\n", start);
+    }
     
     myhtml_string_destroy(&str, false);
-//    }
-    
-    //printf("%zu: <%s>\n", entry->token_counter, mycss_token_type_description[ token->type ]);
     
     return entry->token;
 }
+
 
