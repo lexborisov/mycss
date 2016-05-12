@@ -24,8 +24,11 @@
 #include "myhtml/encoding.h"
 
 static const mycss_string_process_state_f mycss_string_state_list_map[] = {
-    mycss_string_process_state_data, mycss_string_process_state_data_utf_8,
-    mycss_string_process_state_escaped, mycss_string_process_state_escaped_utf_8
+    mycss_string_process_state_data, mycss_string_process_state_escaped
+};
+
+static const mycss_string_process_state_f mycss_string_state_list_map_utf_8[] = {
+    mycss_string_process_state_data_utf_8, mycss_string_process_state_escaped_utf_8
 };
 
 void mycss_string_append_codepoint_to_string(myhtml_string_t* str, size_t code_point)
@@ -108,14 +111,14 @@ size_t mycss_string_process_state_escaped_utf_8(myhtml_string_t* str, const char
             if(out_res->escaped.consumed == 6) {
                 mycss_string_append_codepoint_to_string(str, out_res->escaped.code_point);
                 
-                out_res->state = MyCSS_STRING_PROCESS_STATE_DATA_UTF_8;
+                out_res->state = MyCSS_STRING_PROCESS_STATE_DATA;
                 break;
             }
         }
         else {
             mycss_string_append_codepoint_to_string(str, out_res->escaped.code_point);
             
-            out_res->state = MyCSS_STRING_PROCESS_STATE_DATA_UTF_8;
+            out_res->state = MyCSS_STRING_PROCESS_STATE_DATA;
             break;
         }
         
@@ -197,10 +200,10 @@ size_t mycss_string_process_state_data_utf_8(myhtml_string_t* str, const char* d
     
     while(length < size)
     {
-        if(str_data[length] == '\\') {
+        if(data[length] == '\\') {
             ++length;
             
-            out_res->state = MyCSS_STRING_PROCESS_STATE_ESCAPED_UTF_8;
+            out_res->state = MyCSS_STRING_PROCESS_STATE_ESCAPED;
             break;
         }
         
@@ -238,7 +241,7 @@ size_t mycss_string_data_process(myhtml_string_t* str, const char* data, size_t 
 {
     if(out_res->encoding == MyHTML_ENCODING_UTF_8) {
         while(length < size) {
-            length = mycss_string_state_list_map[ (out_res->state + 1) ](str, data, length, size, out_res);
+            length = mycss_string_state_list_map_utf_8[ out_res->state ](str, data, length, size, out_res);
         }
     }
     else {
@@ -252,9 +255,7 @@ size_t mycss_string_data_process(myhtml_string_t* str, const char* data, size_t 
 
 void mycss_string_data_process_end(myhtml_string_t* str, mycss_string_res_t *out_res)
 {
-    if(out_res->state == MyCSS_STRING_PROCESS_STATE_ESCAPED ||
-       out_res->state == MyCSS_STRING_PROCESS_STATE_ESCAPED_UTF_8)
-    {
+    if(out_res->state == MyCSS_STRING_PROCESS_STATE_ESCAPED) {
         mycss_string_append_codepoint_to_string(str, out_res->escaped.code_point);
     }
     else if(str->length > 0) {

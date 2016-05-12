@@ -33,10 +33,9 @@ extern "C" {
 #include "myhtml/mystring.h"
 
 enum mycss_string_process_state {
-    MyCSS_STRING_PROCESS_STATE_DATA          = 0x00,
-    MyCSS_STRING_PROCESS_STATE_DATA_UTF_8    = 0x01,
-    MyCSS_STRING_PROCESS_STATE_ESCAPED       = 0x02,
-    MyCSS_STRING_PROCESS_STATE_ESCAPED_UTF_8 = 0x03
+    MyCSS_STRING_PROCESS_STATE_DATA       = 0x00,
+    MyCSS_STRING_PROCESS_STATE_ESCAPED    = 0x01,
+    MyCSS_STRING_PROCESS_STATE_LAST_ENTRY = 0x02
 }
 typedef mycss_string_process_state_t;
 

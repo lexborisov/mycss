@@ -45,10 +45,6 @@ struct res_css load_css(const char* filename)
 
 int main(int argc, const char * argv[]) {
     // work data
-    char *css1 = "@charset \"cp1251\"; #best-id {}";
-    
-    myhtml_encoding_t encoding = mycss_encoding_check_charset_rule(css1, strlen(css1));
-    
     char *css = "\\72gba(0, 0, 0, 0.1);";
     
     //const char *path = "/new/C-git/test.css";
@@ -68,11 +64,8 @@ int main(int argc, const char * argv[]) {
     uint64_t parse_start = myhtml_hperf_clock(NULL);
     
     for(size_t f = 0; f < 1; ++f) {
-        mycss_parse(entry, MyHTML_ENCODING_WINDOWS_1251, res.html, res.size);
-        
-        //for(size_t i = 0; i < strlen(css); ++i) {
-        //    mycss_tokenizer_chunk(entry, &css[i], 1);
-        //}
+        //mycss_parse(entry, MyHTML_ENCODING_UTF_8, res.html, res.size);
+        mycss_parse(entry, MyHTML_ENCODING_UTF_8, css, strlen(css));
     }
     
 //    mycss_tokenizer_chunk(entry, css, strlen(css));
