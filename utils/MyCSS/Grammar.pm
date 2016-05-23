@@ -348,6 +348,58 @@ sub parse_tree {
 	$start;
 }
 
+sub decomposite_list {
+	my ($grammar, $list, $index_of_list, $save_index) = @_;
+	
+	my $work = [];
+	foreach my $entries (@$list) {
+		push @{$work}, @{$grammar->decomposite_list_entries($entries, $index_of_list, $save_index)};
+	}
+	
+	$work;
+}
+
+sub decomposite_list_entries {
+	my ($grammar, $entries, $index_of_list, $save_index) = @_;
+	my $work = [[]];
+	
+	foreach my $entry (@$entries)
+	{
+		my $res = $grammar->decomposite_list_entry($entry, $index_of_list, $save_index);
+		my $new_work;
+		
+		foreach my $res_entries (@$res) {
+			foreach my $work_entry (@$work) {
+				push @{$new_work}, [@$work_entry, @$res_entries];
+			}
+		}
+		
+		$work = $new_work;
+	}
+	
+	$work;
+}
+
+sub decomposite_list_entry {
+	my ($grammar, $entry, $index_of_list, $save_index) = @_;
+	
+	my $list = [];
+	if ($index_of_list->{ $entry->name }) {
+		if ($save_index->{$entry->name}) {
+			$list = $save_index->{$entry->name};
+		}
+		else {
+			$list = $grammar->decomposite_list($index_of_list->{ $entry->name }, $index_of_list, $save_index);
+			$save_index->{$entry->name} = $list;
+		}
+	}
+	else {
+		push @{$list}, [$entry];
+	}
+	
+	$list;
+}
+
 sub print_list {
 	my ($grammar, $result, $tab_count) = @_;
 	
@@ -424,4 +476,5 @@ sub mod {
 	$_[0]->{mod} = $_[1] if @_ > 1;
 	$_[0]->{mod};
 }
+
 
