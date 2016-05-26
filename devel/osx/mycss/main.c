@@ -45,11 +45,12 @@ struct res_css load_css(const char* filename)
 
 int main(int argc, const char * argv[]) {
     // work data
-    char *css = "\\72gba(0, 0, 0, 0.1);";
+    //char *css = "1.048576E+06";
+    char *css = "| name .d[ key |= \"value\" ]";
     
-    //const char *path = "/new/C-git/test.css";
+    const char *path = "/new/C-git/test.css";
     //const char *path = "/new/C-git/bootstrap.css";
-    const char *path = "/new/C-git/bootstrap_cp1251.css";
+    //const char *path = "/new/C-git/bootstrap_cp1251.css";
     
     struct res_css res = load_css(path);
     
@@ -64,8 +65,8 @@ int main(int argc, const char * argv[]) {
     uint64_t parse_start = myhtml_hperf_clock(NULL);
     
     for(size_t f = 0; f < 1; ++f) {
-        //mycss_parse(entry, MyHTML_ENCODING_UTF_8, res.html, res.size);
-        mycss_parse(entry, MyHTML_ENCODING_UTF_8, css, strlen(css));
+        mycss_parse(entry, MyHTML_ENCODING_UTF_8, res.html, res.size);
+        //mycss_parse(entry, MyHTML_ENCODING_UTF_8, css, strlen(css));
     }
     
 //    mycss_tokenizer_chunk(entry, css, strlen(css));

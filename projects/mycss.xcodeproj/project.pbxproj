@@ -1,0 +1,369 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0ED0C8261CF7845800A967AF /* myosi.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C80F1CF7845800A967AF /* myosi.h */; };
+		0ED0C8271CF7845800A967AF /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 0ED0C8101CF7845800A967AF /* parser.c */; };
+		0ED0C8281CF7845800A967AF /* parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C8111CF7845800A967AF /* parser.h */; };
+		0ED0C8291CF7845800A967AF /* selectors.c in Sources */ = {isa = PBXBuildFile; fileRef = 0ED0C8121CF7845800A967AF /* selectors.c */; };
+		0ED0C82A1CF7845800A967AF /* selectors.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C8131CF7845800A967AF /* selectors.h */; };
+		0ED0C82B1CF7845800A967AF /* entry.c in Sources */ = {isa = PBXBuildFile; fileRef = 0ED0C8141CF7845800A967AF /* entry.c */; };
+		0ED0C82C1CF7845800A967AF /* entry.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C8151CF7845800A967AF /* entry.h */; };
+		0ED0C82D1CF7845800A967AF /* mycss.c in Sources */ = {isa = PBXBuildFile; fileRef = 0ED0C8161CF7845800A967AF /* mycss.c */; };
+		0ED0C82E1CF7845800A967AF /* mycss.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C8171CF7845800A967AF /* mycss.h */; };
+		0ED0C82F1CF7845800A967AF /* api.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C8181CF7845800A967AF /* api.h */; };
+		0ED0C8301CF7845800A967AF /* check.c in Sources */ = {isa = PBXBuildFile; fileRef = 0ED0C8191CF7845800A967AF /* check.c */; };
+		0ED0C8311CF7845800A967AF /* check.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C81A1CF7845800A967AF /* check.h */; };
+		0ED0C8321CF7845800A967AF /* convert.c in Sources */ = {isa = PBXBuildFile; fileRef = 0ED0C81B1CF7845800A967AF /* convert.c */; };
+		0ED0C8331CF7845800A967AF /* convert.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C81C1CF7845800A967AF /* convert.h */; };
+		0ED0C8341CF7845800A967AF /* mystring.c in Sources */ = {isa = PBXBuildFile; fileRef = 0ED0C81D1CF7845800A967AF /* mystring.c */; };
+		0ED0C8351CF7845800A967AF /* mystring.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C81E1CF7845800A967AF /* mystring.h */; };
+		0ED0C8361CF7845800A967AF /* tokenizer_end.c in Sources */ = {isa = PBXBuildFile; fileRef = 0ED0C81F1CF7845800A967AF /* tokenizer_end.c */; };
+		0ED0C8371CF7845800A967AF /* tokenizer_end.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C8201CF7845800A967AF /* tokenizer_end.h */; };
+		0ED0C8381CF7845800A967AF /* tokenizer_global.c in Sources */ = {isa = PBXBuildFile; fileRef = 0ED0C8211CF7845800A967AF /* tokenizer_global.c */; };
+		0ED0C8391CF7845800A967AF /* tokenizer_global.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C8221CF7845800A967AF /* tokenizer_global.h */; };
+		0ED0C83A1CF7845800A967AF /* tokenizer_resource.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C8231CF7845800A967AF /* tokenizer_resource.h */; };
+		0ED0C83B1CF7845800A967AF /* tokenizer.c in Sources */ = {isa = PBXBuildFile; fileRef = 0ED0C8241CF7845800A967AF /* tokenizer.c */; };
+		0ED0C83C1CF7845800A967AF /* tokenizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C8251CF7845800A967AF /* tokenizer.h */; };
+		0ED0C8421CF7847100A967AF /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 0ED0C83E1CF7847100A967AF /* parser.c */; };
+		0ED0C8431CF7847100A967AF /* state.c in Sources */ = {isa = PBXBuildFile; fileRef = 0ED0C83F1CF7847100A967AF /* state.c */; };
+		0ED0C8441CF7847100A967AF /* state.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C8401CF7847100A967AF /* state.h */; };
+		0ED0C8451CF7847100A967AF /* parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 0ED0C8411CF7847100A967AF /* parser.h */; };
+		0ED0C8471CF7853700A967AF /* libmyhtml.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0ED0C8461CF7853700A967AF /* libmyhtml.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0ED0C8071CF7843000A967AF /* libmycss.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libmycss.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		0ED0C80F1CF7845800A967AF /* myosi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = myosi.h; path = ../source/mycss/myosi.h; sourceTree = "<group>"; };
+		0ED0C8101CF7845800A967AF /* parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = parser.c; path = ../source/mycss/parser.c; sourceTree = "<group>"; };
+		0ED0C8111CF7845800A967AF /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parser.h; path = ../source/mycss/parser.h; sourceTree = "<group>"; };
+		0ED0C8121CF7845800A967AF /* selectors.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = selectors.c; path = ../source/mycss/selectors.c; sourceTree = "<group>"; };
+		0ED0C8131CF7845800A967AF /* selectors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = selectors.h; path = ../source/mycss/selectors.h; sourceTree = "<group>"; };
+		0ED0C8141CF7845800A967AF /* entry.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = entry.c; path = ../source/mycss/entry.c; sourceTree = "<group>"; };
+		0ED0C8151CF7845800A967AF /* entry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = entry.h; path = ../source/mycss/entry.h; sourceTree = "<group>"; };
+		0ED0C8161CF7845800A967AF /* mycss.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mycss.c; path = ../source/mycss/mycss.c; sourceTree = "<group>"; };
+		0ED0C8171CF7845800A967AF /* mycss.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mycss.h; path = ../source/mycss/mycss.h; sourceTree = "<group>"; };
+		0ED0C8181CF7845800A967AF /* api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = api.h; path = ../source/mycss/api.h; sourceTree = "<group>"; };
+		0ED0C8191CF7845800A967AF /* check.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = check.c; path = ../source/mycss/check.c; sourceTree = "<group>"; };
+		0ED0C81A1CF7845800A967AF /* check.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = check.h; path = ../source/mycss/check.h; sourceTree = "<group>"; };
+		0ED0C81B1CF7845800A967AF /* convert.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = convert.c; path = ../source/mycss/convert.c; sourceTree = "<group>"; };
+		0ED0C81C1CF7845800A967AF /* convert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = convert.h; path = ../source/mycss/convert.h; sourceTree = "<group>"; };
+		0ED0C81D1CF7845800A967AF /* mystring.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mystring.c; path = ../source/mycss/mystring.c; sourceTree = "<group>"; };
+		0ED0C81E1CF7845800A967AF /* mystring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mystring.h; path = ../source/mycss/mystring.h; sourceTree = "<group>"; };
+		0ED0C81F1CF7845800A967AF /* tokenizer_end.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tokenizer_end.c; path = ../source/mycss/tokenizer_end.c; sourceTree = "<group>"; };
+		0ED0C8201CF7845800A967AF /* tokenizer_end.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tokenizer_end.h; path = ../source/mycss/tokenizer_end.h; sourceTree = "<group>"; };
+		0ED0C8211CF7845800A967AF /* tokenizer_global.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tokenizer_global.c; path = ../source/mycss/tokenizer_global.c; sourceTree = "<group>"; };
+		0ED0C8221CF7845800A967AF /* tokenizer_global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tokenizer_global.h; path = ../source/mycss/tokenizer_global.h; sourceTree = "<group>"; };
+		0ED0C8231CF7845800A967AF /* tokenizer_resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tokenizer_resource.h; path = ../source/mycss/tokenizer_resource.h; sourceTree = "<group>"; };
+		0ED0C8241CF7845800A967AF /* tokenizer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tokenizer.c; path = ../source/mycss/tokenizer.c; sourceTree = "<group>"; };
+		0ED0C8251CF7845800A967AF /* tokenizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tokenizer.h; path = ../source/mycss/tokenizer.h; sourceTree = "<group>"; };
+		0ED0C83E1CF7847100A967AF /* parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = parser.c; path = ../source/mycss/selectors/parser.c; sourceTree = "<group>"; };
+		0ED0C83F1CF7847100A967AF /* state.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = state.c; path = ../source/mycss/selectors/state.c; sourceTree = "<group>"; };
+		0ED0C8401CF7847100A967AF /* state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = state.h; path = ../source/mycss/selectors/state.h; sourceTree = "<group>"; };
+		0ED0C8411CF7847100A967AF /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parser.h; path = ../source/mycss/selectors/parser.h; sourceTree = "<group>"; };
+		0ED0C8461CF7853700A967AF /* libmyhtml.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmyhtml.dylib; path = ../../myhtml/projects/build/Debug/libmyhtml.dylib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0ED0C8041CF7843000A967AF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0ED0C8471CF7853700A967AF /* libmyhtml.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0ED0C7FE1CF7843000A967AF = {
+			isa = PBXGroup;
+			children = (
+				0ED0C8461CF7853700A967AF /* libmyhtml.dylib */,
+				0ED0C80E1CF7843F00A967AF /* mycss */,
+				0ED0C8081CF7843000A967AF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0ED0C8081CF7843000A967AF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0ED0C8071CF7843000A967AF /* libmycss.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0ED0C80E1CF7843F00A967AF /* mycss */ = {
+			isa = PBXGroup;
+			children = (
+				0ED0C80F1CF7845800A967AF /* myosi.h */,
+				0ED0C8101CF7845800A967AF /* parser.c */,
+				0ED0C8111CF7845800A967AF /* parser.h */,
+				0ED0C8121CF7845800A967AF /* selectors.c */,
+				0ED0C8131CF7845800A967AF /* selectors.h */,
+				0ED0C8141CF7845800A967AF /* entry.c */,
+				0ED0C8151CF7845800A967AF /* entry.h */,
+				0ED0C8161CF7845800A967AF /* mycss.c */,
+				0ED0C8171CF7845800A967AF /* mycss.h */,
+				0ED0C8181CF7845800A967AF /* api.h */,
+				0ED0C8191CF7845800A967AF /* check.c */,
+				0ED0C81A1CF7845800A967AF /* check.h */,
+				0ED0C81B1CF7845800A967AF /* convert.c */,
+				0ED0C81C1CF7845800A967AF /* convert.h */,
+				0ED0C81D1CF7845800A967AF /* mystring.c */,
+				0ED0C81E1CF7845800A967AF /* mystring.h */,
+				0ED0C81F1CF7845800A967AF /* tokenizer_end.c */,
+				0ED0C8201CF7845800A967AF /* tokenizer_end.h */,
+				0ED0C8211CF7845800A967AF /* tokenizer_global.c */,
+				0ED0C8221CF7845800A967AF /* tokenizer_global.h */,
+				0ED0C8231CF7845800A967AF /* tokenizer_resource.h */,
+				0ED0C8241CF7845800A967AF /* tokenizer.c */,
+				0ED0C8251CF7845800A967AF /* tokenizer.h */,
+				0ED0C83D1CF7845C00A967AF /* selectors */,
+			);
+			name = mycss;
+			sourceTree = "<group>";
+		};
+		0ED0C83D1CF7845C00A967AF /* selectors */ = {
+			isa = PBXGroup;
+			children = (
+				0ED0C83E1CF7847100A967AF /* parser.c */,
+				0ED0C83F1CF7847100A967AF /* state.c */,
+				0ED0C8401CF7847100A967AF /* state.h */,
+				0ED0C8411CF7847100A967AF /* parser.h */,
+			);
+			name = selectors;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		0ED0C8051CF7843000A967AF /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0ED0C8331CF7845800A967AF /* convert.h in Headers */,
+				0ED0C8261CF7845800A967AF /* myosi.h in Headers */,
+				0ED0C8281CF7845800A967AF /* parser.h in Headers */,
+				0ED0C82E1CF7845800A967AF /* mycss.h in Headers */,
+				0ED0C83A1CF7845800A967AF /* tokenizer_resource.h in Headers */,
+				0ED0C82F1CF7845800A967AF /* api.h in Headers */,
+				0ED0C82A1CF7845800A967AF /* selectors.h in Headers */,
+				0ED0C8391CF7845800A967AF /* tokenizer_global.h in Headers */,
+				0ED0C8451CF7847100A967AF /* parser.h in Headers */,
+				0ED0C8441CF7847100A967AF /* state.h in Headers */,
+				0ED0C8371CF7845800A967AF /* tokenizer_end.h in Headers */,
+				0ED0C82C1CF7845800A967AF /* entry.h in Headers */,
+				0ED0C83C1CF7845800A967AF /* tokenizer.h in Headers */,
+				0ED0C8311CF7845800A967AF /* check.h in Headers */,
+				0ED0C8351CF7845800A967AF /* mystring.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		0ED0C8061CF7843000A967AF /* mycss */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0ED0C80B1CF7843000A967AF /* Build configuration list for PBXNativeTarget "mycss" */;
+			buildPhases = (
+				0ED0C8031CF7843000A967AF /* Sources */,
+				0ED0C8041CF7843000A967AF /* Frameworks */,
+				0ED0C8051CF7843000A967AF /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = mycss;
+			productName = mycss;
+			productReference = 0ED0C8071CF7843000A967AF /* libmycss.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0ED0C7FF1CF7843000A967AF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0730;
+				ORGANIZATIONNAME = "Alexander Borisov";
+				TargetAttributes = {
+					0ED0C8061CF7843000A967AF = {
+						CreatedOnToolsVersion = 7.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 0ED0C8021CF7843000A967AF /* Build configuration list for PBXProject "mycss" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0ED0C7FE1CF7843000A967AF;
+			productRefGroup = 0ED0C8081CF7843000A967AF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0ED0C8061CF7843000A967AF /* mycss */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0ED0C8031CF7843000A967AF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0ED0C82B1CF7845800A967AF /* entry.c in Sources */,
+				0ED0C8361CF7845800A967AF /* tokenizer_end.c in Sources */,
+				0ED0C8421CF7847100A967AF /* parser.c in Sources */,
+				0ED0C8291CF7845800A967AF /* selectors.c in Sources */,
+				0ED0C8271CF7845800A967AF /* parser.c in Sources */,
+				0ED0C8321CF7845800A967AF /* convert.c in Sources */,
+				0ED0C82D1CF7845800A967AF /* mycss.c in Sources */,
+				0ED0C8341CF7845800A967AF /* mystring.c in Sources */,
+				0ED0C83B1CF7845800A967AF /* tokenizer.c in Sources */,
+				0ED0C8431CF7847100A967AF /* state.c in Sources */,
+				0ED0C8381CF7845800A967AF /* tokenizer_global.c in Sources */,
+				0ED0C8301CF7845800A967AF /* check.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0ED0C8091CF7843000A967AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		0ED0C80A1CF7843000A967AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		0ED0C80C1CF7843000A967AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = ../source;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0ED0C80D1CF7843000A967AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EXECUTABLE_PREFIX = lib;
+				HEADER_SEARCH_PATHS = ../source;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0ED0C8021CF7843000A967AF /* Build configuration list for PBXProject "mycss" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0ED0C8091CF7843000A967AF /* Debug */,
+				0ED0C80A1CF7843000A967AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0ED0C80B1CF7843000A967AF /* Build configuration list for PBXNativeTarget "mycss" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0ED0C80C1CF7843000A967AF /* Debug */,
+				0ED0C80D1CF7843000A967AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0ED0C7FF1CF7843000A967AF /* Project object */;
+}

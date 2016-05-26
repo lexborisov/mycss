@@ -18,31 +18,34 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#ifndef MyHTML_MyCSS_PARSER_H
-#define MyHTML_MyCSS_PARSER_H
+#ifndef MyHTML_MyCSS_SELECTORS_H
+#define MyHTML_MyCSS_SELECTORS_H
 #pragma once
 
 #ifdef __cplusplus
-extern "C" {
+//extern "C" {
 #endif
 
 #include "mycss/myosi.h"
-#include "mycss/mycss.h"
-#include "mycss/entry.h"
-#include "mycss/mystring.h"
-#include "mycss/convert.h"
-#include "myhtml/incoming.h"
 
-mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry, mycss_token_t* token);
+struct mycss_selectors {
+    // refs
+    mycss_entry_t* entry;
+    
+    mycss_selectors_state_f state;
+    mycss_parser_token_f parser;
+};
 
-void mycss_parser_state(mycss_selectors_t* selectors, mycss_token_t* token);
+#include "mycss/parser.h"
+#include "mycss/selectors/state.h"
 
-void mycss_parser_token_all(mycss_entry_t* entry, mycss_token_t* token);
-void mycss_parser_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token);
-
+mycss_selectors_t * mycss_selectors_create(void);
+mycss_status_t mycss_selectors_init(mycss_entry_t* entry, mycss_selectors_t* selectors);
+mycss_status_t mycss_selectors_clean_all(mycss_selectors_t* selectors);
+mycss_selectors_t * mycss_selectors_destroy(mycss_selectors_t* selectors, bool self_destroy);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* MyHTML_MyCSS_PARSER_H */
+#endif /* MyHTML_MyCSS_SELECTORS_H */

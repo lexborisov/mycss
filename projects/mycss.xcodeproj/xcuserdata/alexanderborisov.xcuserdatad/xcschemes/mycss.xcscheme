@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0E84589C1CD9377400246CFD"
-               BuildableName = "mycss"
+               BlueprintIdentifier = "0ED0C8061CF7843000A967AF"
+               BuildableName = "libmycss.dylib"
                BlueprintName = "mycss"
                ReferencedContainer = "container:mycss.xcodeproj">
             </BuildableReference>
@@ -29,15 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0E84589C1CD9377400246CFD"
-            BuildableName = "mycss"
-            BlueprintName = "mycss"
-            ReferencedContainer = "container:mycss.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -51,16 +42,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0E84589C1CD9377400246CFD"
-            BuildableName = "mycss"
+            BlueprintIdentifier = "0ED0C8061CF7843000A967AF"
+            BuildableName = "libmycss.dylib"
             BlueprintName = "mycss"
             ReferencedContainer = "container:mycss.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -70,16 +60,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "0E84589C1CD9377400246CFD"
-            BuildableName = "mycss"
+            BlueprintIdentifier = "0ED0C8061CF7843000A967AF"
+            BuildableName = "libmycss.dylib"
             BlueprintName = "mycss"
             ReferencedContainer = "container:mycss.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

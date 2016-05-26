@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0E068D301CDBC71F0062DC68 /* mystring.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E068D2E1CDBC71F0062DC68 /* mystring.c */; };
+		0E13BA1F1CE4F32400D7FC06 /* convert.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E13BA1D1CE4F32400D7FC06 /* convert.c */; };
 		0E8458A11CD9377400246CFD /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E8458A01CD9377400246CFD /* main.c */; };
 		0E8458B91CD937C200246CFD /* check.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E8458A81CD937C200246CFD /* check.c */; };
 		0E8458BA1CD937C200246CFD /* entry.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E8458AA1CD937C200246CFD /* entry.c */; };
@@ -16,6 +17,9 @@
 		0E8458BE1CD937C200246CFD /* tokenizer.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E8458B21CD937C200246CFD /* tokenizer.c */; };
 		0E8458BF1CD937C200246CFD /* tokenizer_end.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E8458B41CD937C200246CFD /* tokenizer_end.c */; };
 		0E8458C01CD937C200246CFD /* tokenizer_global.c in Sources */ = {isa = PBXBuildFile; fileRef = 0E8458B61CD937C200246CFD /* tokenizer_global.c */; };
+		0EBEF8F81CF5B0F600A70AD1 /* parser.c in Sources */ = {isa = PBXBuildFile; fileRef = 0EBEF8F61CF5B0F600A70AD1 /* parser.c */; };
+		0EBEF8FB1CF5B1D100A70AD1 /* state.c in Sources */ = {isa = PBXBuildFile; fileRef = 0EBEF8F91CF5B1D100A70AD1 /* state.c */; };
+		0EBEF8FF1CF5B74600A70AD1 /* selectors.c in Sources */ = {isa = PBXBuildFile; fileRef = 0EBEF8FD1CF5B74600A70AD1 /* selectors.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -33,6 +37,8 @@
 /* Begin PBXFileReference section */
 		0E068D2E1CDBC71F0062DC68 /* mystring.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = mystring.c; sourceTree = "<group>"; };
 		0E068D2F1CDBC71F0062DC68 /* mystring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mystring.h; sourceTree = "<group>"; };
+		0E13BA1D1CE4F32400D7FC06 /* convert.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = convert.c; sourceTree = "<group>"; };
+		0E13BA1E1CE4F32400D7FC06 /* convert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = convert.h; sourceTree = "<group>"; };
 		0E84589D1CD9377400246CFD /* mycss */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = mycss; sourceTree = BUILT_PRODUCTS_DIR; };
 		0E8458A01CD9377400246CFD /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		0E8458A81CD937C200246CFD /* check.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = check.c; sourceTree = "<group>"; };
@@ -52,6 +58,12 @@
 		0E8458B71CD937C200246CFD /* tokenizer_global.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tokenizer_global.h; sourceTree = "<group>"; };
 		0E8458B81CD937C200246CFD /* tokenizer_resource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tokenizer_resource.h; sourceTree = "<group>"; };
 		0E8458C11CD93C2A00246CFD /* api.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = api.h; sourceTree = "<group>"; };
+		0EBEF8F61CF5B0F600A70AD1 /* parser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = parser.c; sourceTree = "<group>"; };
+		0EBEF8F71CF5B0F600A70AD1 /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parser.h; sourceTree = "<group>"; };
+		0EBEF8F91CF5B1D100A70AD1 /* state.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = state.c; sourceTree = "<group>"; };
+		0EBEF8FA1CF5B1D100A70AD1 /* state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = state.h; sourceTree = "<group>"; };
+		0EBEF8FD1CF5B74600A70AD1 /* selectors.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = selectors.c; sourceTree = "<group>"; };
+		0EBEF8FE1CF5B74600A70AD1 /* selectors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = selectors.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,9 +125,25 @@
 				0E8458B81CD937C200246CFD /* tokenizer_resource.h */,
 				0E8458A91CD937C200246CFD /* check.h */,
 				0E8458A81CD937C200246CFD /* check.c */,
+				0E13BA1E1CE4F32400D7FC06 /* convert.h */,
+				0E13BA1D1CE4F32400D7FC06 /* convert.c */,
+				0EBEF8FE1CF5B74600A70AD1 /* selectors.h */,
+				0EBEF8FD1CF5B74600A70AD1 /* selectors.c */,
+				0EBEF8F51CF5B0A300A70AD1 /* selectors */,
 			);
 			name = mycss;
 			path = ../../source/mycss;
+			sourceTree = "<group>";
+		};
+		0EBEF8F51CF5B0A300A70AD1 /* selectors */ = {
+			isa = PBXGroup;
+			children = (
+				0EBEF8F71CF5B0F600A70AD1 /* parser.h */,
+				0EBEF8F61CF5B0F600A70AD1 /* parser.c */,
+				0EBEF8FA1CF5B1D100A70AD1 /* state.h */,
+				0EBEF8F91CF5B1D100A70AD1 /* state.c */,
+			);
+			path = selectors;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -176,11 +204,15 @@
 			files = (
 				0E8458BA1CD937C200246CFD /* entry.c in Sources */,
 				0E8458BF1CD937C200246CFD /* tokenizer_end.c in Sources */,
+				0EBEF8F81CF5B0F600A70AD1 /* parser.c in Sources */,
 				0E8458B91CD937C200246CFD /* check.c in Sources */,
 				0E8458BC1CD937C200246CFD /* mycss.c in Sources */,
 				0E068D301CDBC71F0062DC68 /* mystring.c in Sources */,
 				0E8458BE1CD937C200246CFD /* tokenizer.c in Sources */,
 				0E8458BD1CD937C200246CFD /* parser.c in Sources */,
+				0EBEF8FF1CF5B74600A70AD1 /* selectors.c in Sources */,
+				0E13BA1F1CE4F32400D7FC06 /* convert.c in Sources */,
+				0EBEF8FB1CF5B1D100A70AD1 /* state.c in Sources */,
 				0E8458C01CD937C200246CFD /* tokenizer_global.c in Sources */,
 				0E8458A11CD9377400246CFD /* main.c in Sources */,
 			);
@@ -273,7 +305,7 @@
 		0E8458A51CD9377400246CFD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 2;
 				HEADER_SEARCH_PATHS = (
 					../../source,
 					../../../myhtml/source,

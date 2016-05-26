@@ -222,6 +222,9 @@ enum mycss_token_type {
 }
 typedef mycss_token_type_t;
 
+// selectors
+typedef struct mycss_selectors mycss_selectors_t;
+
 // mystring
 typedef struct mycss_string_escaped_res mycss_string_escaped_res_t;
 typedef struct mycss_string_res mycss_string_res_t;
@@ -229,6 +232,8 @@ typedef struct mycss_string_res mycss_string_res_t;
 typedef size_t (*mycss_tokenizer_state_f)(mycss_entry_t* entry, mycss_token_t* token, const char* css, size_t css_offset, size_t css_size);
 typedef mycss_token_t * (*mycss_token_ready_callback_f)(mycss_entry_t* entry, mycss_token_t* token);
 typedef size_t (*mycss_string_process_state_f)(myhtml_string_t* str, const char* data, size_t length, size_t size, mycss_string_res_t *out_res);
+typedef bool (*mycss_selectors_state_f)(mycss_selectors_t* selectors, mycss_token_t* token);
+typedef void (*mycss_parser_token_f)(mycss_entry_t* entry, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

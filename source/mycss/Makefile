@@ -34,7 +34,9 @@ else
 endif
 
 SRCS := $(wildcard *.c)
+SRCS += $(wildcard selectors/*.c)
 HDRS := $(wildcard *.h)
+HDRS += $(wildcard selectors/*.h)
 OBJS := $(patsubst %.c, %.o, $(SRCS))
 
 all: shared static
@@ -47,6 +49,7 @@ static: shared
 
 clean:
 	rm -rf *.o
+	rm -rf selectors/*.o
 	rm -rf *lib$(LIBNAME)*
 
 .PHONY: all clean

@@ -168,6 +168,11 @@ size_t mycss_token_data_to_string(mycss_entry_t* entry, mycss_token_t* token, my
     return token->length;
 }
 
+myhtml_incoming_buffer_t * mycss_token_buffer_first(mycss_entry_t* entry, mycss_token_t* token)
+{
+    return myhtml_incoming_buffer_find_by_position(entry->current_buffer, token->begin);
+}
+
 // encoding
 
 void mycss_encoding_set(mycss_entry_t* entry, myhtml_encoding_t encoding)

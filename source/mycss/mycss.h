@@ -52,6 +52,8 @@ mycss_token_type_t mycss_token_type(mycss_token_t* token);
 const char * mycss_token_name_by_type(mycss_token_type_t type);
 size_t mycss_token_data_to_string(mycss_entry_t* entry, mycss_token_t* token, myhtml_string_t* str);
 
+myhtml_incoming_buffer_t * mycss_token_buffer_first(mycss_entry_t* entry, mycss_token_t* token);
+
 // encoding
 void mycss_encoding_set(mycss_entry_t* entry, myhtml_encoding_t encoding);
 myhtml_encoding_t mycss_encoding_get(mycss_entry_t* entry);

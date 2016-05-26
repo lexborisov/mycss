@@ -29,6 +29,7 @@ extern "C" {
 #include "mycss/myosi.h"
 #include "mycss/mycss.h"
 #include "mycss/parser.h"
+#include "mycss/selectors.h"
 #include "myhtml/utils/mcobject_async.h"
 #include "myhtml/utils/mchar_async.h"
 
@@ -45,6 +46,8 @@ struct mycss_entry {
     mycss_tokenizer_state_t state;
     mycss_tokenizer_state_t state_back;
     mycss_token_ready_callback_f token_ready_callback;
+    
+    struct mycss_selectors selectors; /* mycss_selectors_t */
     
     mcobject_async_t *mcasync_token;
     size_t token_id;

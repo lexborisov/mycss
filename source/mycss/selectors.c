@@ -18,31 +18,38 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#ifndef MyHTML_MyCSS_PARSER_H
-#define MyHTML_MyCSS_PARSER_H
-#pragma once
+#include "mycss/selectors.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+mycss_selectors_t * mycss_selectors_create(void)
+{
+    return (mycss_selectors_t*)mycalloc(1, sizeof(mycss_selectors_t));
+}
 
-#include "mycss/myosi.h"
-#include "mycss/mycss.h"
-#include "mycss/entry.h"
-#include "mycss/mystring.h"
-#include "mycss/convert.h"
-#include "myhtml/incoming.h"
+mycss_status_t mycss_selectors_init(mycss_entry_t* entry, mycss_selectors_t* selectors)
+{
+    selectors->entry = entry;
+    
+    selectors->state = mycss_selectors_state_simple_selector;
+    selectors->parser = mycss_parser_token_all;
+    
+    return MyCSS_STATUS_OK;
+}
 
-mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry, mycss_token_t* token);
+mycss_status_t mycss_selectors_clean_all(mycss_selectors_t* selectors)
+{
+    return MyCSS_STATUS_OK;
+}
 
-void mycss_parser_state(mycss_selectors_t* selectors, mycss_token_t* token);
+mycss_selectors_t * mycss_selectors_destroy(mycss_selectors_t* selectors, bool self_destroy)
+{
+    if(selectors == NULL)
+        return NULL;
+    
+    if(self_destroy) {
+        myfree(selectors);
+        return NULL;
+    }
+    
+    return selectors;
+}
 
-void mycss_parser_token_all(mycss_entry_t* entry, mycss_token_t* token);
-void mycss_parser_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token);
-
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
-
-#endif /* MyHTML_MyCSS_PARSER_H */

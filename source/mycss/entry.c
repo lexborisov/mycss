@@ -56,6 +56,11 @@ mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
     
     entry->token_ready_callback = mycss_parser_token_ready_callback_function;
     
+    /* init modules */
+    mycss_status_t status = mycss_selectors_init(entry, &entry->selectors);
+    if(status != MyCSS_STATUS_OK)
+        return status;
+    
     return MyCSS_STATUS_OK;
 }
 

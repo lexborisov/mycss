@@ -18,31 +18,20 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#ifndef MyHTML_MyCSS_PARSER_H
-#define MyHTML_MyCSS_PARSER_H
+#ifndef MyHTML_MyCSS_SELECTORS_PARSER_H
+#define MyHTML_MyCSS_SELECTORS_PARSER_H
 #pragma once
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+    
 #include "mycss/myosi.h"
-#include "mycss/mycss.h"
-#include "mycss/entry.h"
-#include "mycss/mystring.h"
-#include "mycss/convert.h"
-#include "myhtml/incoming.h"
 
-mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry, mycss_token_t* token);
-
-void mycss_parser_state(mycss_selectors_t* selectors, mycss_token_t* token);
-
-void mycss_parser_token_all(mycss_entry_t* entry, mycss_token_t* token);
-void mycss_parser_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token);
 
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* MyHTML_MyCSS_PARSER_H */
+#endif /* MyHTML_MyCSS_SELECTORS_PARSER_H */

@@ -23,32 +23,47 @@
 
 mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry, mycss_token_t* token)
 {
-    //mycss_token_t* new_token = mcobject_async_malloc(entry->mcasync_token, entry->token_id, NULL);
+//    entry->token = mcobject_async_malloc(entry->mcasync_token, entry->token_id, NULL);
     
-    myhtml_string_t str;
-    mycss_token_data_to_string(entry, token, &str);
+//    entry->selectors.parser(entry, token);
     
-    if(token->type == MyCSS_TOKEN_TYPE_NUMBER)
-    {
-        double return_num;
-        mycss_convert_data_to_double(str.data, str.length, &return_num);
-        
-        printf("Number %s: %f\n", str.data, return_num);
-    }
-    else if(token->type == MyCSS_TOKEN_TYPE_UNICODE_RANGE)
-    {
-        size_t start, end;
-        mycss_convert_unicode_range_to_codepoint(str.data, str.length, &start, &end);
-        
-        if(end)
-            printf("Unicode range: %zu-%zu\n", start, end);
-        else
-            printf("Unicode range: %zu\n", start);
-    }
+//    myhtml_string_t str;
+//    mycss_token_data_to_string(entry, token, &str);
     
-    myhtml_string_destroy(&str, false);
+//    printf("%s\n", str.data);
+//    if(token->type == MyCSS_TOKEN_TYPE_NUMBER)
+//    {
+//        double return_num;
+//        mycss_convert_data_to_double(str.data, str.length, &return_num);
+//        
+//        printf("Number %s: %f\n", str.data, return_num);
+//    }
+//    else if(token->type == MyCSS_TOKEN_TYPE_UNICODE_RANGE)
+//    {
+//        size_t start, end;
+//        mycss_convert_unicode_range_to_codepoint(str.data, str.length, &start, &end);
+//        
+//        if(end)
+//            printf("Unicode range: %zu-%zu\n", start, end);
+//        else
+//            printf("Unicode range: %zu\n", start);
+//    }
+    
+//    myhtml_string_destroy(&str, false);
     
     return entry->token;
+}
+
+void mycss_parser_token_all(mycss_entry_t* entry, mycss_token_t* token)
+{
+    while(entry->selectors.state(&entry->selectors, token) == false) {}
+}
+
+void mycss_parser_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token)
+{
+    if(token->type != MyCSS_TOKEN_TYPE_WHITESPACE) {
+        while(entry->selectors.state(&entry->selectors, token) == false) {}
+    }
 }
 
 

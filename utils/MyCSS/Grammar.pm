@@ -7,7 +7,6 @@ use Encode;
 my $GRAMMAR_SUB_INDEX = {
 	'['  => \&GRAMMAR_LEFT_SQUARE_BRACKET,
 	']'  => \&GRAMMAR_RIGHT_SQUARE_BRACKET,
-	'\'' => \&GRAMMAR_BEGIN_APOSTROPHE,
 	'<'  => \&GRAMMAR_BEGIN_LESS_THAN_SIGN,
 	'|'  => \&GRAMMAR_VERTICAL_LINE,
 };
@@ -45,28 +44,148 @@ sub parser {
 		next unless $line;
 		
 		if ($line =~ /^[^'"]+\s*=/) {
-			if(@current) {
-				$result->{ $key } = [@current];
-				push @$index, $key;
-				
-				@current = ();
-			}
-			
 			($key, $value) = split /\s*=\s*/, $line, 2;
-			push @current, split /\s+/, $value;
+			
+			push @$index, $key;
+			
+			$result->{ $key } = [] unless $result->{ $key };
+			$grammar->parse_line($result->{ $key }, $value);
 		}
 		else {
-			push @current, split /\s+/, $line;
+			$grammar->parse_line($result->{ $key }, $line);
 		}
-	}
-	
-	if(@current) {
-		$result->{ $key } = [@current];
-		push @$index, $key;
 	}
 	
 	($result, $index);
 }
+
+sub parse_line {
+	my $grammar = shift;
+	my $current = shift;
+	
+	my @line = split //, $_[0];
+	my $tmp  = 0;
+	my $i    = 0;
+	
+	for ($i = 0; $i < @line; ++$i) {
+		if ($line[$i] eq '<') {
+			my $res;
+			($res, $i) = $grammar->parse_line_entry(\@line, $i);
+			push @$current, join "", @$res;
+			
+			$tmp = $i;
+		}
+		elsif($line[$i] =~ /\s/) {
+			push @$current, join "", @line[($tmp + 1)..($i - 1)] if ($tmp + 1) < $i;
+			$tmp = $i;
+		}
+	}
+	
+	push @$current, join "", @line[($tmp + 1)..($i - 1)] if ($tmp + 1) < $i;
+}
+
+sub parse_line_entry {
+	my ($grammar, $line, $i) = @_;
+	
+	my $is_the_end = 0;
+	my $is = 0;
+	my @res;
+	
+	for ($i = $i; $i < @$line; ++$i) {
+		if ($line->[$i] eq '\\') {
+			$is++;
+			
+			if (($is % 2) == 0) {
+				push @res, $line->[$i];
+			}
+		}
+		elsif($line->[$i] eq '\'') {
+			my $cur_res;
+			($cur_res, $i) = $grammar->parse_line_text($line, ($i + 1), "'");
+			push @res, join "", "'", @$cur_res;
+		}
+		elsif($line->[$i] eq '"') {
+			my $cur_res;
+			($cur_res, $i) = $grammar->parse_line_text($line, ($i + 1), '"');
+			push @res, join "", '"', @$cur_res;
+		}
+		elsif ($line->[$i] eq '>') {
+			push @res, $line->[$i];
+			
+			if (($is % 2) == 0)
+			{
+				while(1) {
+					++$i;
+					
+					if($i < @$line) {
+						if($line->[$i] =~ /\s/) {
+							--$i;
+							last;
+						}
+						
+						push @res, $line->[$i];
+					}
+					else {
+						last;
+					}
+				}
+				
+				last;
+			}
+		}
+		else {
+			$is = 0 if $is;
+			
+			push @res, $line->[$i];
+		}
+	}
+	
+	(\@res, $i);
+}
+
+sub parse_line_text {
+	my ($grammar, $line, $i, $qo) = @_;
+	
+	my $is_the_end = 0;
+	my $is = 0;
+	my @res;
+	
+	for ($i = $i; $i < @$line; $i++) {
+		if ($line->[$i] eq '\\') {
+			$is++;
+			
+			if (($is % 2) == 0) {
+				push @res, $line->[$i];
+			}
+		}
+		elsif ($line->[$i] eq $qo) {
+			push @res, $line->[$i];
+			
+			if (($is % 2) == 0)
+			{
+				last;
+			}
+		}
+		else {
+			$is = 0 if $is;
+			
+			push @res, $line->[$i];
+		}
+	}
+	
+	(\@res, $i);
+}
+
+sub parse_line_other {
+	my ($grammar, $line, $i) = @_;
+	
+	for ($i = $i; $i < @$line; ++$i) {
+		if ($line->[$i] eq '>' && ($i < @$line || $line->[$i] =~ /\s/)) {
+			return $i;
+		}
+	}
+}
+
 
 sub parser_file {
 	my ($grammar, $filename) = @_;
@@ -79,16 +198,16 @@ sub parser_file {
 }
 
 sub GRAMMAR_LEFT_SQUARE_BRACKET { # ([)
-	my ($name, $rules, $idx, $tree, $open, $mod) = @_;
+	my ($name, $rules, $idx, $tree, $open, $mod, $attr) = @_;
 	
-	my $entry = $tree->new({name => $name, mod => "["});
+	my $entry = $tree->new({name => $name, mod => "[", attr => $attr});
 	$open->[-1]->append_child($entry);
 	
 	push @$open, $entry;
 }
 
 sub GRAMMAR_RIGHT_SQUARE_BRACKET { # (])
-	my ($name, $rules, $idx, $tree, $open, $mod) = @_;
+	my ($name, $rules, $idx, $tree, $open, $mod, $attr) = @_;
 	
 	if(@$open <= 1) {
 		warn "RIGHT SQUARE BRACKET: try delete ROOT of tree! WRONG!\n";
@@ -100,22 +219,15 @@ sub GRAMMAR_RIGHT_SQUARE_BRACKET { # (])
 	$entry->mod($mod) if $mod;
 }
 
-sub GRAMMAR_BEGIN_APOSTROPHE { # (')
-	my ($name, $rules, $idx, $tree, $open, $mod) = @_;
-	
-	my $entry = $tree->new({name => $name, mod => $mod});
-	$open->[-1]->append_child($entry);
-}
-
 sub GRAMMAR_BEGIN_LESS_THAN_SIGN { # (<)
-	my ($name, $rules, $idx, $tree, $open, $mod) = @_;
+	my ($name, $rules, $idx, $tree, $open, $mod, $attr) = @_;
 	
-	my $entry = $tree->new({name => $name, mod => $mod});
+	my $entry = $tree->new({name => $name, mod => $mod, attr => $attr});
 	$open->[-1]->append_child($entry);
 }
 
 sub GRAMMAR_VERTICAL_LINE { # (|)
-	my ($name, $rules, $idx, $tree, $open, $mod) = @_;
+	my ($name, $rules, $idx, $tree, $open, $mod, $attr) = @_;
 	
 	my $idx_find = grammar_open_find_in_scope_entry_by_name($open, "|");
 	
@@ -123,7 +235,7 @@ sub GRAMMAR_VERTICAL_LINE { # (|)
 		grammar_open_delete_remove_from_end($open, $open->[$idx_find], 1);
 	}
 	
-	my $entry = $tree->new({name => $name, mod => "|"});
+	my $entry = $tree->new({name => $name, mod => "|", attr => $attr});
 	$open->[-1]->append_child($entry);
 	
 	push @$open, $entry;
@@ -194,15 +306,17 @@ sub create_tree {
 	{
 		my $name = $rules->[$idx];
 		my $mod = parser_delete_postmod($name);
+		my $attr = parser_delete_attr($name);
 		
 		if($name =~ /^(.)/)
 		{
 			unless(exists $GRAMMAR_SUB_INDEX->{$1}) {
 				warn "Not find in index: $name";
+				$idx++;
 				next;
 			}
 			
-			$GRAMMAR_SUB_INDEX->{$1}->($name, $rules, $idx, $root, $open, $mod);
+			$GRAMMAR_SUB_INDEX->{$1}->($name, $rules, $idx, $root, $open, $mod, $attr);
 		}
 		
 		$idx++;
@@ -296,9 +410,11 @@ sub GRAMMAR_PARSE_MOD_SQUARE_BRACKET { # ([)
 	foreach my $i (0..$end_len) {
 		my $end = $ends->[$i];
 		
-		my @tmp = @{shift @$curent_ends};
+		my @tmp = @{$curent_ends->[0]};
 		
-		foreach my $cend (@$curent_ends) {
+		foreach my $t (1..$#$curent_ends) {
+			my $cend = $curent_ends->[$t];
+			
 			my @new_end = (@$end, @$cend);
 			push @$start, \@new_end;
 			
@@ -348,6 +464,21 @@ sub parse_tree {
 	$start;
 }
 
+sub decomposite {
+	my ($grammar, $index_of_list, $keys, $sub_for_bless_entry) = @_;
+	
+	my $save_index = {};
+	my $work = {};
+	
+	$grammar->{sub_for_bless_entry} = $sub_for_bless_entry;
+	
+	foreach my $key (@$keys) {
+		$work->{$key} = $grammar->decomposite_list($index_of_list->{$key}, $index_of_list, $save_index);
+	}
+	
+	$work;
+}
+
 sub decomposite_list {
 	my ($grammar, $list, $index_of_list, $save_index) = @_;
 	
@@ -394,10 +525,48 @@ sub decomposite_list_entry {
 		}
 	}
 	else {
-		push @{$list}, [$entry];
+		unless(ref $grammar->{sub_for_bless_entry}) {
+			push @{$list}, [$entry];
+		}
+		else {
+			push @{$list}, [
+				$grammar->{sub_for_bless_entry}->($grammar, $entry)
+			];
+		}
 	}
 	
 	$list;
+}
+
+sub make_combine_hash_from_decomposing_list {
+	my ($grammar, $list, $sub) = @_;
+	
+	$sub ||= sub{ $_[1]->name };
+	
+	my $hash = {};
+	my $tmp_hash = $hash;
+	
+	foreach my $entries (@$list)
+	{
+		foreach my $entry (@$entries)
+		{
+			my $key = $sub->($grammar, $entry);
+			$tmp_hash->{$key} = {} unless exists $tmp_hash->{$key};
+			
+			my $nr = $tmp_hash->{$key};
+			
+			push @{$nr->{val}}, $entry;
+			
+			$nr->{next} = {} unless exists $nr->{next};
+			
+			$tmp_hash = $nr->{next};
+		}
+		
+		undef $tmp_hash;
+		$tmp_hash = $hash;
+	}
+	
+	$hash;
 }
 
 sub print_list {
@@ -413,12 +582,33 @@ sub print_list {
 }
 
 sub parser_delete_postmod {
-	if($_[0] =~ s/(\>|'|\])([^']+)$/$1/) {
+	if($_[0] =~ s/^(<.*?>)([^>]+)$/$1/) {
+		return $2;
+	}
+	elsif($_[0] =~ s/^(.*?\])([^\]+])$/$1/) {
 		return $2;
 	}
 	
 	"";
 }
+
+sub parser_delete_attr {
+	my $attr = {};
+	
+	if($_[0] =~ s/^(<.*?)\s+([^>]*)>$/$1>/) {
+		my @data = split /\s+/, $2;
+		
+		foreach my $dt (@data) {
+			my ($key, $value) = split /=/, $dt, 2;
+			$attr->{$key} = $value;
+		}
+	}
+	
+	$attr;
+}
+
+
+1;
 
 package MyCSS::Grammar::MyTree;
 
@@ -477,4 +667,4 @@ sub mod {
 	$_[0]->{mod};
 }
 
-
+1;
