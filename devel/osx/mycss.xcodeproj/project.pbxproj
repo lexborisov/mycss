@@ -305,7 +305,7 @@
 		0E8458A51CD9377400246CFD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				HEADER_SEARCH_PATHS = (
 					../../source,
 					../../../myhtml/source,

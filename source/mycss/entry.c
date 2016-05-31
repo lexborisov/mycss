@@ -35,31 +35,30 @@ mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
     
     if(mcstatus)
         return MyCSS_STATUS_ERROR_ENTRY_INCOMING_BUFFER_INIT;
+     
+    // init for selectors entry objects
+    entry->mcasync_selectors_entries = mcobject_async_create();
+    if(entry->mcasync_selectors_entries == NULL)
+        return MyCSS_STATUS_ERROR_SELECTORS_ENTRIES_CREATE;
     
-    // init for token objects
-    entry->mcasync_token = mcobject_async_create();
-    if(entry->mcasync_token == NULL)
-        return MyCSS_STATUS_ERROR_MEMORY_ALLOCATION;
-    
-    mcstatus = mcobject_async_init(entry->mcasync_token, 32, 1024, sizeof(mycss_token_t));
+    mcstatus = mcobject_async_init(entry->mcasync_selectors_entries, 32, 1024, sizeof(mycss_selectors_entry_t));
     if(mcstatus != MCOBJECT_ASYNC_STATUS_OK)
-        return MyCSS_STATUS_ERROR_ENTRY_TOKEN_INCOMING_BUFFER_INIT;
+        return MyCSS_STATUS_ERROR_SELECTORS_ENTRIES_INIT;
     
-    // add new node for a tokens object
-    entry->token_id = mcobject_async_node_add(entry->mcasync_token, &mcstatus);
+    // for strings
+    entry->mcasync_string = mcobject_async_create();
+    if(entry->mcasync_string == NULL)
+        return MyCSS_STATUS_ERROR_STRING_CREATE;
     
-    if(mcstatus)
-        return MyCSS_STATUS_ERROR_ENTRY_TOKEN_NODE_ADD;
+    mcstatus = mcobject_async_init(entry->mcasync_string, 32, 1024, sizeof(myhtml_string_t));
+    if(mcstatus != MCOBJECT_ASYNC_STATUS_OK)
+        return MyCSS_STATUS_ERROR_STRING_INIT;
     
+    // other init
     entry->mchar = mchar_async_create(128, (4096 * 5));
     entry->mchar_node_id = mchar_async_node_add(entry->mchar);
     
     entry->token_ready_callback = mycss_parser_token_ready_callback_function;
-    
-    /* init modules */
-    mycss_status_t status = mycss_selectors_init(entry, &entry->selectors);
-    if(status != MyCSS_STATUS_OK)
-        return status;
     
     return MyCSS_STATUS_OK;
 }
@@ -67,10 +66,10 @@ mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
 mycss_status_t mycss_entry_clean_all(mycss_entry_t* entry)
 {
     mcobject_async_node_clean(entry->mycss->async_incoming_buffer, entry->incoming_buffer_id);
-    mcobject_async_clean(entry->mcasync_token);
     mchar_async_node_clean(entry->mchar, entry->mchar_node_id);
     
     entry->token                = NULL;
+    entry->result               = NULL;
     entry->state                = MyCSS_TOKENIZER_STATE_DATA;
     entry->state_back           = MyCSS_TOKENIZER_STATE_DATA;
     //entry->token_ready_callback = mycss_parser_token_ready_callback_function;
@@ -80,11 +79,10 @@ mycss_status_t mycss_entry_clean_all(mycss_entry_t* entry)
     entry->help_counter         = 0;
     entry->type                 = MyCSS_ENTRY_TYPE_CLEAN;
     
-    mcobject_async_status_t mcstatus;
-    entry->token_id = mcobject_async_node_add(entry->mcasync_token, &mcstatus);
-    
-    if(mcstatus)
-        return MyCSS_STATUS_ERROR_ENTRY_TOKEN_NODE_ADD;
+    if(entry->token) {
+        free(entry->token);
+        entry->token = NULL;
+    }
     
     return MyCSS_STATUS_OK;
 }
@@ -96,8 +94,13 @@ mycss_entry_t * mycss_entry_destroy(mycss_entry_t* entry, bool self_destroy)
     
     mcobject_async_node_delete(entry->mycss->async_incoming_buffer, entry->incoming_buffer_id);
     
-    entry->mcasync_token = mcobject_async_destroy(entry->mcasync_token, 1);
-    entry->mchar         = mchar_async_destroy(entry->mchar, 1);
+    entry->mchar                     = mchar_async_destroy(entry->mchar, 1);
+    entry->mcasync_selectors_entries = mcobject_async_destroy(entry->mcasync_selectors_entries, 1);
+    
+    if(entry->token) {
+        free(entry->token);
+        entry->token = NULL;
+    }
     
     if(self_destroy) {
         myfree(entry);
@@ -129,4 +132,10 @@ myhtml_incoming_buffer_t * mycss_entry_incoming_buffer_first(mycss_entry_t* entr
 {
     return entry->first_buffer;
 }
+
+mycss_result_t * mycss_entry_result(mycss_entry_t* entry)
+{
+    return entry->result;
+}
+
 

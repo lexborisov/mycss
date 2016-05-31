@@ -49,6 +49,8 @@ struct mycss_token {
     mycss_token_type_t type;
     size_t begin;
     size_t length;
+    
+    const char* data;
 };
 
 mycss_status_t mycss_tokenizer_state_init(mycss_t* mycss);

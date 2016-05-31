@@ -1,44 +1,21 @@
 <selector-list> = <complex-selector-list>
-
 <complex-selector-list> = <complex-selector>#
-
 <compound-selector-list> = <compound-selector>#
-
 <simple-selector-list> = <simple-selector>#
-
 <relative-selector-list> = <relative-selector>#
-
 <complex-selector> = <compound-selector> [ <combinator>? <compound-selector> ]*
-
 <relative-selector> = <combinator>? <complex-selector>
-
-<combinator> = <'>'> <'>' ws> | <'>' ws> | <'+' ws> | <'~' ws> | <column-token ws>
-
+<combinator> = <delim-token value=">"> <delim-token value=">" ws func=selector_combinator> | <delim-token value=">" ws func=selector_combinator> | <delim-token value="+" ws func=selector_combinator> | <delim-token value="~" ws func=selector_combinator> | <column-token ws func=selector_combinator>
 <compound-selector> = <simple-selector>+
 
-<simple-selector> = <type-selector> | <id-selector> |
-                    <class-selector> | <attribute-selector> |
-                    <pseudo-class-selector> | <pseudo-element-selector>
-
-<type-selector> = <wq-name> | <ns-prefix> <'*'>
-
-<ns-prefix> = <ident-token>? <'|'>
-
-<wq-name> = <ns-prefix>? <ident-token ws>
-
-<id-selector> = <hash-token ws>
-
-<class-selector> = <'.'> <ident-token ws>
-
-<attribute-selector> = <[-token ws> <wq-name> <]-token ws> |
-                       <[-token ws> <wq-name> <attr-matcher> [ <string-token ws> | <ident-token ws> ] <attr-modifier>? <]-token ws>
-
-<attr-matcher> = <'=' ws> | <include-match-token ws> | <dash-match-token ws> | <prefix-match-token ws> |
-                 <suffix-match-token ws> | <substring-match-token ws>
-
-<attr-modifier> = <'i' ws>
-
-<pseudo-class-selector> = <':'> <ident-token ws> |
-                          <':'> <function-token> <any-value> <)-token ws>
-
-<pseudo-element-selector> = <':'> <pseudo-class-selector>
+<simple-selector> = <type-selector> | <id-selector> | <class-selector> | <attribute-selector> | <pseudo-class-selector> | <pseudo-element-selector>
+<type-selector> = <wq-name> | <ns-prefix>? <delim-token value="*" func=selector_key>
+<ns-prefix> = <ident-token func=selector_ident>? <delim-token value="|" func=selector_namespace>
+<wq-name> = <ns-prefix>? <ident-token ws func=selector_key>
+<id-selector> = <hash-token ws func=selector_id>
+<class-selector> = <delim-token value="."> <ident-token ws func=selector_class>
+<attribute-selector> = <[-token ws> <wq-name> <]-token ws func=selector_end> | <[-token ws> <wq-name> <attr-matcher func=selector_matcher> [ <string-token ws func=selector_value> | <ident-token ws func=selector_value> ] <attr-modifier func=selector_modifier>? <]-token ws func=selector_end>
+<attr-matcher> = <delim-token value="=" ws> | <include-match-token ws> | <dash-match-token ws> | <prefix-match-token ws> | <suffix-match-token ws> | <substring-match-token ws>
+<attr-modifier> = <delim-token value="i" ws>
+<pseudo-class-selector> = <colon-token> <ident-token ws func=selector_pseudo_class> | <colon-token> <function-token func=selector_function> <)-token ws func=selector_function_end>
+<pseudo-element-selector> = <colon-token> <pseudo-class-selector>

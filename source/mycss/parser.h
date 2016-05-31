@@ -31,14 +31,14 @@ extern "C" {
 #include "mycss/entry.h"
 #include "mycss/mystring.h"
 #include "mycss/convert.h"
+#include "mycss/selectors/state.h"
+#include "mycss/namespace/state.h"
+#include "mycss/rules/state.h"
 #include "myhtml/incoming.h"
 
 mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry, mycss_token_t* token);
 
-void mycss_parser_state(mycss_selectors_t* selectors, mycss_token_t* token);
-
-void mycss_parser_token_all(mycss_entry_t* entry, mycss_token_t* token);
-void mycss_parser_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token);
 
 
 #ifdef __cplusplus

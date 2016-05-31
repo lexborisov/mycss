@@ -169,209 +169,122 @@ sub temp_check_parser_state {
 }
 
 sub new {
-	bless {grammar => $_[1], token => $_[2]}, $_[0];
+	my $class = shift;
+	my %args = (
+		grammar             => undef,
+		token               => undef,
+		func_list           => {},
+		func_def            => \&MyCSS::CFunction::Creater::default_def,
+		func_else           => \&MyCSS::CFunction::Creater::default_else,
+		func_last           => \&MyCSS::CFunction::Creater::default_last,
+		func_whitespace     => \&MyCSS::CFunction::Creater::default_whitespace,
+		func_not_whitespace => \&MyCSS::CFunction::Creater::default_not_whitespace,
+		func_prefix         => "",
+		func_delim_before   => \&MyCSS::CFunction::Creater::default_delim_before,
+		func_delim_after    => \&MyCSS::CFunction::Creater::default_delim_after,
+		func_string_before  => \&MyCSS::CFunction::Creater::default_string_before,
+		func_string_after   => \&MyCSS::CFunction::Creater::default_string_after,
+		data_string         => "str.data",
+		data_delim          => "*token->data",
+		func_proto_args     => "mycss_entry_t* entry, mycss_token_t* token",
+		@_
+	);
+	
+	bless \%args, $class;
 }
 
 sub create {
-	my ($cfunc, $func_name, $hash, $prefix) = @_;
-	
-	$prefix = $prefix . $cfunc->create_func_name_by_name($func_name, "");
+	my ($cfunc, $func_name, $hash) = @_;
 	
 	my $result = {names => [], data => []};
-	$cfunc->_create($prefix, $hash, "$prefix\_", $result);
+	$cfunc->_create($hash, $func_name, "", $result);
 	
 	$result;
 }
 
 sub _create {
-	my ($cfunc, $func_name, $hash, $prefix, $result) = @_;
+	my ($cfunc, $hash, $name, $prefix, $result) = @_;
 	
-	my @res;
-	my @inside;
-	my @other;
-	my @delim;
+	my $by_types = {};
+	$name = $cfunc->create_func_name($name, "", 0);
 	
 	foreach my $key (sort {$a cmp $b} keys %$hash)
 	{
 		my $type = $cfunc->token_type_by_name($key);
 		
-		if ($type == MyCSS_TOKEN_TYPE_DELIM) {
-			push @delim, $key;
+		foreach my $val (@{$hash->{$key}->{val}}) {
+			if (exists $val->entry->{attr}->{value}) {
+				push @{$by_types->{$type}->{by}}, $val;
+			}
+			else {
+				push @{$by_types->{$type}->{all}}, $val;
+			}
+		}
+	}
+	
+	my $count = scalar keys %$hash;
+	my $is_switcher = $count > 2 ? 1 : 0;
+	my $creater = "MyCSS::CFunction::Creater";
+	my $next_prefix = $prefix ? "$prefix\_$name" : $name;
+	my $func_name = $cfunc->create_func_name($name, $prefix, 1);
+	
+	my @data;
+	my $pos = 0;
+	foreach my $type_num (sort {$a cmp $b} keys %$by_types) {
+		my $type_name = MyCSS::Token->num_to_type($type_num);
+		
+		if (my $sub = $creater->can($type_name)) {
+			push @data, @{$sub->($creater, $cfunc, $func_name, $next_prefix, $type_num,
+				   $by_types->{ $type_num }->{all},
+				   $by_types->{ $type_num }->{by},
+				   $is_switcher,
+				   $pos)};
 		}
 		else {
-			push @other, $key;
-		}
-	}
-	
-	my $res_delim = $cfunc->_create_condition_delim($func_name, \@delim, $hash, $prefix, \@res);
-	my $res_oyher = $cfunc->_create_condition_other($func_name, \@other, $hash, $prefix, \@res);
-	
-	push @inside, temp_function_state($func_name), "{";
-	push @inside, "\t". "switch(token->type)", "\t{";
-	
-	if(@$res_delim) {
-		push @inside, @$res_delim;
-	}
-	
-	push @inside, @$res_oyher;
-	$cfunc->_create_condition_default(\@inside, 2);
-	
-	push @inside, "\t}";
-	push @inside, "", "\t". temp_function_return_state();
-	push @inside, "}\n";
-	
-	push @{$result->{data}}, \@inside;
-	push @{$result->{names}}, \@res;
-	
-	foreach my $entry (@res) {
-		$cfunc->_create($entry->[0], $entry->[1], $entry->[0]."_", $result);
-	}
-}
-
-sub _create_condition_else {
-	my ($cfunc, $inside, $tab_count) = @_;
-	
-	my $kw = join("\t", map {""} 1..$tab_count) || "";
-	
-	push @$inside, "\t$kw"."else {";
-	push @$inside, "\t\t$kw". temp_set_state("mycss_selectors_state_simple_selector");
-	push @$inside, "", "\t\t$kw". join("\n\t\t$kw", temp_check_parser_state("mycss_parser_token_skip_whitespace"));
-	push @$inside, "", "\t\t$kw"."return false;";
-	push @$inside, "\t$kw}";
-}
-
-sub _create_condition_default {
-	my ($cfunc, $inside, $tab_count) = @_;
-	
-	my $kw = join("\t", map {""} 1..$tab_count) || "";
-	
-	push @$inside, "\t$kw"."default: {";
-	push @$inside, "\t\t$kw". temp_set_state("mycss_selectors_state_simple_selector");
-	push @$inside, "", "\t\t$kw". join("\n\t\t$kw", temp_check_parser_state("mycss_parser_token_skip_whitespace"));
-	push @$inside, "", "\t\t$kw"."return false;";
-	push @$inside, "\t$kw}";
-}
-
-sub _create_condition_delim {
-	my ($cfunc, $func_name, $keys, $hash, $prefix, $res) = @_;
-	return [] unless @$keys;
-	
-	my @inside = ("\t\t". $cfunc->create_condition_type( $keys->[0], temp_token_type_state() ). " {");
-	
-	push @inside, "\t\t\t". join("\n\t\t\t", temp_get_data_state()). "\n";
-	
-	my $inside_len = @inside;
-	
-	foreach my $key (@$keys) {
-		my $fn = $cfunc->create_func_name_by_name($key, $prefix);
-		
-		push @inside, "\t\t\t". (@inside > $inside_len ? "else ": "").
-		$cfunc->create_condition( $key, temp_delim_data_state() ) ." {";
-		
-		if(%{$hash->{$key}->{next}})
-		{
-			push @$res, [$fn, $hash->{$key}->{next}, $key];
-			push @inside, "\t\t\t\t". temp_set_state($fn);
-			push @inside, "", "\t\t\t\t". _create_check_whitespace($key, $hash, 3);
-		}
-		else {
-			push @inside,
-			"\t\t\t\t". "printf(\"$fn\\n\");  /* End of selector */",
-			"\t\t\t\t". temp_set_state("mycss_selectors_state_simple_selector"), "",
-			"\t\t\t\t". join("\n\t\t\t\t", temp_check_parser_state("mycss_parser_token_skip_whitespace"));
+			push @data, @{$creater->default($cfunc, $func_name, $next_prefix, $type_num,
+							  $by_types->{ $type_num }->{all},
+							  $by_types->{ $type_num }->{by},
+							  $is_switcher,
+							  $pos)};
 		}
 		
-		push @inside, "\t\t\t}";
+		$pos++;
 	}
 	
-	$cfunc->_create_condition_else(\@inside, 3);
-	
-	push @inside, "", "\t\t\t". "break;";
-	push @inside, "\t\t}";
-	
-	\@inside;
-}
-
-sub _create_condition_other {
-	my ($cfunc, $func_name, $keys, $hash, $prefix, $res) = @_;
-	return [] unless @$keys;
+	push @data, @{$creater->default_type_else($cfunc, $func_name, $by_types, $is_switcher)};
 	
 	my @inside;
+	my $tabs = "";
 	
-	foreach my $key (@$keys) {
-		my $fn = $cfunc->create_func_name_by_name($key, $prefix);
+	push @inside, $creater->function_prototype($cfunc, $func_name), "{";
+	if ($is_switcher) {
+		push @inside, "\t"."switch (token->type) {";
+		$tabs = "\t";
+	}
+	push @inside, map {"\t$tabs$_"} @data;
+	if ($is_switcher) {
+		push @inside, "\t"."}";
+	}
+	push @inside, "\t", "\t"."return true;";
+	push @inside, "}", "";
+	
+	push @{$result->{data}}, \@inside;
+	push @{$result->{names}}, $creater->function_prototype($cfunc, $func_name).";";
+	
+	foreach my $key (sort {$a cmp $b} keys %$hash) {
+		my $hash_nm = $hash->{$key};
 		
-		push @inside, "\t\t". $cfunc->create_condition_type( $key, temp_token_type_state() ) ." {";
-		
-		if(%{$hash->{$key}->{next}})
-		{
-			push @$res, [$fn, $hash->{$key}->{next}, $key];
-			push @inside, "\t\t\t". temp_set_state($fn);
-			push @inside, "", "\t\t\t". _create_check_whitespace($key, $hash, 2);
+		if(keys %{$hash_nm->{next}}) {
+			$cfunc->_create($hash_nm->{next}, $key, $next_prefix, $result);
 		}
-		else {
-			push @inside, "\t\t\t". "printf(\"$fn\\n\");  /* End of selector */",
-			"\t\t\t". temp_set_state("mycss_selectors_state_simple_selector"), "",
-			"\t\t\t". join("\n\t\t", temp_check_parser_state("mycss_parser_token_skip_whitespace"));
-		}
-		
-		push @inside, "", "\t\t\t". "break;";
-		push @inside, "\t\t}";
 	}
-	
-	\@inside;
-}
-
-sub _create_check_whitespace {
-	my ($key, $hash, $tab_count) = @_;
-	my $val = $hash->{$key}->{val};
-	
-	my $kw = join "\t", map {""} 0..$tab_count;
-	
-	if (exists $val->[0]->{entry}->{attr}->{ws}) {
-		return join("\n$kw", temp_check_parser_state("mycss_parser_token_skip_whitespace"));
-	}
-	
-	join("\n$kw", temp_check_parser_state("mycss_parser_token_all"));
-}
-
-sub create_condition {
-	my ($self, $name, $data) = @_;
-	
-	my $type = $self->token_type_by_name($name);
-	
-	my $text = "";
-	
-	if($type == MyCSS_TOKEN_TYPE_DELIM()) {
-		my $clean_name = MyCSS::Token->entry_clean_name($name);
-		$text = qq~if($data == '$clean_name')~;
-	}
-	else {
-		$text = "if($data == ". $self->token_type_name_by_name($name) .")";
-	}
-	
-	$text;
-}
-
-#sub create_condition_type {
-#	my ($self, $name, $data) = @_;
-#	
-#	"if($data == ". $self->token_type_name_by_name($name) .")";
-#}
-
-sub create_condition_type {
-	my ($self, $name) = @_;
-	
-	"case ". $self->token_type_name_by_name($name) .":";
 }
 
 sub print_result_names {
 	my ($cfunc, $result) = @_;
 	
-	foreach my $entries (@{$result->{names}}) {
-		foreach my $entry (@$entries) {
-			print temp_function_state($entry->[0]), ";\n";
-		}
+	foreach my $proto (@{$result->{names}}) {
+		print $proto, "\n";
 	}
 }
 
@@ -383,8 +296,12 @@ sub print_result_data {
 	}
 }
 
-sub token { $_[0]->{token} }
-sub grammar { $_[0]->{token} }
+sub token     { $_[0]->{token} }
+sub grammar   { $_[0]->{grammar} }
+sub func_list { $_[0]->{func_list} }
+sub func_def  { $_[0]->{func_def} }
+sub func_else { $_[0]->{func_else} }
+sub func_last { $_[0]->{func_last} }
 
 sub token_type_by_name {
 	my $type_name = MyCSS::Token->convert_name_to_type_like($_[1]) || MyCSS::Token->get_type_undef();
@@ -396,31 +313,411 @@ sub token_type_name_by_name {
 	$type_name;
 }
 
-sub create_func_name_by_name {
-	my ($cfunc, $name, $prefix) = @_;
+sub create_func_name {
+	my ($cfunc, $name, $prefix, $full) = @_;
 	
-	my $func_name;
-	my $type = $cfunc->token_type_by_name($name);
+	my $func_name = "";
 	
-	my $c_name = MyCSS::Token->entry_clean_name($name);
-	
-	if($type == MyCSS_TOKEN_TYPE_DELIM) {
-		$func_name = lc($MyCSS_CFUNCTION_CHAR_NAME->{ ord(lc($c_name)) });
-	}
-	else {
-		$func_name = lc($c_name);
+	if (defined $name && $name ne "") {
+		my $c_name = MyCSS::Token->entry_clean_name($name);
+		my ($only_name, $value) = split / /, $c_name, 2;
 		
-		$func_name =~ s/\-token$//;
-		
-		if (length($func_name) == 1 && exists $MyCSS_CFUNCTION_CHAR_NAME->{ ord(lc($func_name)) }) {
-			$func_name = lc($MyCSS_CFUNCTION_CHAR_NAME->{ ord(lc($func_name)) });
+		if(defined $value) {
+			if(length($value) == 1 && exists $MyCSS_CFUNCTION_CHAR_NAME->{ ord(lc($value)) }) {
+				$func_name = lc($MyCSS_CFUNCTION_CHAR_NAME->{ ord(lc($value)) });
+			}
+			else {
+				$func_name = lc($value);
+			}
+		}
+		else {
+			$func_name = lc($c_name);
+			
+			$func_name =~ s/\-token$//;
+			
+			if (length($func_name) == 1 && exists $MyCSS_CFUNCTION_CHAR_NAME->{ ord(lc($func_name)) }) {
+				$func_name = lc($MyCSS_CFUNCTION_CHAR_NAME->{ ord(lc($func_name)) });
+			}
 		}
 	}
 	
 	$func_name =~ s/\s+|\||-/_/g;
 	$func_name =~ s/_+/_/g;
 	
-	$prefix.$func_name;
+	my $end_name = ($prefix ? $prefix."_" : "") .$func_name;
+	
+	if ($full) {
+		return $cfunc->{"func_prefix"}. $end_name;
+	}
+	
+	$end_name;
+}
+
+
+package MyCSS::CFunction::Creater;
+
+sub default_type_begin {
+	my ($self, $cfunc, $type, $all, $by, $is_switcher, $pos) = @_;
+	
+	my @data;
+	my $type_name = $cfunc->token->num_to_type($type);
+	
+	if ($is_switcher) {
+		push @data, $self->cont_case_token_type($type_name);
+	}
+	else {
+		push @data, $self->cont_if_token_type($type_name, $pos);
+	}
+	
+	\@data;
+}
+
+sub default_type_end {
+	my ($self, $cfunc, $type, $all, $by, $is_switcher, $pos) = @_;
+	
+	my @data;
+	my $type_name = $cfunc->token->num_to_type($type);
+	
+	if ($is_switcher) {
+		push @data, $self->cont_case_token_type_end($type_name);
+	}
+	else {
+		push @data, $self->cont_if_token_type_end($type_name);
+	}
+	
+	\@data;
+}
+
+sub get_func {
+	my ($self, $val) = @_;
+	return $val->entry->{attr}->{func} if $val->entry->{attr}->{func};
+	
+	my $parents = $val->{parents};
+	my $i = @$parents;
+	
+	while ($i) {
+		$i--;
+		
+		my $entry = $parents->[$i];
+		return $entry->{attr}->{func} if $entry->{attr}->{func};
+	}
+	
+	undef;
+}
+
+sub get_func_last {
+	my ($self, $val) = @_;
+	return $val->entry->{attr}->{func_last} if $val->entry->{attr}->{func_last};
+	
+	my $parents = $val->{parents};
+	my $i = @$parents;
+	
+	while ($i) {
+		$i--;
+		
+		my $entry = $parents->[$i];
+		return $entry->{attr}->{func_last} if $entry->{attr}->{func_last};
+	}
+	
+	undef;
+}
+
+sub default_function {
+	my ($self, $cfunc, $prefix, $type, $val, $all, $by, $is_switcher) = @_;
+	
+	my @data;
+	my $attr = $val->entry->{attr};
+	my $function_name = $cfunc->create_func_name($val->entry->name, "$prefix", 1);
+	
+	my $func = $self->get_func($val);
+	if ($func) {
+		push @data, @{$cfunc->func_list->{$func}->($self, $cfunc, $function_name, $type, $val->entry->{is_last})};
+	}
+	
+	if ($val->entry->{is_last})
+	{
+		my $func_last = $self->get_func_last($val);
+		
+		if ($func_last) {
+			push @data, @{$cfunc->func_list->{ $func_last }->($self, $cfunc, $function_name, $type, $val->entry->{is_next})};
+		}
+		else {
+			push @data, @{$cfunc->func_last->($self, $cfunc, $function_name, $type, $val->entry->{is_next})};
+		}
+	}
+	
+	if ($val->entry->{is_next}) {
+		push @data, @{$cfunc->func_def->($self, $cfunc, $function_name, $type, $val->entry->{is_last})};
+	}
+	
+	\@data;
+}
+
+sub default_function_for_all {
+	my ($self, $cfunc, $prefix, $type, $all, $by) = @_;
+	
+	my @data;
+	my (@next, @empty);
+	
+	my $type_name = $cfunc->token->num_to_type($type);
+	my $function_name = $cfunc->create_func_name($cfunc->token->type_to_name($type_name), "$prefix", 1);
+	
+	foreach my $val (@$all) {
+		if ($val->entry->{is_next}) {
+			push @next, $val;
+		}
+		
+		if($val->entry->{is_last}) {
+			push @empty, $val;
+		}
+	}
+	
+	my @vals;
+	foreach (@next, @empty) {
+		my $func = $self->get_func($_);
+		push @vals, $func if $func;
+	}
+	
+	if (@vals) {
+		push @data, @{$cfunc->func_list->{ $vals[0] }->($self, $cfunc, $function_name, $type, scalar(@empty))};
+	}
+	
+	if (@empty) {
+		my @vals;
+		foreach (@empty) {
+			my $func = $self->get_func_last($_);
+			push @vals, $func if $func;
+		}
+		
+		if (@vals) {
+			push @data, @{$cfunc->func_list->{ $vals[0] }->($self, $cfunc, $function_name, $type, scalar(@next))};
+		}
+		else {
+			push @data, @{$cfunc->func_last->($self, $cfunc, $function_name, $type, scalar(@next))};
+		}
+		
+		push @data, "" if @next;
+	}
+	
+	if (@next) {
+		push @data, @{$cfunc->func_def->($self, $cfunc, $function_name, $type, scalar(@empty))};
+	}
+	
+	\@data;
+}
+
+sub default_type_values {
+	my ($self, $cfunc, $prefix, $type, $all, $by, $is_switcher) = @_;
+	
+	my @data;
+	my $npos = 0;
+	foreach my $npos (0..$#$by) {
+		my $val = $by->[$npos];
+		my $attr = $val->entry->{attr};
+		
+		if($val->{type_name} eq "MyCSS_TOKEN_TYPE_DELIM") {
+			push @data, map {"\t$_"} $self->cont_if_char($attr->{value}, $npos);
+		}
+		elsif(length($attr->{value}) == 0) {
+			die "Length Value is 0\n";
+		}
+		else {
+			push @data, map {"\t$_"} $self->cont_if_string($attr->{value}, $npos);
+		}
+		
+		push @data, map {"\t\t$_"} @{$self->default_function($cfunc, $prefix, $type, $val, $all, $by, $is_switcher)};
+		
+		if (exists $val->entry->{attr}->{ws} && $val->entry->{is_next}) {
+			my @after = @{$cfunc->{func_whitespace}->($self, $cfunc)};
+			push @data, "\t\t", (map {"\t\t$_"} @after) if @after;
+		}
+		elsif($val->entry->{is_next}) {
+			my @after = @{$cfunc->{func_not_whitespace}->($self, $cfunc)};
+			push @data, "\t\t", (map {"\t\t$_"} @after) if @after;
+		}
+		
+		push @data, "\t}";
+	}
+	
+	\@data;
+}
+
+sub default_type_else {
+	my ($self, $cfunc, $fname, $by_types, $is_switcher) = @_;
+	
+	my @data;
+	
+	if ($is_switcher) {
+		push @data, $self->cont_case_token_type_default();
+	}
+	else {
+		push @data, $self->cont_if_token_type_default();
+	}
+	
+	push @data, map {"\t$_"} @{$cfunc->func_else->($self, $cfunc, $fname)};
+	
+	if ($is_switcher) {
+		push @data, $self->cont_case_token_type_default_end();
+	}
+	else {
+		push @data, $self->cont_if_token_type_default_end();
+	}
+	
+	\@data;
+}
+
+sub default {
+	my ($self, $cfunc, $function_name, $prefix, $type, $all, $by, $is_switcher, $pos) = @_;
+	
+	my @data = @{$self->default_type_begin($cfunc, $type, $all, $by, $is_switcher, $pos)};
+	
+	my $data_len = @data;
+	push @data, map {"\t$_"} @{$self->default_function_for_all($cfunc, $prefix, $type, $all, $by)};
+	
+	if($by && @$by)
+	{
+		my @delim  = grep {$_->{type_name} eq "MyCSS_TOKEN_TYPE_DELIM"} @$by;
+		my @string = grep {$_->{type_name} eq "MyCSS_TOKEN_TYPE_STRING" ||
+						   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_AT_KEYWORD" ||
+						   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_IDENT"
+						   } @$by;
+		
+		if (@delim) {
+			push @data, map {"\t$_"} @{$cfunc->{func_delim_before}->($self, $cfunc, scalar(@string))};
+		}
+		if (@string) {
+			push @data, map {"\t$_"} @{$cfunc->{func_string_before}->($self, $cfunc, scalar(@delim))};
+		}
+		
+		push @data, "\t" if $data_len < @data;
+		push @data, @{$self->default_type_values($cfunc, $prefix, $type, $all, $by, $is_switcher, $pos)};
+		
+		my @not_vals = grep {not exists $_->entry->{attr}->{value}} @$by;
+		if (@not_vals) {
+			my @val_func = grep {exists $_->entry->{attr}->{func}} @not_vals;
+			
+			if (@val_func > 1) {
+				die "To many call functions from one type in current level\n";
+			}
+			
+			if (@val_func) {
+				push @data, map {"\t\t$_"} @{$self->default_function($cfunc, $prefix, $type, $val_func[0], $all, $by, $is_switcher)};
+			}
+			else {
+				push @data, map {"\t\t$_"} @{$self->default_function($cfunc, $prefix, $type, $not_vals[0], $all, $by, $is_switcher)};
+			}
+		}
+		else {
+			push @data, map {"\t$_"} @{$self->default_type_else($cfunc, $function_name, undef, 0)};
+		}
+		
+		if (@delim) {
+			my @delim_after = @{$cfunc->{func_delim_after}->($self, $cfunc, scalar(@string))};
+			push @data, map {"\t$_"} @delim_after if @delim_after;
+		}
+		if (@string) {
+			my @string_after = @{$cfunc->{func_string_after}->($self, $cfunc, scalar(@delim))};
+			push @data, "\t", (map {"\t$_"} @string_after) if @string_after;
+		}
+	}
+	
+	my @ws = grep {exists $_->entry->{attr}->{ws}} @$all;
+	my @is_next = grep {$_->entry->{is_next}} @$all;
+	
+	if (@ws && @is_next) {
+		my @after = @{$cfunc->{func_whitespace}->($self, $cfunc)};
+		push @data, "\t", (map {"\t$_"} @after) if @after;
+	}
+	elsif(@is_next) {
+		my @after = @{$cfunc->{func_not_whitespace}->($self, $cfunc)};
+		push @data, "\t", (map {"\t$_"} @after) if @after;
+	}
+	
+	push @data, @{$self->default_type_end($cfunc, $type, $all, $by, $is_switcher, $pos)};
+	
+	\@data;
+}
+
+sub cont_case_token_type_default_end {
+	"\tbreak;",
+	"}";
+}
+
+sub cont_if_token_type_default_end {
+	"}";
+}
+
+sub cont_case_token_type_default {
+	"default: {";
+}
+
+sub cont_if_token_type_default {
+	"else {";
+}
+
+sub cont_case_token_type_end {
+	"\tbreak;",
+	"}";
+}
+
+sub cont_if_token_type_end {
+	"}";
+}
+
+sub cont_case_token_type {
+	"case $_[1]: {";
+}
+
+sub cont_if_token_type {
+	($_[2] ? "else " : "") . "if(token->type == $_[1]) {";
+}
+
+sub cont_if_char {
+	($_[2] ? "else " : "") . "if(*token->data == '$_[1]') {";
+}
+
+sub cont_if_string {
+	($_[2] ? "else " : "") . "if(myhtml_strncasecmp(str.data, \"$_[1]\", ". length($_[1]) .") == 0) {";
+}
+
+sub default_else {
+	[""];
+}
+
+sub default_def {
+	[""];
+}
+
+sub default_last {
+	[""];
+}
+
+sub default_string_before {
+	[];
+}
+
+sub default_string_after {
+	[];
+}
+
+sub default_delim_before {
+	[];
+}
+
+sub default_delim_after {
+	[];
+}
+
+sub default_whitespace {
+	[];
+}
+
+sub default_not_whitespace {
+	[];
+}
+
+sub function_prototype {
+	"bool $_[2](". $_[1]->{func_proto_args} .")";
 }
 
 1;

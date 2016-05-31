@@ -29,13 +29,14 @@ extern "C" {
 #include "mycss/myosi.h"
 #include "mycss/mycss.h"
 #include "mycss/parser.h"
-#include "mycss/selectors.h"
+#include "mycss/result.h"
 #include "myhtml/utils/mcobject_async.h"
 #include "myhtml/utils/mchar_async.h"
 
 struct mycss_entry {
     mycss_t* mycss;
     mycss_token_t* token;
+    mycss_result_t* result; // corrent result
     
     mchar_async_t* mchar;
     size_t mchar_node_id;
@@ -47,10 +48,8 @@ struct mycss_entry {
     mycss_tokenizer_state_t state_back;
     mycss_token_ready_callback_f token_ready_callback;
     
-    struct mycss_selectors selectors; /* mycss_selectors_t */
-    
-    mcobject_async_t *mcasync_token;
-    size_t token_id;
+    mcobject_async_t* mcasync_selectors_entries;
+    mcobject_async_t* mcasync_string;
     
     myhtml_incoming_buffer_t* first_buffer;
     myhtml_incoming_buffer_t* current_buffer;
@@ -71,6 +70,7 @@ size_t mycss_entry_token_count(mycss_entry_t* entry);
 myhtml_incoming_buffer_t * mycss_entry_incoming_buffer_current(mycss_entry_t* entry);
 myhtml_incoming_buffer_t * mycss_entry_incoming_buffer_first(mycss_entry_t* entry);
 
+mycss_result_t * mycss_entry_result(mycss_entry_t* entry);
 
 #ifdef __cplusplus
 } /* extern "C" */

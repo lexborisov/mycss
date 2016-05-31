@@ -18,34 +18,23 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#ifndef MyHTML_MyCSS_SELECTORS_H
-#define MyHTML_MyCSS_SELECTORS_H
+#ifndef MyHTML_MyCSS_MEDIA_INIT_H
+#define MyHTML_MyCSS_MEDIA_INIT_H
 #pragma once
 
+#include "mycss/media/myosi.h"
+
 #ifdef __cplusplus
-//extern "C" {
+extern "C" {
 #endif
 
-#include "mycss/myosi.h"
-
-struct mycss_selectors {
-    // refs
-    mycss_entry_t* entry;
-    
-    mycss_selectors_state_f state;
-    mycss_parser_token_f parser;
-};
-
-#include "mycss/parser.h"
-#include "mycss/selectors/state.h"
-
-mycss_selectors_t * mycss_selectors_create(void);
-mycss_status_t mycss_selectors_init(mycss_entry_t* entry, mycss_selectors_t* selectors);
-mycss_status_t mycss_selectors_clean_all(mycss_selectors_t* selectors);
-mycss_selectors_t * mycss_selectors_destroy(mycss_selectors_t* selectors, bool self_destroy);
+mycss_media_t * mycss_media_create(void);
+mycss_status_t  mycss_media_init(mycss_entry_t* entry, mycss_media_t* media);
+mycss_status_t  mycss_media_clean_all(mycss_media_t* media);
+mycss_media_t * mycss_media_destroy(mycss_media_t* media, bool self_destroy);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* MyHTML_MyCSS_SELECTORS_H */
+#endif /* MyHTML_MyCSS_MEDIA_INIT_H */

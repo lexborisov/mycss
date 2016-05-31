@@ -4,6 +4,8 @@ use utf8;
 use strict;
 use Encode;
 
+use MyCSS::Token;
+
 my $GRAMMAR_SUB_INDEX = {
 	'['  => \&GRAMMAR_LEFT_SQUARE_BRACKET,
 	']'  => \&GRAMMAR_RIGHT_SQUARE_BRACKET,
@@ -305,15 +307,22 @@ sub create_tree {
 	while($idx < @$rules)
 	{
 		my $name = $rules->[$idx];
+		my $original_name = $name;
 		my $mod = parser_delete_postmod($name);
 		my $attr = parser_delete_attr($name);
 		
 		if($name =~ /^(.)/)
 		{
 			unless(exists $GRAMMAR_SUB_INDEX->{$1}) {
-				warn "Not find in index: $name";
+				warn "Not find in index: $name ($original_name)";
 				$idx++;
 				next;
+			}
+			
+			if (exists $attr->{value}) {
+				$name =~ s/^<//;
+				$name =~ s/>$//;
+				$name = "<$name ". $attr->{value} .">";
 			}
 			
 			$GRAMMAR_SUB_INDEX->{$1}->($name, $rules, $idx, $root, $open, $mod, $attr);
@@ -469,34 +478,35 @@ sub decomposite {
 	
 	my $save_index = {};
 	my $work = {};
+	my $parents = [];
 	
 	$grammar->{sub_for_bless_entry} = $sub_for_bless_entry;
 	
 	foreach my $key (@$keys) {
-		$work->{$key} = $grammar->decomposite_list($index_of_list->{$key}, $index_of_list, $save_index);
+		$work->{$key} = $grammar->decomposite_list($index_of_list->{$key}, $index_of_list, $save_index, $parents);
 	}
 	
 	$work;
 }
 
 sub decomposite_list {
-	my ($grammar, $list, $index_of_list, $save_index) = @_;
+	my ($grammar, $list, $index_of_list, $save_index, $parents) = @_;
 	
 	my $work = [];
 	foreach my $entries (@$list) {
-		push @{$work}, @{$grammar->decomposite_list_entries($entries, $index_of_list, $save_index)};
+		push @{$work}, @{$grammar->decomposite_list_entries($entries, $index_of_list, $save_index, $parents)};
 	}
 	
 	$work;
 }
 
 sub decomposite_list_entries {
-	my ($grammar, $entries, $index_of_list, $save_index) = @_;
+	my ($grammar, $entries, $index_of_list, $save_index, $parents) = @_;
 	my $work = [[]];
 	
 	foreach my $entry (@$entries)
 	{
-		my $res = $grammar->decomposite_list_entry($entry, $index_of_list, $save_index);
+		my $res = $grammar->decomposite_list_entry($entry, $index_of_list, $save_index, $parents);
 		my $new_work;
 		
 		foreach my $res_entries (@$res) {
@@ -512,25 +522,27 @@ sub decomposite_list_entries {
 }
 
 sub decomposite_list_entry {
-	my ($grammar, $entry, $index_of_list, $save_index) = @_;
+	my ($grammar, $entry, $index_of_list, $save_index, $parents) = @_;
 	
 	my $list = [];
 	if ($index_of_list->{ $entry->name }) {
+		push @$parents, $entry;
+		
 		if ($save_index->{$entry->name}) {
 			$list = $save_index->{$entry->name};
 		}
 		else {
-			$list = $grammar->decomposite_list($index_of_list->{ $entry->name }, $index_of_list, $save_index);
+			$list = $grammar->decomposite_list($index_of_list->{ $entry->name }, $index_of_list, $save_index, $parents);
 			$save_index->{$entry->name} = $list;
 		}
 	}
 	else {
 		unless(ref $grammar->{sub_for_bless_entry}) {
-			push @{$list}, [$entry];
+			push @{$list}, [ MyCSS::Token->new($entry, $parents) ];
 		}
 		else {
 			push @{$list}, [
-				$grammar->{sub_for_bless_entry}->($grammar, $entry)
+				$grammar->{sub_for_bless_entry}->($grammar, $entry, $parents)
 			];
 		}
 	}
@@ -548,14 +560,44 @@ sub make_combine_hash_from_decomposing_list {
 	
 	foreach my $entries (@$list)
 	{
-		foreach my $entry (@$entries)
+		foreach my $i (0..$#$entries)
 		{
+			my $entry = $entries->[$i]->clone( $entries->[$i]->entry->clone );
 			my $key = $sub->($grammar, $entry);
+			
 			$tmp_hash->{$key} = {} unless exists $tmp_hash->{$key};
 			
 			my $nr = $tmp_hash->{$key};
 			
-			push @{$nr->{val}}, $entry;
+			if($i == $#$entries) {
+				$entry->{entry}->{is_last} = 1;
+				$entry->{entry}->{is_next} = 0;
+			}
+			else {
+				$entry->{entry}->{is_last} = 0;
+				$entry->{entry}->{is_next} = 1;
+			}
+			
+			my @exists = grep {$_->{entry}->{name} eq $entry->{entry}->{name}} @{$nr->{val}};
+			
+			if (@exists) {
+				my $current_attr = $exists[0]->{entry}->{attr};
+				my $attr = $entry->{entry}->{attr};
+				
+				foreach my $key (keys %$attr) {
+					next if $current_attr->{$key};
+					$current_attr->{$key} = $attr->{$key};
+				}
+				
+				$exists[0]->{entry}->{is_next} = 1
+					if $entry->{entry}->{is_next} && !$exists[0]->{entry}->{is_next};
+				
+				$exists[0]->{entry}->{is_last} = 1
+					if $entry->{entry}->{is_last} && !$exists[0]->{entry}->{is_last};
+			}
+			else {
+				push @{$nr->{val}},  $entry;
+			}
 			
 			$nr->{next} = {} unless exists $nr->{next};
 			
@@ -575,7 +617,7 @@ sub print_list {
 	foreach my $res (@$result) {
 		print "\t" for 1..$tab_count || 0;
 		
-		print join " -> ", map {$_->{name}} @$res;
+		print join " -> ", map {ref $_ ne "HASH" ? $_->entry->{name} : $_->{name}} @$res;
 		
 		print "\n";
 	}
@@ -595,11 +637,15 @@ sub parser_delete_postmod {
 sub parser_delete_attr {
 	my $attr = {};
 	
-	if($_[0] =~ s/^(<.*?)\s+([^>]*)>$/$1>/) {
+	if($_[0] =~ s/^(<.*?)\s+(.*?)>$/$1>/) {
 		my @data = split /\s+/, $2;
 		
 		foreach my $dt (@data) {
 			my ($key, $value) = split /=/, $dt, 2;
+			if(defined $value && $value =~ s/^"//) {
+				$value =~ s/"$//;
+			}
+			
 			$attr->{$key} = $value;
 		}
 	}
@@ -665,6 +711,11 @@ sub name {
 sub mod {
 	$_[0]->{mod} = $_[1] if @_ > 1;
 	$_[0]->{mod};
+}
+
+sub clone {
+	my %new_hash = %{$_[0]};
+	$_[0]->new(\%new_hash);
 }
 
 1;

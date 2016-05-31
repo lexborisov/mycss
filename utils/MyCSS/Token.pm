@@ -6,11 +6,47 @@ use Encode;
 
 use base qw( Exporter );
 
-my ($TOKEN_TYPE_UNDEF, $TOKEN_INDEX_ENUM, $TOKEN_INDEX_ENUM_REV);
+my ($TOKEN_TYPE_UNDEF, $TOKEN_INDEX_ENUM, $TOKEN_INDEX_ENUM_REV, $TOKEN_INDEX, $TOKEN_INDEX_REV);
 use vars qw($AUTOLOAD $VERSION $ABSTRACT @ISA @EXPORT);
 
 BEGIN {
 	$TOKEN_TYPE_UNDEF = "MyCSS_TOKEN_TYPE_UNDEF";
+	
+	$TOKEN_INDEX = {
+		'<ident-token>'           => "MyCSS_TOKEN_TYPE_IDENT",
+		'<function-token>'        => "MyCSS_TOKEN_TYPE_FUNCTION",
+		'<at-keyword-token>'      => "MyCSS_TOKEN_TYPE_AT_KEYWORD",
+		'<hash-token>'            => "MyCSS_TOKEN_TYPE_HASH",
+		'<string-token>'          => "MyCSS_TOKEN_TYPE_STRING",
+		'<bad-string-token>'      => "MyCSS_TOKEN_TYPE_BAD_STRING",
+		'<url-token>'             => "MyCSS_TOKEN_TYPE_URL",
+		'<bad-url-token>'         => "MyCSS_TOKEN_TYPE_BAD_URL",
+		'<delim-token>'           => "MyCSS_TOKEN_TYPE_DELIM",
+		'<number-token>'          => "MyCSS_TOKEN_TYPE_NUMBER",
+		'<percentage-token>'      => "MyCSS_TOKEN_TYPE_PERCENTAGE",
+		'<dimension-token>'       => "MyCSS_TOKEN_TYPE_DIMENSION",
+		'<unicode-range-token>'   => "MyCSS_TOKEN_TYPE_UNICODE_RANGE",
+		'<include-match-token>'   => "MyCSS_TOKEN_TYPE_INCLUDE_MATCH",
+		'<dash-match-token>'      => "MyCSS_TOKEN_TYPE_DASH_MATCH",
+		'<prefix-match-token>'    => "MyCSS_TOKEN_TYPE_PREFIX_MATCH",
+		'<suffix-match-token>'    => "MyCSS_TOKEN_TYPE_SUFFIX_MATCH",
+		'<substring-match-token>' => "MyCSS_TOKEN_TYPE_SUBSTRING_MATCH",
+		'<column-token>'          => "MyCSS_TOKEN_TYPE_COLUMN",
+		'<whitespace-token>'      => "MyCSS_TOKEN_TYPE_WHITESPACE",
+		'<CDO-token>'             => "MyCSS_TOKEN_TYPE_CDO",
+		'<CDC-token>'             => "MyCSS_TOKEN_TYPE_CDC",
+		'<colon-token>'           => "MyCSS_TOKEN_TYPE_COLON",
+		'<semicolon-token>'       => "MyCSS_TOKEN_TYPE_SEMICOLON",
+		'<comma-token>'           => "MyCSS_TOKEN_TYPE_COMMA",
+		'<[-token>'               => "MyCSS_TOKEN_TYPE_LEFT_SQUARE_BRACKET",
+		'<]-token>'               => "MyCSS_TOKEN_TYPE_RIGHT_SQUARE_BRACKET",
+		'<(-token>'               => "MyCSS_TOKEN_TYPE_LEFT_PARENTHESIS",
+		'<)-token>'               => "MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS",
+		'<{-token>'               => "MyCSS_TOKEN_TYPE_LEFT_CURLY_BRACKET",
+		'<}-token>'               => "MyCSS_TOKEN_TYPE_RIGHT_CURLY_BRACKET",
+		# and comment
+		'<comment-token>'         => "MyCSS_TOKEN_TYPE_COMMENT"
+	};
 	
 	$TOKEN_INDEX_ENUM = {
 		MyCSS_TOKEN_TYPE_UNDEF                => 0x0000,
@@ -52,6 +88,9 @@ BEGIN {
 	$TOKEN_INDEX_ENUM_REV = {};
 	$TOKEN_INDEX_ENUM_REV->{ $TOKEN_INDEX_ENUM->{$_} } = $_ foreach keys %$TOKEN_INDEX_ENUM;
 	
+	$TOKEN_INDEX_REV = {};
+	$TOKEN_INDEX_REV->{ $TOKEN_INDEX->{$_} } = $_ foreach keys %$TOKEN_INDEX;
+	
 	@ISA = qw(Exporter);
 	
 	{
@@ -64,44 +103,8 @@ BEGIN {
 	}
 }
 
-my $TOKEN_INDEX = {
-	'<ident-token>'           => "MyCSS_TOKEN_TYPE_IDENT",
-	'<function-token>'        => "MyCSS_TOKEN_TYPE_FUNCTION",
-	'<at-keyword-token>'      => "MyCSS_TOKEN_TYPE_AT_KEYWORD",
-	'<hash-token>'            => "MyCSS_TOKEN_TYPE_HASH",
-	'<string-token>'          => "MyCSS_TOKEN_TYPE_STRING",
-	'<bad-string-token>'      => "MyCSS_TOKEN_TYPE_BAD_STRING",
-	'<url-token>'             => "MyCSS_TOKEN_TYPE_URL",
-	'<bad-url-token>'         => "MyCSS_TOKEN_TYPE_BAD_URL",
-	'<delim-token>'           => "MyCSS_TOKEN_TYPE_DELIM",
-	'<number-token>'          => "MyCSS_TOKEN_TYPE_NUMBER",
-	'<percentage-token>'      => "MyCSS_TOKEN_TYPE_PERCENTAGE",
-	'<dimension-token>'       => "MyCSS_TOKEN_TYPE_DIMENSION",
-	'<unicode-range-token>'   => "MyCSS_TOKEN_TYPE_UNICODE_RANGE",
-	'<include-match-token>'   => "MyCSS_TOKEN_TYPE_INCLUDE_MATCH",
-	'<dash-match-token>'      => "MyCSS_TOKEN_TYPE_DASH_MATCH",
-	'<prefix-match-token>'    => "MyCSS_TOKEN_TYPE_PREFIX_MATCH",
-	'<suffix-match-token>'    => "MyCSS_TOKEN_TYPE_SUFFIX_MATCH",
-	'<substring-match-token>' => "MyCSS_TOKEN_TYPE_SUBSTRING_MATCH",
-	'<column-token>'          => "MyCSS_TOKEN_TYPE_COLUMN",
-	'<whitespace-token>'      => "MyCSS_TOKEN_TYPE_WHITESPACE",
-	'<CDO-token>'             => "MyCSS_TOKEN_TYPE_CDO",
-	'<CDC-token>'             => "MyCSS_TOKEN_TYPE_CDC",
-	'<colon-token>'           => "MyCSS_TOKEN_TYPE_COLON",
-	'<semicolon-token>'       => "MyCSS_TOKEN_TYPE_SEMICOLON",
-	'<comma-token>'           => "MyCSS_TOKEN_TYPE_COMMA",
-	'<[-token>'               => "MyCSS_TOKEN_TYPE_LEFT_SQUARE_BRACKET",
-	'<]-token>'               => "MyCSS_TOKEN_TYPE_RIGHT_SQUARE_BRACKET",
-	'<(-token>'               => "MyCSS_TOKEN_TYPE_LEFT_PARENTHESIS",
-	'<)-token>'               => "MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS",
-	'<{-token>'               => "MyCSS_TOKEN_TYPE_LEFT_CURLY_BRACKET",
-	'<}-token>'               => "MyCSS_TOKEN_TYPE_RIGHT_CURLY_BRACKET",
-	# and comment
-	'<comment-token>'         => "MyCSS_TOKEN_TYPE_COMMENT"
-};
-
 sub new {
-	my $token = bless {entry => $_[1], type => 0, type_name => ""}, $_[0];
+	my $token = bless {entry => $_[1], parents => $_[2], type => 0, type_name => ""}, $_[0];
 	
 	if(ref $token->entry) {
 		my $type = $token->convert_name_to_type_like();
@@ -109,6 +112,11 @@ sub new {
 	}
 	
 	$token;
+}
+
+sub clone {
+	my $class = ref $_[0];
+	$class->new($_[1] || $_[0]->{entry},  $_[2] || $_[0]->{parents});
 }
 
 sub entry {
@@ -130,6 +138,8 @@ sub convert_name_to_type_like {
 	my ($self, $name) = @_;
 	
 	$name ||= $self->entry->name;
+	
+	$name =~ s/ .*?>$/>/;
 	
 	foreach my $key (keys %$TOKEN_INDEX) {
 		if ($name =~ /^\s*\Q$key\E\s*$/i) {
@@ -172,6 +182,11 @@ sub num_to_type {
 	$TOKEN_INDEX_ENUM_REV->{$_[0]};
 }
 
+sub type_to_name {
+	return $TOKEN_INDEX_REV->{$_[1]} if @_ > 1;
+	$TOKEN_INDEX_REV->{$_[0]};
+}
+
 sub get_type_undef { $TOKEN_TYPE_UNDEF }
 
 sub type {
@@ -194,6 +209,13 @@ sub entry_clean_name {
 	$name;
 }
 
+sub join_clean_name {
+	my $name = $_[1];
+	$name ||= $_[0]->entry_clean_name();
+	
+	$name =~ s/\s+//g;
+	$name;
+}
 
 1;
 

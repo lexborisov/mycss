@@ -7,7 +7,7 @@ By default MyCSS depends of one [MyHTML] library.
 ## Now
 
 ```text
-The current version is 0.0.2 - this is a alpha version
+The current version is 0.0.8 - this is a alpha version
 Release will have major version number 1
 ```
 
@@ -146,6 +146,8 @@ See the [LICENSE] file.
 
 
 [CSS3 specification]: https://www.w3.org/TR/css-syntax-3/
+[high]: https://github.com/lexborisov/mycss/blob/master/include/mycss/api.h
+[low]: https://github.com/lexborisov/mycss/tree/master/include/mycss
 [MyHTML]: https://github.com/lexborisov/myhtml
 [parsing by chunks]: https://github.com/lexborisov/mycss/blob/master/examples/tokenizer_chunk_high_level.c
 [encoding.spec.whatwg.org]: https://encoding.spec.whatwg.org/

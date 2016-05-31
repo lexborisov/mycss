@@ -66,10 +66,24 @@ mycss_status_t mycss_parse(mycss_entry_t* entry, myhtml_encoding_t encoding, con
         mycss_entry_clean_all(entry);
     }
     
+    /* create and init new Result */
+    entry->result = mycss_result_create();
+    
+    if(entry->result == NULL)
+        return MyCSS_STATUS_ERROR_RESULT_CREATE;
+    
+    mycss_status_t status = mycss_result_init(entry, entry->result);
+    
+    if(status != MyCSS_STATUS_OK) {
+        entry->result = mycss_result_destroy(entry->result, true);
+        return status;
+    }
+    
+    /* and parse css */
     mycss_encoding_set(entry, encoding);
     
-    mycss_status_t status = mycss_tokenizer_chunk(entry, css, css_size);
-    if(status)
+    status = mycss_tokenizer_chunk(entry, css, css_size);
+    if(status != MyCSS_STATUS_OK)
         return status;
     
     status = mycss_tokenizer_end(entry);
@@ -81,6 +95,21 @@ mycss_status_t mycss_parse_chunk(mycss_entry_t* entry, const char* css, size_t c
 {
     if(entry->type & MyCSS_ENTRY_TYPE_END) {
         mycss_entry_clean_all(entry);
+    }
+    
+    /* create and init new Result */
+    if(entry->result == NULL) {
+        entry->result = mycss_result_create();
+        
+        if(entry->result == NULL)
+            return MyCSS_STATUS_ERROR_RESULT_CREATE;
+        
+        mycss_status_t status = mycss_result_init(entry, entry->result);
+        
+        if(status != MyCSS_STATUS_OK) {
+            entry->result = mycss_result_destroy(entry->result, true);
+            return status;
+        }
     }
     
     return mycss_tokenizer_chunk(entry, css, css_size);

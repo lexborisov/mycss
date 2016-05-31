@@ -18,38 +18,23 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#include "mycss/selectors.h"
+#ifndef MyHTML_MyCSS_MEDIA_INIT_H
+#define MyHTML_MyCSS_MEDIA_INIT_H
+#pragma once
 
-mycss_selectors_t * mycss_selectors_create(void)
-{
-    return (mycss_selectors_t*)mycalloc(1, sizeof(mycss_selectors_t));
-}
+#include "mycss/media/myosi.h"
 
-mycss_status_t mycss_selectors_init(mycss_entry_t* entry, mycss_selectors_t* selectors)
-{
-    selectors->entry = entry;
-    
-    selectors->state = mycss_selectors_state_simple_selector;
-    selectors->parser = mycss_parser_token_all;
-    
-    return MyCSS_STATUS_OK;
-}
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-mycss_status_t mycss_selectors_clean_all(mycss_selectors_t* selectors)
-{
-    return MyCSS_STATUS_OK;
-}
+mycss_media_t * mycss_media_create(void);
+mycss_status_t  mycss_media_init(mycss_entry_t* entry, mycss_media_t* media);
+mycss_status_t  mycss_media_clean_all(mycss_media_t* media);
+mycss_media_t * mycss_media_destroy(mycss_media_t* media, bool self_destroy);
 
-mycss_selectors_t * mycss_selectors_destroy(mycss_selectors_t* selectors, bool self_destroy)
-{
-    if(selectors == NULL)
-        return NULL;
-    
-    if(self_destroy) {
-        myfree(selectors);
-        return NULL;
-    }
-    
-    return selectors;
-}
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
+#endif /* MyHTML_MyCSS_MEDIA_INIT_H */

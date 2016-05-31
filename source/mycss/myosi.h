@@ -42,15 +42,25 @@ extern "C" {
  not occupied           060000..
 */
 enum mycss_status {
-    MyCSS_STATUS_OK                                     = 0x0000,
-    MyCSS_STATUS_ERROR_MEMORY_ALLOCATION                = 0x1001,
-    MyCSS_STATUS_ERROR_TOKENIZER_STATE_ALLOCATION       = 0x1020,
-    MyCSS_STATUS_ERROR_TOKENIZER_INCOMING_BUFFER_ADD    = 0x1021,
-    MyCSS_STATUS_ERROR_TOKENIZER_TOKEN_ALLOCATION       = 0x1022,
-    MyCSS_STATUS_ERROR_INCOMING_BUFFER_INIT             = 0x1030,
-    MyCSS_STATUS_ERROR_ENTRY_INCOMING_BUFFER_INIT       = 0x1040,
-    MyCSS_STATUS_ERROR_ENTRY_TOKEN_INCOMING_BUFFER_INIT = 0x1041,
-    MyCSS_STATUS_ERROR_ENTRY_TOKEN_NODE_ADD             = 0x1042
+    MyCSS_STATUS_OK                                     = 0x000000,
+    MyCSS_STATUS_ERROR_MEMORY_ALLOCATION                = 0x010001,
+    MyCSS_STATUS_ERROR_TOKENIZER_STATE_ALLOCATION       = 0x010020,
+    MyCSS_STATUS_ERROR_TOKENIZER_INCOMING_BUFFER_ADD    = 0x010021,
+    MyCSS_STATUS_ERROR_TOKENIZER_TOKEN_ALLOCATION       = 0x010022,
+    MyCSS_STATUS_ERROR_INCOMING_BUFFER_INIT             = 0x010030,
+    MyCSS_STATUS_ERROR_ENTRY_INCOMING_BUFFER_INIT       = 0x010040,
+    MyCSS_STATUS_ERROR_ENTRY_TOKEN_INCOMING_BUFFER_INIT = 0x010041,
+    MyCSS_STATUS_ERROR_ENTRY_TOKEN_NODE_ADD             = 0x010042,
+    MyCSS_STATUS_ERROR_SELECTORS_CREATE                 = 0x010100,
+    MyCSS_STATUS_ERROR_SELECTORS_ENTRIES_CREATE         = 0x010101,
+    MyCSS_STATUS_ERROR_SELECTORS_ENTRIES_INIT           = 0x010102,
+    MyCSS_STATUS_ERROR_SELECTORS_ENTRIES_NODE_ADD       = 0x010103,
+    MyCSS_STATUS_ERROR_NAMESPACE_CREATE                 = 0x010200,
+    MyCSS_STATUS_ERROR_RESULT_CREATE                    = 0x010300,
+    MyCSS_STATUS_ERROR_RULES_CREATE                     = 0x010400,
+    MyCSS_STATUS_ERROR_STRING_CREATE                    = 0x010501,
+    MyCSS_STATUS_ERROR_STRING_INIT                      = 0x010502,
+    MyCSS_STATUS_ERROR_STRING_NODE_INIT                 = 0x010503
 }
 typedef mycss_status_t;
 
@@ -222,8 +232,8 @@ enum mycss_token_type {
 }
 typedef mycss_token_type_t;
 
-// selectors
-typedef struct mycss_selectors mycss_selectors_t;
+// result
+typedef struct mycss_result mycss_result_t;
 
 // mystring
 typedef struct mycss_string_escaped_res mycss_string_escaped_res_t;
@@ -232,8 +242,7 @@ typedef struct mycss_string_res mycss_string_res_t;
 typedef size_t (*mycss_tokenizer_state_f)(mycss_entry_t* entry, mycss_token_t* token, const char* css, size_t css_offset, size_t css_size);
 typedef mycss_token_t * (*mycss_token_ready_callback_f)(mycss_entry_t* entry, mycss_token_t* token);
 typedef size_t (*mycss_string_process_state_f)(myhtml_string_t* str, const char* data, size_t length, size_t size, mycss_string_res_t *out_res);
-typedef bool (*mycss_selectors_state_f)(mycss_selectors_t* selectors, mycss_token_t* token);
-typedef void (*mycss_parser_token_f)(mycss_entry_t* entry, mycss_token_t* token);
+typedef bool (*mycss_parser_token_f)(mycss_result_t* result, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

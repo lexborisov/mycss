@@ -37,7 +37,7 @@
 
 #define MyCSS_VERSION_MAJOR 0
 #define MyCSS_VERSION_MINOR 0
-#define MyCSS_VERSION_PATCH 2
+#define MyCSS_VERSION_PATCH 8
 
 #include "myhtml/api.h"
 

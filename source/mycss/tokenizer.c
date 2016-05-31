@@ -38,11 +38,12 @@ mycss_status_t mycss_tokenizer_chunk(mycss_entry_t* entry, const char* css, size
         entry->first_buffer = entry->current_buffer;
     
     if(entry->token == NULL) {
-        mcobject_async_status_t mcstatus;
-        entry->token = mcobject_async_malloc(entry->mcasync_token, entry->token_id, &mcstatus);
+        entry->token = (mycss_token_t*)mycalloc(1, sizeof(mycss_token_t));
         
-        if(mcstatus)
+        if(entry->token == NULL)
             return MyCSS_STATUS_ERROR_TOKENIZER_TOKEN_ALLOCATION;
+        
+        entry->result->selectors->selector = mcobject_async_malloc(entry->mcasync_selectors_entries, entry->result->selectors_entries_id, NULL);
     }
     
     return mycss_tokenizer_process(entry, css, css_length);
@@ -146,6 +147,7 @@ size_t mycss_tokenizer_token_strcasecmp(mycss_entry_t* entry, mycss_token_t* tok
 size_t mycss_tokenizer_state_data(mycss_entry_t* entry, mycss_token_t* token, const char* css, size_t css_offset, size_t css_size)
 {
     token->begin = entry->current_buffer->offset + css_offset;
+    token->data  = &css[css_offset];
     
     entry->state = mycss_begin_chars_state_map[ (const unsigned char)css[css_offset] ];
     
@@ -901,7 +903,8 @@ size_t mycss_tokenizer_state_commercial_at_rsolidus(mycss_entry_t* entry, mycss_
 
 size_t mycss_tokenizer_state_commercial_at_back(mycss_entry_t* entry, mycss_token_t* token, const char* css, size_t css_offset, size_t css_size)
 {
-    token->type = MyCSS_TOKEN_TYPE_AT_KEYWORD;
+    token->type   = MyCSS_TOKEN_TYPE_AT_KEYWORD;
+    token->begin += 1;
     
     MyCSS_TOKEN_READY_CALLBACK_FUNCTION(entry, token);
     

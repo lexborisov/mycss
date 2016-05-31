@@ -27,8 +27,6 @@ extern "C" {
 #endif
 
 #include "mycss/myosi.h"
-#include "mycss/mycss.h"
-#include "mycss/entry.h"
 #include "myhtml/incoming.h"
 #include "myhtml/mystring.h"
 
