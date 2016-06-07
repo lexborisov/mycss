@@ -42,8 +42,6 @@ mycss_status_t mycss_tokenizer_chunk(mycss_entry_t* entry, const char* css, size
         
         if(entry->token == NULL)
             return MyCSS_STATUS_ERROR_TOKENIZER_TOKEN_ALLOCATION;
-        
-        entry->result->selectors->selector = mcobject_async_malloc(entry->mcasync_selectors_entries, entry->result->selectors_entries_id, NULL);
     }
     
     return mycss_tokenizer_process(entry, css, css_length);
@@ -215,6 +213,7 @@ size_t mycss_tokenizer_state_number_sign(mycss_entry_t* entry, mycss_token_t* to
     
     if(mycss_chars_name_code_point_map[ u_css[css_offset] ] != 0xff)
     {
+        token->begin++;
         css_offset++;
         
         entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_NAME;
@@ -239,6 +238,7 @@ size_t mycss_tokenizer_state_number_sign(mycss_entry_t* entry, mycss_token_t* to
             entry->state = MyCSS_TOKENIZER_STATE_DATA;
         }
         else {
+            token->begin++;
             css_offset++;
             
             entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_NAME;
@@ -282,7 +282,9 @@ size_t mycss_tokenizer_state_number_sign_name_rsolidus(mycss_entry_t* entry, myc
     entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_NAME;
     entry->state_back = MyCSS_TOKENIZER_STATE_NUMBER_SIGN_NAME_BACK;
     
+    token->begin++;
     css_offset++;
+    
     return css_offset;
 }
 

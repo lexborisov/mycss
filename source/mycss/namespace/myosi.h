@@ -28,20 +28,30 @@ extern "C" {
 
 #include "mycss/myosi.h"
 #include "myhtml/mystring.h"
-
+#include "myhtml/utils/mctree.h"
+    
 typedef struct mycss_namespace mycss_namespace_t;
 typedef struct mycss_namespace_entry mycss_namespace_entry_t;
 
-typedef bool (*mycss_namespace_state_f)(mycss_result_t* result, mycss_namespace_t* ns, mycss_token_t* token);
+typedef bool (*mycss_namespace_state_f)(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
 
 
 struct mycss_namespace {
+    mycss_namespace_entry_t* ns_entry; /* current namespace entry */
+    
     mycss_namespace_state_f state;
+    mctree_t* name_tree; // tree for namespace names
+    
+    size_t ns_id_counter;
 };
 
 struct mycss_namespace_entry {
-    myhtml_string_t name;
-    myhtml_string_t url;
+    myhtml_string_t* name;
+    myhtml_string_t* url;
+    size_t ns_id;
+    
+    mycss_namespace_entry_t* next;
+    mycss_namespace_entry_t* prev;
 };
 
 

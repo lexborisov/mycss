@@ -21,11 +21,14 @@ clean:
 	rm -rf lib/*
 
 clone: create
+	find include -name "*.h" -exec rm -f {} \;
 	cp $(SRCDIR)/*.h include/mycss
 	cp $(SRCDIR)/selectors/*.h include/mycss/selectors
 	cp $(SRCDIR)/namespace/*.h include/mycss/namespace
 	cp $(SRCDIR)/rules/*.h include/mycss/rules
 	cp $(SRCDIR)/media/*.h include/mycss/media
+	find include -name "*.h" -exec sed -i '.bak' -E 's/^[ \t]*#[ \t]*include[ \t]*"([^"]+)"/#include <\1>/g' {} \;
+	find include -name "*.h.bak" -exec rm -f {} \;
 
 create:
 	mkdir -p bin lib include/mycss

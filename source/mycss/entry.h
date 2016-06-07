@@ -50,6 +50,7 @@ struct mycss_entry {
     
     mcobject_async_t* mcasync_selectors_entries;
     mcobject_async_t* mcasync_string;
+    mcobject_async_t* mcasync_namespace_entries;
     
     myhtml_incoming_buffer_t* first_buffer;
     myhtml_incoming_buffer_t* current_buffer;

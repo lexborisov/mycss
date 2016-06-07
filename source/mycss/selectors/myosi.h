@@ -37,12 +37,13 @@ typedef struct mycss_selectors_entry mycss_selectors_entry_t;
 typedef bool (*mycss_selectors_state_f)(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 
 enum mycss_selectors_match {
-    MyCSS_SELECTORS_MATCH_EQUAL     = 0x00, //  =
-    MyCSS_SELECTORS_MATCH_INCLUDE   = 0x01, // ~=
-    MyCSS_SELECTORS_MATCH_DASH      = 0x02, // |=
-    MyCSS_SELECTORS_MATCH_PREFIX    = 0x03, // ^=
-    MyCSS_SELECTORS_MATCH_SUFFIX    = 0x04, // $=
-    MyCSS_SELECTORS_MATCH_SUBSTRING = 0x05  // *=
+    MyCSS_SELECTORS_MATCH_EQUAL      = 0x00, //  =
+    MyCSS_SELECTORS_MATCH_INCLUDE    = 0x01, // ~=
+    MyCSS_SELECTORS_MATCH_DASH       = 0x02, // |=
+    MyCSS_SELECTORS_MATCH_PREFIX     = 0x03, // ^=
+    MyCSS_SELECTORS_MATCH_SUFFIX     = 0x04, // $=
+    MyCSS_SELECTORS_MATCH_SUBSTRING  = 0x05, // *=
+    MyCSS_SELECTORS_MATCH_LAST_ENTRY = 0x06
 }
 typedef mycss_selectors_match_t;
 
@@ -53,6 +54,7 @@ enum mycss_selectors_combinator {
     MyCSS_SELECTORS_COMBINATOR_NEXT_SIBLING      = 0x03, // '+'
     MyCSS_SELECTORS_COMBINATOR_FOLLOWING_SIBLING = 0x04, // '~'
     MyCSS_SELECTORS_COMBINATOR_COLUMN            = 0x05, // '||'
+    MyCSS_SELECTORS_COMBINATOR_LAST_ENTRY        = 0x06
 }
 typedef mycss_selectors_combinator_t;
 
@@ -62,27 +64,39 @@ enum mycss_selectors_mod {
 }
 typedef mycss_selectors_mod_t;
 
+enum mycss_selectors_flags {
+    MyCSS_SELECTORS_FLAGS_UNDEF         = 0x00,
+    MyCSS_SELECTORS_FLAGS_SELECTOR_GOOD = 0x01,
+    MyCSS_SELECTORS_FLAGS_SELECTOR_BAD  = 0x02
+}
+typedef mycss_selectors_flags_t;
+    
 enum mycss_selectors_type {
-    MyCSS_SELECTORS_TYPE_ELEMENT           = 0x00, // tag name <div> = div in css
-    MyCSS_SELECTORS_TYPE_ID                = 0x01, // #hash
-    MyCSS_SELECTORS_TYPE_CLASS             = 0x02, // .class
-    MyCSS_SELECTORS_TYPE_ATTRIBUTE         = 0x03, // [key=val], in html <div key="val">
-    MyCSS_SELECTORS_TYPE_FUNCTION          = 0x04, // :function(...) or ::function(...)
-    MyCSS_SELECTORS_TYPE_PSEUDO_CLASS      = 0x05, // :pseudo or ::pseudo
+    MyCSS_SELECTORS_TYPE_UNDEF             = 0x00, // tag name <div> = div in css
+    MyCSS_SELECTORS_TYPE_ELEMENT           = 0x01, // tag name <div> = div in css
+    MyCSS_SELECTORS_TYPE_ID                = 0x02, // #hash
+    MyCSS_SELECTORS_TYPE_CLASS             = 0x03, // .class
+    MyCSS_SELECTORS_TYPE_ATTRIBUTE         = 0x04, // [key=val], in html <div key="val">
+    MyCSS_SELECTORS_TYPE_FUNCTION          = 0x05, // :function(...) or ::function(...)
+    MyCSS_SELECTORS_TYPE_PSEUDO_CLASS      = 0x06, // :pseudo or ::pseudo
+    MyCSS_SELECTORS_TYPE_LAST_ENTRY        = 0x07
 }
 typedef mycss_selectors_type_t;
 
 struct mycss_selectors {
     // refs
     mycss_entry_t* entry;
+    mycss_result_t* result;
     mycss_selectors_entry_t* selector; // current selectors entry
     mycss_selectors_state_f state;
 };
 
 struct mycss_selectors_entry {
     mycss_selectors_type_t type;
+    mycss_selectors_flags_t flags;
     
-    myhtml_string_t* ns;
+    size_t ns; /* namespace */
+    
     myhtml_string_t* key;
     myhtml_string_t* value;
     

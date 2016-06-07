@@ -55,6 +55,11 @@ mycss_status_t mycss_result_init(mycss_entry_t* entry, mycss_result_t* result)
     if(status != MyCSS_STATUS_OK)
         return status;
     
+    // init for namespace entries objects
+    result->namespace_entries_id = mcobject_async_node_add(entry->mcasync_namespace_entries, &mcstatus);
+    if(mcstatus)
+        return MyCSS_STATUS_ERROR_NAMESPACE_NODE_ADD;
+    
     /* Rules */
     result->rules = mycss_rules_create();
     if(result->rules == NULL)
@@ -127,5 +132,31 @@ mycss_result_t * mycss_result_destroy(mycss_result_t* result, bool self_destroy)
     
     return result;
 }
+
+size_t mycss_result_detect_namespace_by_name(mycss_result_t* result, const char* ns, size_t length)
+{
+    if(result->ns == NULL)
+        return 0;
+    
+    myhtml_namespace_t ns_id;
+    bool find_it = myhtml_namespace_id_by_name(ns, length, &ns_id);
+    
+    if(find_it)
+        return (size_t)ns_id;
+    
+    if(result->ns->name_tree == NULL)
+        return 0;
+    
+    mctree_index_t idx = mctree_search_lowercase(result->ns->name_tree, ns, length);
+    
+    if(idx == 0)
+        return 0;
+    
+    mycss_namespace_entry_t *entry = (mycss_namespace_entry_t*)(result->ns->name_tree->nodes[ idx ].value);
+    return entry->ns_id;
+}
+
+
+
 
 

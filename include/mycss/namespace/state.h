@@ -26,22 +26,22 @@
 extern "C" {
 #endif
 
-#include "mycss/myosi.h"
-#include "mycss/mycss.h"
-#include "mycss/result.h"
-#include "mycss/namespace/myosi.h"
-#include "myhtml/utils.h"
+#include <mycss/mycss.h>
+#include <mycss/result.h>
+#include <mycss/namespace/myosi.h>
+#include <mycss/namespace/parser.h>
+#include <myhtml/utils.h>
 
 bool mycss_namespace_state_token_all(mycss_result_t* result, mycss_token_t* token);
 bool mycss_namespace_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token);
 
-bool mycss_namespace_state_namespace(mycss_result_t* result, mycss_namespace_t* ns, mycss_token_t* token);
-bool mycss_namespace_state_namespace_namespace(mycss_result_t* result, mycss_namespace_t* ns, mycss_token_t* token);
-bool mycss_namespace_state_namespace_namespace_ident(mycss_result_t* result, mycss_namespace_t* ns, mycss_token_t* token);
-bool mycss_namespace_state_namespace_namespace_ident_string(mycss_result_t* result, mycss_namespace_t* ns, mycss_token_t* token);
-bool mycss_namespace_state_namespace_namespace_ident_url(mycss_result_t* result, mycss_namespace_t* ns, mycss_token_t* token);
-bool mycss_namespace_state_namespace_namespace_string(mycss_result_t* result, mycss_namespace_t* ns, mycss_token_t* token);
-bool mycss_namespace_state_namespace_namespace_url(mycss_result_t* result, mycss_namespace_t* ns, mycss_token_t* token);
+bool mycss_namespace_state_namespace(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+bool mycss_namespace_state_namespace_namespace(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+bool mycss_namespace_state_namespace_namespace_ident(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+bool mycss_namespace_state_namespace_namespace_ident_string(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+bool mycss_namespace_state_namespace_namespace_ident_url(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+bool mycss_namespace_state_namespace_namespace_string(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+bool mycss_namespace_state_namespace_namespace_url(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

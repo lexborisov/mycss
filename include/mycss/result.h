@@ -22,15 +22,15 @@
 #define MyHTML_MyCSS_RESULT_H
 #pragma once
 
-#include "mycss/myosi.h"
-#include "mycss/namespace/myosi.h"
-#include "mycss/namespace/init.h"
-#include "mycss/selectors/myosi.h"
-#include "mycss/selectors/init.h"
-#include "mycss/rules/myosi.h"
-#include "mycss/rules/init.h"
-#include "mycss/media/myosi.h"
-#include "mycss/media/init.h"
+#include <mycss/myosi.h>
+#include <mycss/namespace/myosi.h>
+#include <mycss/namespace/init.h>
+#include <mycss/selectors/myosi.h>
+#include <mycss/selectors/init.h>
+#include <mycss/rules/myosi.h>
+#include <mycss/rules/init.h>
+#include <mycss/media/myosi.h>
+#include <mycss/media/init.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -49,6 +49,7 @@ struct mycss_result {
     
     size_t selectors_entries_id;
     size_t string_node_id;
+    size_t namespace_entries_id;
 };
 
 
@@ -57,6 +58,7 @@ mycss_status_t mycss_result_init(mycss_entry_t* entry, mycss_result_t* result);
 mycss_status_t mycss_result_clean_all(mycss_result_t* result);
 mycss_result_t * mycss_result_destroy(mycss_result_t* result, bool self_destroy);
 
+size_t mycss_result_detect_namespace_by_name(mycss_result_t* result, const char* ns, size_t length);
 
 #ifdef __cplusplus
 } /* extern "C" */

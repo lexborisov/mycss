@@ -25,9 +25,9 @@ mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry,
 {
 //    if(token->type == MyCSS_TOKEN_TYPE_COMMENT)
 //        return token;
-//    
-//    while(entry->result->parser(entry->result, token) == false) {};
-//    
+//
+    while(entry->result->parser(entry->result, token) == false) {};
+//
 //    entry->token = mcobject_async_malloc(entry->mcasync_token, entry->token_id, NULL);
 //    entry->selectors->parser(entry, token);
 //    
@@ -63,8 +63,8 @@ bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token)
     switch (token->type) {
     /* Selectors */
         case MyCSS_TOKEN_TYPE_IDENT: {
-            //printf("mycss_selectors_state_simple_selector_ident\n");  /* End of selector */
-            
+            printf("mycss_selectors_state_simple_selector_ident\n");  /* End of selector */
+            mycss_selectors_parser_selector_ident_type(result, result->selectors, result->selectors->selector, token);
             result->selectors->state = mycss_selectors_state_simple_selector_ident;
             
             if(result->parser != mycss_selectors_state_token_all)
@@ -76,13 +76,14 @@ bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token)
             switch(*token->data) {
             /* combinator */
                 case '+': {
-                    mycss_selectors_parser_selector_combinator(result, result->selectors, result->selectors->selector, token);
+                    mycss_selectors_parser_selector_combinator_plus(result, result->selectors, result->selectors->selector, token);
                     //printf("mycss_selectors_state_combinator_plus\n");  /* End of selector */
                     return true;
                 }
                 case '>': {
+                    mycss_selectors_parser_selector_combinator_greater_than(result, result->selectors, result->selectors->selector, token);
                     //printf("mycss_selectors_state_combinator_greater_than\n");  /* End of selector */
-                    mycss_selectors_parser_selector_combinator(result, result->selectors, result->selectors->selector, token);
+                    
                     result->selectors->state = mycss_selectors_state_combinator_greater_than;
                     
                     if(result->parser != mycss_selectors_state_token_skip_whitespace)
@@ -91,7 +92,7 @@ bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token)
                     break;
                 }
                 case '~': {
-                    mycss_selectors_parser_selector_combinator(result, result->selectors, result->selectors->selector, token);
+                    mycss_selectors_parser_selector_combinator_tilde(result, result->selectors, result->selectors->selector, token);
                     //printf("mycss_selectors_state_combinator_tilde\n");  /* End of selector */
                     return true;
                 }
@@ -122,7 +123,9 @@ bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token)
         }
         /* combinator */
         case MyCSS_TOKEN_TYPE_COLUMN: {
-            //printf("mycss_selectors_state_combinator_column\n");  /* End of selector */
+            mycss_selectors_parser_selector_combinator_column(result, result->selectors, result->selectors->selector, token);
+            printf("mycss_selectors_state_combinator_column\n");  /* End of selector */
+            result->parser = mycss_parser_token;
             break;
         }
         case MyCSS_TOKEN_TYPE_COLON: {
@@ -142,8 +145,8 @@ bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token)
             break;
         }
         case MyCSS_TOKEN_TYPE_HASH: {
-            //printf("mycss_selectors_state_simple_selector_hash\n");  /* End of selector */
-            
+            mycss_selectors_parser_selector_id(result, result->selectors, result->selectors->selector, token);
+            printf("mycss_selectors_state_simple_selector_hash\n");  /* End of selector */
             break;
         }
     /* Namespace and Media */
@@ -152,6 +155,7 @@ bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token)
             mycss_token_data_to_string(result->entry, token, &str);
             
             if(myhtml_strncasecmp(str.data, "namespace", 9) == 0) {
+                mycss_namespace_parser_begin(result, result->ns, result->ns->ns_entry, token);
                 result->ns->state = mycss_namespace_state_namespace_namespace;
                 
                 if(result->parser != mycss_namespace_state_token_skip_whitespace)

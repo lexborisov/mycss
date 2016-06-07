@@ -7,7 +7,7 @@ By default MyCSS depends of one [MyHTML] library.
 ## Now
 
 ```text
-The current version is 0.0.8 - this is a alpha version
+The current version is 0.0.9 - this is a alpha version
 Release will have major version number 1
 ```
 

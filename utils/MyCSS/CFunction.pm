@@ -194,10 +194,10 @@ sub new {
 }
 
 sub create {
-	my ($cfunc, $func_name, $hash) = @_;
+	my ($cfunc, $name, $hash, $prefix) = @_;
 	
 	my $result = {names => [], data => []};
-	$cfunc->_create($hash, $func_name, "", $result);
+	$cfunc->_create($hash, $name, $prefix || "", $result);
 	
 	$result;
 }
@@ -233,20 +233,11 @@ sub _create {
 	foreach my $type_num (sort {$a cmp $b} keys %$by_types) {
 		my $type_name = MyCSS::Token->num_to_type($type_num);
 		
-		if (my $sub = $creater->can($type_name)) {
-			push @data, @{$sub->($creater, $cfunc, $func_name, $next_prefix, $type_num,
-				   $by_types->{ $type_num }->{all},
-				   $by_types->{ $type_num }->{by},
-				   $is_switcher,
-				   $pos)};
-		}
-		else {
-			push @data, @{$creater->default($cfunc, $func_name, $next_prefix, $type_num,
-							  $by_types->{ $type_num }->{all},
-							  $by_types->{ $type_num }->{by},
-							  $is_switcher,
-							  $pos)};
-		}
+		push @data, @{$creater->default($cfunc, $func_name, $next_prefix, $type_num,
+						  $by_types->{ $type_num }->{all},
+						  $by_types->{ $type_num }->{by},
+						  $is_switcher,
+						  $pos)};
 		
 		$pos++;
 	}
@@ -273,6 +264,7 @@ sub _create {
 	
 	foreach my $key (sort {$a cmp $b} keys %$hash) {
 		my $hash_nm = $hash->{$key};
+		next if $hash_nm->{next}->{ref};
 		
 		if(keys %{$hash_nm->{next}}) {
 			$cfunc->_create($hash_nm->{next}, $key, $next_prefix, $result);
@@ -447,6 +439,10 @@ sub default_function {
 	}
 	
 	if ($val->entry->{is_next}) {
+		if ($val->entry->{is_glob}) {
+			$function_name = $cfunc->create_func_name($val->entry->{is_ref}, "shared", 1);
+		}
+		
 		push @data, @{$cfunc->func_def->($self, $cfunc, $function_name, $type, $val->entry->{is_last})};
 	}
 	
@@ -457,7 +453,7 @@ sub default_function_for_all {
 	my ($self, $cfunc, $prefix, $type, $all, $by) = @_;
 	
 	my @data;
-	my (@next, @empty);
+	my (@next, @empty, @glob);
 	
 	my $type_name = $cfunc->token->num_to_type($type);
 	my $function_name = $cfunc->create_func_name($cfunc->token->type_to_name($type_name), "$prefix", 1);
@@ -469,6 +465,10 @@ sub default_function_for_all {
 		
 		if($val->entry->{is_last}) {
 			push @empty, $val;
+		}
+		
+		if($val->entry->{is_glob}) {
+			push @glob, $val;
 		}
 	}
 	
@@ -500,6 +500,10 @@ sub default_function_for_all {
 	}
 	
 	if (@next) {
+		if (@glob) {
+			$function_name = $cfunc->create_func_name($glob[0]->entry->{is_ref}, "shared", 1);
+		}
+		
 		push @data, @{$cfunc->func_def->($self, $cfunc, $function_name, $type, scalar(@empty))};
 	}
 	

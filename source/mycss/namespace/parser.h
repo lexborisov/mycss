@@ -18,8 +18,8 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#ifndef MyHTML_MyCSS_NAMESPACE_INIT_H
-#define MyHTML_MyCSS_NAMESPACE_INIT_H
+#ifndef MyHTML_MyCSS_NAMESPACE_PARSER_H
+#define MyHTML_MyCSS_NAMESPACE_PARSER_H
 #pragma once
 
 #ifdef __cplusplus
@@ -30,19 +30,15 @@ extern "C" {
 #include "mycss/result.h"
 #include "myhtml/mynamespace.h"
 
-mycss_namespace_t * mycss_namespace_create(void);
-mycss_status_t mycss_namespace_init(mycss_entry_t* entry, mycss_namespace_t* ns);
-mycss_status_t mycss_namespace_clean_all(mycss_namespace_t* ns);
-mycss_namespace_t * mycss_namespace_destroy(mycss_namespace_t* ns, bool self_destroy);
+void mycss_namespace_parser_begin(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+void mycss_namespace_parser_name(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+void mycss_namespace_parser_url(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+void mycss_namespace_parser_end(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+void mycss_namespace_parser_expectations_error(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
 
-void mycss_namespace_entry_clean(mycss_namespace_entry_t* ns_entry);
-
-const char * mycss_namespace_name_by_id(mycss_namespace_t* ns, size_t ns_id, size_t *length);
-
-void mycss_namespace_print(mycss_namespace_t* ns, size_t ns_id, FILE* fh, bool with_vbar);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* MyHTML_MyCSS_NAMESPACE_INIT_H */
+#endif /* MyHTML_MyCSS_NAMESPACE_PARSER_H */

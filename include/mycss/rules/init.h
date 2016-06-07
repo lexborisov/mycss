@@ -22,7 +22,7 @@
 #define MyHTML_MyCSS_RULES_INIT_H
 #pragma once
 
-#include "mycss/rules/myosi.h"
+#include <mycss/rules/myosi.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -26,11 +26,11 @@
 extern "C" {
 #endif
 
-#include "mycss/myosi.h"
-#include "mycss/entry.h"
-#include "mycss/tokenizer.h"
-#include "myhtml/myhtml.h"
-#include "myhtml/utils/mcobject_async.h"
+#include <mycss/myosi.h>
+#include <mycss/entry.h>
+#include <mycss/tokenizer.h>
+#include <myhtml/myhtml.h>
+#include <myhtml/utils/mcobject_async.h>
 
 struct mycss {
     mycss_tokenizer_state_f* parse_state_func;

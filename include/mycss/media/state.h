@@ -22,8 +22,8 @@
 #define MyHTML_MyCSS_MEDIA_STATE_H
 #pragma once
 
-#include "mycss/media/myosi.h"
-#include "mycss/result.h"
+#include <mycss/media/myosi.h>
+#include <mycss/result.h>
 
 #ifdef __cplusplus
 extern "C" {

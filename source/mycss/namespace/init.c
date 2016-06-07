@@ -27,11 +27,18 @@ mycss_namespace_t * mycss_namespace_create(void)
 
 mycss_status_t mycss_namespace_init(mycss_entry_t* entry, mycss_namespace_t* ns)
 {
+    ns->name_tree = mctree_create(14);
+    ns->ns_id_counter = 0;
+    
     return MyCSS_STATUS_OK;
 }
 
 mycss_status_t mycss_namespace_clean_all(mycss_namespace_t* ns)
 {
+    mctree_clean(ns->name_tree);
+    
+    ns->ns_id_counter = 0;
+    
     return MyCSS_STATUS_OK;
 }
 
@@ -39,6 +46,8 @@ mycss_namespace_t * mycss_namespace_destroy(mycss_namespace_t* ns, bool self_des
 {
     if(ns == NULL)
         return NULL;
+    
+    mctree_destroy(ns->name_tree);
     
     if(self_destroy) {
         myfree(ns);
@@ -48,4 +57,43 @@ mycss_namespace_t * mycss_namespace_destroy(mycss_namespace_t* ns, bool self_des
     return ns;
 }
 
+void mycss_namespace_entry_clean(mycss_namespace_entry_t* ns_entry)
+{
+    memset(ns_entry, 0, sizeof(mycss_namespace_entry_t));
+}
+
+const char * mycss_namespace_name_by_id(mycss_namespace_t* ns, size_t ns_id, size_t* length)
+{
+    if(ns_id < MyHTML_NAMESPACE_LAST_ENTRY)
+        return myhtml_namespace_name_by_id((myhtml_namespace_t)ns_id, length);
+    
+    ns_id -= MyHTML_NAMESPACE_LAST_ENTRY;
+    
+    mycss_namespace_entry_t *entry = (mycss_namespace_entry_t*)(ns->name_tree->nodes[ ns_id ].value);
+    
+    if(length)
+        *length = entry->name->length;
+    
+    return entry->name->data;
+}
+
+void mycss_namespace_print(mycss_namespace_t* ns, size_t ns_id, FILE* fh, bool with_vbar)
+{
+    size_t length;
+    const char *name = mycss_namespace_name_by_id(ns, ns_id, &length);
+    
+    if(length == 0) {
+        fprintf(fh, "*");
+        
+        if(with_vbar)
+            fprintf(fh, "|");
+        
+        return;
+    }
+    
+    fprintf(fh, "%s", name);
+    
+    if(with_vbar)
+        fprintf(fh, "|");
+}
 

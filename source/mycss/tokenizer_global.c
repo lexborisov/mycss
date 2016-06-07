@@ -295,6 +295,7 @@ size_t mycss_tokenizer_global_state_url(mycss_entry_t* entry, mycss_token_t* tok
                 entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_STRING_DOUBLE_QUOTED;
                 entry->state_back = MyCSS_TOKENIZER_GLOBAL_STATE_URL_STRING_BACK;
                 
+                token->begin = entry->current_buffer->offset + css_offset;
                 break;
             }
             else if(css[css_offset] == '\'') {
@@ -303,10 +304,13 @@ size_t mycss_tokenizer_global_state_url(mycss_entry_t* entry, mycss_token_t* tok
                 entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_STRING_SINGLE_QUOTED;
                 entry->state_back = MyCSS_TOKENIZER_GLOBAL_STATE_URL_STRING_BACK;
                 
+                token->begin = entry->current_buffer->offset + css_offset;
                 break;
             }
             
             entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_URL_AFTER;
+            
+            token->begin = entry->current_buffer->offset + css_offset;
             break;
         }
         
@@ -333,19 +337,22 @@ size_t mycss_tokenizer_global_state_url_after(mycss_entry_t* entry, mycss_token_
     while(css_offset < css_size)
     {
         if(css[css_offset] == ')') {
-            css_offset++;
-            
             token->length = (entry->current_buffer->offset + css_offset) - token->begin;
             token->type   = MyCSS_TOKEN_TYPE_URL;
             
             MyCSS_TOKEN_READY_CALLBACK_FUNCTION(entry, token);
             
             entry->state = MyCSS_TOKENIZER_STATE_DATA;
+            
+            css_offset++;
             break;
         }
         else if(css[css_offset] == '\r' || css[css_offset] == 0x0C ||
-                css[css_offset] == '\n' || css[css_offset] == '\t' || css[css_offset] == ' ') {
+                css[css_offset] == '\n' || css[css_offset] == '\t' || css[css_offset] == ' ')
+        {
             entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_URL_AFTER_WHITESPACE;
+            
+            token->length = (entry->current_buffer->offset + css_offset) - token->begin;
             
             css_offset++;
             break;
@@ -380,14 +387,13 @@ size_t mycss_tokenizer_global_state_url_after_whitespace(mycss_entry_t* entry, m
            css[css_offset] != '\n' && css[css_offset] != '\t' && css[css_offset] != ' ')
         {
             if(css[css_offset] == ')') {
-                css_offset++;
-                
-                token->length = (entry->current_buffer->offset + css_offset) - token->begin;
-                token->type   = MyCSS_TOKEN_TYPE_URL;
+                token->type = MyCSS_TOKEN_TYPE_URL;
                 
                 MyCSS_TOKEN_READY_CALLBACK_FUNCTION(entry, token);
                 
                 entry->state = MyCSS_TOKENIZER_STATE_DATA;
+                
+                css_offset++;
                 break;
             }
             
@@ -418,14 +424,14 @@ size_t mycss_tokenizer_global_state_bad_url(mycss_entry_t* entry, mycss_token_t*
     while(css_offset < css_size)
     {
         if(css[css_offset] == ')') {
-            css_offset++;
-            
             token->length = (entry->current_buffer->offset + css_offset) - token->begin;
             token->type   = MyCSS_TOKEN_TYPE_BAD_URL;
             
             MyCSS_TOKEN_READY_CALLBACK_FUNCTION(entry, token);
             
             entry->state = MyCSS_TOKENIZER_STATE_DATA;
+            
+            css_offset++;
             break;
         }
 //        else if(css[css_offset] == '\\') {

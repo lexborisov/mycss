@@ -477,83 +477,115 @@ sub decomposite {
 	my ($grammar, $index_of_list, $keys, $sub_for_bless_entry) = @_;
 	
 	my $save_index = {};
-	my $work = {};
-	my $parents = [];
+	my $work_full = {};
+	my $work_origin = {};
 	
 	$grammar->{sub_for_bless_entry} = $sub_for_bless_entry;
 	
 	foreach my $key (@$keys) {
-		$work->{$key} = $grammar->decomposite_list($index_of_list->{$key}, $index_of_list, $save_index, $parents);
+		my $parents = [];
+		my ($full_list, $origin_list) = $grammar->decomposite_list($index_of_list->{$key}, $index_of_list, $save_index, $parents);
+		
+		$work_full->{$key} = $full_list;
+		$work_origin->{$key} = $origin_list;
 	}
 	
-	$work;
+	($work_full, $work_origin);
 }
 
 sub decomposite_list {
 	my ($grammar, $list, $index_of_list, $save_index, $parents) = @_;
 	
-	my $work = [];
+	my $work_full = [];
+	my $work_origin = [];
+	
 	foreach my $entries (@$list) {
-		push @{$work}, @{$grammar->decomposite_list_entries($entries, $index_of_list, $save_index, $parents)};
+		my ($full_list, $origin_list) = $grammar->decomposite_list_entries($entries, $index_of_list, $save_index, $parents);
+		push @{$work_full}, @$full_list;
+		push @{$work_origin}, @$origin_list;
 	}
 	
-	$work;
+	($work_full, $work_origin);
 }
 
 sub decomposite_list_entries {
 	my ($grammar, $entries, $index_of_list, $save_index, $parents) = @_;
-	my $work = [[]];
+	
+	my $work_full = [[]];
+	my $work_origin = [[]];
 	
 	foreach my $entry (@$entries)
 	{
-		my $res = $grammar->decomposite_list_entry($entry, $index_of_list, $save_index, $parents);
-		my $new_work;
+		my @next_parrents = @$parents;
 		
-		foreach my $res_entries (@$res) {
-			foreach my $work_entry (@$work) {
-				push @{$new_work}, [@$work_entry, @$res_entries];
+		my ($full_list, $origin_list) = $grammar->decomposite_list_entry($entry, $index_of_list, $save_index, \@next_parrents);
+		
+		my $new_work_full;
+		my $new_work_origin;
+		
+		foreach my $res_entries (@$full_list) {
+			foreach my $work_entry (@$work_full) {
+				push @{$new_work_full}, [@$work_entry, @$res_entries];
 			}
 		}
 		
-		$work = $new_work;
+		foreach my $res_entries (@$origin_list) {
+			foreach my $work_entry (@$work_origin) {
+				push @{$new_work_origin}, [@$work_entry, @$res_entries];
+			}
+		}
+		
+		$work_full = $new_work_full;
+		$work_origin = $new_work_origin;
 	}
 	
-	$work;
+	($work_full, $work_origin);
 }
 
 sub decomposite_list_entry {
 	my ($grammar, $entry, $index_of_list, $save_index, $parents) = @_;
 	
-	my $list = [];
+	my $full_list = [];
+	my $origin_list = [];
+	
 	if ($index_of_list->{ $entry->name }) {
 		push @$parents, $entry;
+		$grammar->decomposite_push_to_list($origin_list, $entry, $parents);
 		
 		if ($save_index->{$entry->name}) {
-			$list = $save_index->{$entry->name};
+			$full_list = $save_index->{$entry->name};
 		}
 		else {
-			$list = $grammar->decomposite_list($index_of_list->{ $entry->name }, $index_of_list, $save_index, $parents);
-			$save_index->{$entry->name} = $list;
+			$full_list = $grammar->decomposite_list($index_of_list->{ $entry->name }, $index_of_list, $save_index, $parents);
+			$save_index->{$entry->name} = $full_list;
 		}
 	}
 	else {
-		unless(ref $grammar->{sub_for_bless_entry}) {
-			push @{$list}, [ MyCSS::Token->new($entry, $parents) ];
-		}
-		else {
-			push @{$list}, [
-				$grammar->{sub_for_bless_entry}->($grammar, $entry, $parents)
-			];
-		}
+		$grammar->decomposite_push_to_list($origin_list, $entry, $parents);
+		$grammar->decomposite_push_to_list($full_list, $entry, $parents);
 	}
 	
-	$list;
+	($full_list, $origin_list);
+}
+
+sub decomposite_push_to_list {
+	my ($grammar, $list, $entry, $parents) = @_;
+	
+	unless(ref $grammar->{sub_for_bless_entry}) {
+		push @{$list}, [ MyCSS::Token->new($entry, $parents) ];
+	}
+	else {
+		push @{$list}, [
+			$grammar->{sub_for_bless_entry}->($grammar, $entry, $parents)
+		];
+	}
 }
 
 sub make_combine_hash_from_decomposing_list {
-	my ($grammar, $list, $sub) = @_;
+	my ($grammar, $list, $list_full, $sub, $glob_hash, $glob_next, $to_fix) = @_;
 	
 	$sub ||= sub{ $_[1]->name };
+	$to_fix ||= [];
 	
 	my $hash = {};
 	my $tmp_hash = $hash;
@@ -565,17 +597,61 @@ sub make_combine_hash_from_decomposing_list {
 			my $entry = $entries->[$i]->clone( $entries->[$i]->entry->clone );
 			my $key = $sub->($grammar, $entry);
 			
+			if ($list_full->{ $entry->entry->name }) {
+				my $loc_next = {};
+				my $name = MyCSS::CFunction->create_func_name($entry->entry->name, "after", 0);
+				
+				$loc_next->{ref} = $name if ($i + 1) <= $#$entries;
+				
+				my $res = $grammar->make_combine_hash_from_decomposing_list($list_full->{$entry->entry->name}, $list_full, $sub, $glob_hash, $loc_next, $to_fix);
+				
+				foreach my $sn_ney (keys %$res) {
+					$tmp_hash->{$sn_ney} = $res->{$sn_ney};
+				}
+				
+				$glob_hash->{$name} = {} unless $glob_hash->{$name};
+				$tmp_hash = $glob_hash->{$name};
+				next;
+			}
+			
 			$tmp_hash->{$key} = {} unless exists $tmp_hash->{$key};
 			
 			my $nr = $tmp_hash->{$key};
 			
-			if($i == $#$entries) {
-				$entry->{entry}->{is_last} = 1;
-				$entry->{entry}->{is_next} = 0;
+			if($glob_next) {
+				if($glob_next->{ref}) {
+					if($i == $#$entries) {
+						$entry->{entry}->{is_last} = 0;
+						$entry->{entry}->{is_next} = 1;
+						
+						$entry->{entry}->{is_glob} = 1;
+					}
+					else {
+						$entry->{entry}->{is_next} = 1;
+					}
+					
+					$entry->{entry}->{is_ref} = $glob_next->{ref};
+				}
+				else {
+					if($i == $#$entries) {
+						$entry->{entry}->{is_last} = 1;
+					}
+					else {
+						$entry->{entry}->{is_next} = 1;
+					}
+				}
 			}
 			else {
-				$entry->{entry}->{is_last} = 0;
-				$entry->{entry}->{is_next} = 1;
+				if($i == $#$entries) {
+					$entry->{entry}->{is_last} = 1;
+					$entry->{entry}->{is_next} = 0;
+					$entry->{entry}->{is_glob} = 0;
+				}
+				else {
+					$entry->{entry}->{is_last} = 0;
+					$entry->{entry}->{is_next} = 1;
+					$entry->{entry}->{is_glob} = 0;
+				}
 			}
 			
 			my @exists = grep {$_->{entry}->{name} eq $entry->{entry}->{name}} @{$nr->{val}};
@@ -599,13 +675,42 @@ sub make_combine_hash_from_decomposing_list {
 				push @{$nr->{val}},  $entry;
 			}
 			
-			$nr->{next} = {} unless exists $nr->{next};
-			
-			$tmp_hash = $nr->{next};
+			if ($i == $#$entries) {
+				unless( exists $nr->{next} ) {
+					$nr->{next} = $glob_next || {};
+				}
+				else {
+					if ($glob_next && %$glob_next) {
+						foreach my $key (keys %$glob_next) {
+							$nr->{next}->{$key} = $glob_next->{$key};
+						}
+					}
+					
+					if (keys %{$nr->{next}} > 1 && $nr->{next}->{ref}) {
+						push @$to_fix, $nr;
+					}
+				}
+			}
+			else {
+				$nr->{next} = {} unless exists $nr->{next};
+				$tmp_hash = $nr->{next};
+			}
 		}
 		
 		undef $tmp_hash;
 		$tmp_hash = $hash;
+	}
+	
+	unless($glob_next) {
+		foreach my $entry (@$to_fix) {
+			my $ref_name = delete $entry->{next}->{ref};
+			
+			foreach my $name (keys %{$glob_hash->{$ref_name}}) {
+				die "Oh God, dupl!!! $name; Change config" if exists $entry->{next}->{$name};
+				
+				$entry->{next}->{$name} = $glob_hash->{$ref_name}->{$name};
+			}
+		}
 	}
 	
 	$hash;

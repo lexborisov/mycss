@@ -54,6 +54,15 @@ mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
     if(mcstatus != MCOBJECT_ASYNC_STATUS_OK)
         return MyCSS_STATUS_ERROR_STRING_INIT;
     
+    // init for namespace entries objects
+    entry->mcasync_namespace_entries = mcobject_async_create();
+    if(entry->mcasync_namespace_entries == NULL)
+        return MyCSS_STATUS_ERROR_NAMESPACE_ENTRIES_CREATE;
+    
+    mcstatus = mcobject_async_init(entry->mcasync_namespace_entries, 32, 1024, sizeof(mycss_namespace_entry_t));
+    if(mcstatus != MCOBJECT_ASYNC_STATUS_OK)
+        return MyCSS_STATUS_ERROR_NAMESPACE_ENTRIES_INIT;
+    
     // other init
     entry->mchar = mchar_async_create(128, (4096 * 5));
     entry->mchar_node_id = mchar_async_node_add(entry->mchar);
@@ -96,6 +105,7 @@ mycss_entry_t * mycss_entry_destroy(mycss_entry_t* entry, bool self_destroy)
     
     entry->mchar                     = mchar_async_destroy(entry->mchar, 1);
     entry->mcasync_selectors_entries = mcobject_async_destroy(entry->mcasync_selectors_entries, 1);
+    entry->mcasync_namespace_entries = mcobject_async_destroy(entry->mcasync_namespace_entries, 1);
     
     if(entry->token) {
         free(entry->token);

@@ -26,7 +26,7 @@
 extern "C" {
 #endif
     
-#include "mycss/myosi.h"
+#include <mycss/myosi.h>
 
 size_t mycss_convert_data_to_double(const char *data, size_t size, double *return_num);
 size_t mycss_convert_unicode_range_to_codepoint(const char *data, size_t size, size_t *start, size_t *end);

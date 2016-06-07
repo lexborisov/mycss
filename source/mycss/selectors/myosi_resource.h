@@ -18,25 +18,16 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#ifndef MyHTML_MyCSS_RULES_STATE_H
-#define MyHTML_MyCSS_RULES_STATE_H
+#ifndef MyHTML_MyCSS_SELECTORS_MYOSI_RESOURCE_H
+#define MyHTML_MyCSS_SELECTORS_MYOSI_RESOURCE_H
 #pragma once
 
-#include <mycss/rules/myosi.h>
-#include <mycss/result.h>
+static const char mycss_selectors_resource_matcher_names_map[][3] = {
+    "=", "~=", "|=", "^=", "$=", "*="
+};
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+static const char mycss_selectors_resource_combinator_names_map[][3] = {
+    "", " ", ">", "+", "~", "||"
+};
 
-bool mycss_rules_state_token_all(mycss_result_t* result, mycss_token_t* token);
-bool mycss_rules_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token);
-
-bool mycss_rules_state_body(mycss_result_t* result, mycss_rules_t* rules, mycss_token_t* token);
-
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
-
-#endif /* MyHTML_MyCSS_RULES_STATE_H */
+#endif /* MyHTML_MyCSS_SELECTORS_MYOSI_RESOURCE_H */

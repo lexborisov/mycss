@@ -8,8 +8,6 @@ use MyCSS::Grammar;
 use MyCSS::Token;
 use MyCSS::CFunction;
 
-# !WARNING! Work! Draft version!
-
 my $filename = "data/selectors_grammar_work.txt";
 
 my $token = MyCSS::Token->new();
@@ -27,26 +25,37 @@ my $cfunc = MyCSS::CFunction->new(
 	func_string_after   => \&My::Functions::Basic::function_string_after,
 	func_proto_args     => "mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token",
 	func_list           => {
-		selector_combinator   => \&My::Functions::selector_combinator,
-		selector_ident        => \&My::Functions::selector_ident,
-		selector_namespace    => \&My::Functions::selector_namespace,
-		selector_key          => \&My::Functions::selector_key,
-		selector_id           => \&My::Functions::selector_id,
-		selector_class        => \&My::Functions::selector_class,
-		selector_matcher      => \&My::Functions::selector_matcher,
-		selector_value        => \&My::Functions::selector_value,
-		selector_modifier     => \&My::Functions::selector_modifier,
-		selector_end          => \&My::Functions::selector_end,
-		selector_pseudo_class => \&My::Functions::selector_pseudo_class,
-		selector_function     => \&My::Functions::selector_function,
-		selector_function_end => \&My::Functions::selector_function_end
+		selector_ident_type              => \&My::Functions::selector_ident_type,
+		selector_ident_attr              => \&My::Functions::selector_ident_attr,
+		selector_namespace               => \&My::Functions::selector_namespace,
+		selector_after_namespace         => \&My::Functions::selector_after_namespace,
+		selector_id                      => \&My::Functions::selector_id,
+		selector_class                   => \&My::Functions::selector_class,
+		selector_matcher_eq              => \&My::Functions::selector_matcher_eq,
+		selector_matcher_include         => \&My::Functions::selector_matcher_include,
+		selector_matcher_dash            => \&My::Functions::selector_matcher_dash,
+		selector_matcher_prefix          => \&My::Functions::selector_matcher_prefix,
+		selector_matcher_suffix          => \&My::Functions::selector_matcher_suffix,
+		selector_matcher_substring       => \&My::Functions::selector_matcher_substring,
+		selector_value                   => \&My::Functions::selector_value,
+		selector_modifier                => \&My::Functions::selector_modifier,
+		selector_end                     => \&My::Functions::selector_end,
+		selector_pseudo_class            => \&My::Functions::selector_pseudo_class,
+		selector_function                => \&My::Functions::selector_function,
+		selector_function_end            => \&My::Functions::selector_function_end,
+		selector_combinator_greater_than => \&My::Functions::selector_combinator_greater_than,
+		selector_combinator_plus         => \&My::Functions::selector_combinator_plus,
+		selector_combinator_tilde        => \&My::Functions::selector_combinator_tilde,
+		selector_combinator_column       => \&My::Functions::selector_combinator_column
 	}
 );
 
 my ($parse_res, $index_res) = $grammar->parser_file($filename);
-#my ($parse_res, $index_res) = $grammar->parser('<combinator> = <ident-token func=selector_ident>? <delim-token value="|" func=selector_namespace>');
+#my ($parse_res, $index_res) = $grammar->parser('<attribute-selector> = <[-token ws> <wq-name-attr> <]-token ws func=selector_end>
+#<wq-name-attr> = <ident-token>? <delim-token value="|" func=selector_namespace> | <ident-token func=selector_ident_attr>');
 
 my $index_list = {};
+
 foreach my $key (@$index_res) {
 	my $tree = $grammar->create_tree($parse_res->{$key}, $key);
 	my $list = $grammar->parse_tree($tree);
@@ -54,34 +63,74 @@ foreach my $key (@$index_res) {
 	$index_list->{$key} = $list;
 }
 
+my $hash_full = {};
+my $hash_origin = {};
+
+foreach my $key (@$index_res) {
+	my ($work_full, $work_origin) = $grammar->decomposite($index_list, [$key]);
+	
+	$hash_origin->{$key} = $work_origin->{$key};
+	
+	#$hash_full->{$key} = $grammar->make_combine_hash_from_decomposing_list($work_full->{$key}, sub{ $_[1]->entry->name });
+}
+
 #my $key = "<combinator>";
 my $key = "<simple-selector>";
+#my $key = "<type-selector>";
+#my $key = "<attribute-selector>";
 
-my $work = $grammar->decomposite($index_list, [$key], sub {
-	return MyCSS::Token->new($_[1], $_[2]);
-});
+my $ghash = {};
+my $attr = $grammar->make_combine_hash_from_decomposing_list($hash_origin->{$key}, $hash_origin, sub{ $_[1]->entry->name }, $ghash);
 
-$grammar->print_list($work->{$key});
+my $func_result = {};
+my $first_result = $cfunc->create($key, $attr);
+$cfunc->print_result_names($first_result);
 
-print "Work data for $key:\n";
-my $hash = $grammar->make_combine_hash_from_decomposing_list($work->{$key}, sub{ $_[1]->entry->name });
+foreach my $gkey (keys %$ghash) {
+	$func_result->{ $gkey } = $cfunc->create($gkey, $ghash->{$gkey}, "shared")
+		if %{$ghash->{$gkey}};
+}
 
-my $func_result = $cfunc->create($key, $hash, "mycss_selectors_state_");
-$cfunc->print_result_names($func_result);
-$cfunc->print_result_data($func_result);
+foreach my $key (keys %$func_result) {
+	$cfunc->print_result_names($func_result->{$key});
+}
 
-
+print "\n";
+$cfunc->print_result_data($first_result);
+foreach my $key (keys %$func_result) {
+	$cfunc->print_result_data($func_result->{$key});
+}
 
 package My::Functions;
 
-sub selector_combinator {
+sub selector_combinator_greater_than {
 	my ($creater, $cfunc, $fname, $type) = @_;
-	["mycss_selectors_parser_selector_combinator(result, selectors, selector, token);"]
+	["mycss_selectors_parser_selector_combinator_greater_than(result, selectors, selector, token);"]
 }
 
-sub selector_ident {
+sub selector_combinator_plus {
 	my ($creater, $cfunc, $fname, $type) = @_;
-	["mycss_selectors_parser_selector_ident(result, selectors, selector, token);"]
+	["mycss_selectors_parser_selector_combinator_plus(result, selectors, selector, token);"]
+}
+
+sub selector_combinator_tilde {
+	my ($creater, $cfunc, $fname, $type) = @_;
+	["mycss_selectors_parser_selector_combinator_tilde(result, selectors, selector, token);"]
+}
+
+sub selector_combinator_column {
+	my ($creater, $cfunc, $fname, $type) = @_;
+	["mycss_selectors_parser_selector_combinator_column(result, selectors, selector, token);"]
+}
+
+sub selector_ident_type {
+	my ($creater, $cfunc, $fname, $type) = @_;
+	["mycss_selectors_parser_selector_ident_type(result, selectors, selector, token);"]
+}
+
+sub selector_ident_attr {
+	my ($creater, $cfunc, $fname, $type) = @_;
+	["mycss_selectors_parser_selector_ident_attr(result, selectors, selector, token);"]
 }
 
 sub selector_namespace {
@@ -89,9 +138,15 @@ sub selector_namespace {
 	["mycss_selectors_parser_selector_namespace(result, selectors, selector, token);"]
 }
 
-sub selector_key {
+sub selector_after_namespace {
 	my ($creater, $cfunc, $fname, $type) = @_;
-	["mycss_selectors_parser_selector_key(result, selectors, selector, token);"]
+	
+	if ($fname eq "mycss_selectors_state_simple_selector_ident_vertical_bar_ident") {
+		return ["mycss_selectors_parser_selector_after_namespace(result, selectors, selector, token);",
+				"mycss_selectors_parser_selector_end(result, selectors, selector, token);"];
+	}
+	
+	["mycss_selectors_parser_selector_after_namespace(result, selectors, selector, token);"]
 }
 
 sub selector_id {
@@ -104,9 +159,34 @@ sub selector_class {
 	["mycss_selectors_parser_selector_class(result, selectors, selector, token);"]
 }
 
-sub selector_matcher {
+sub selector_matcher_eq {
 	my ($creater, $cfunc, $fname, $type) = @_;
-	["mycss_selectors_parser_selector_matcher(result, selectors, selector, token);"]
+	["selector->match = MyCSS_SELECTORS_MATCH_EQUAL;"]
+}
+
+sub selector_matcher_include {
+	my ($creater, $cfunc, $fname, $type) = @_;
+	["selector->match = MyCSS_SELECTORS_MATCH_INCLUDE;"]
+}
+
+sub selector_matcher_dash {
+	my ($creater, $cfunc, $fname, $type) = @_;
+	["selector->match = MyCSS_SELECTORS_MATCH_DASH;"]
+}
+
+sub selector_matcher_prefix {
+	my ($creater, $cfunc, $fname, $type) = @_;
+	["selector->match = MyCSS_SELECTORS_MATCH_PREFIX;"]
+}
+
+sub selector_matcher_suffix {
+	my ($creater, $cfunc, $fname, $type) = @_;
+	["selector->match = MyCSS_SELECTORS_MATCH_SUFFIX;"]
+}
+
+sub selector_matcher_substring {
+	my ($creater, $cfunc, $fname, $type) = @_;
+	["selector->match = MyCSS_SELECTORS_MATCH_SUBSTRING;"]
 }
 
 sub selector_value {
@@ -189,6 +269,7 @@ sub function_else {
 	# it is normally situation
 	if($fname eq "mycss_selectors_state_simple_selector_ident") {
 		return [
+			"mycss_selectors_parser_selector_end(result, selectors, selector, token);",
 			"result->parser = mycss_parser_token;",
 			"return false;"
 		];

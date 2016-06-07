@@ -26,12 +26,12 @@
 extern "C" {
 #endif
 
-#include "mycss/myosi.h"
-#include "mycss/mycss.h"
-#include "mycss/parser.h"
-#include "mycss/result.h"
-#include "myhtml/utils/mcobject_async.h"
-#include "myhtml/utils/mchar_async.h"
+#include <mycss/myosi.h>
+#include <mycss/mycss.h>
+#include <mycss/parser.h>
+#include <mycss/result.h>
+#include <myhtml/utils/mcobject_async.h>
+#include <myhtml/utils/mchar_async.h>
 
 struct mycss_entry {
     mycss_t* mycss;
@@ -50,6 +50,7 @@ struct mycss_entry {
     
     mcobject_async_t* mcasync_selectors_entries;
     mcobject_async_t* mcasync_string;
+    mcobject_async_t* mcasync_namespace_entries;
     
     myhtml_incoming_buffer_t* first_buffer;
     myhtml_incoming_buffer_t* current_buffer;

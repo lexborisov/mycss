@@ -26,9 +26,9 @@
 extern "C" {
 #endif
 
-#include "mycss/myosi.h"
-#include "myhtml/incoming.h"
-#include "myhtml/mystring.h"
+#include <mycss/myosi.h>
+#include <myhtml/incoming.h>
+#include <myhtml/mystring.h>
 
 enum mycss_string_process_state {
     MyCSS_STRING_PROCESS_STATE_DATA       = 0x00,
