@@ -34,10 +34,10 @@ mycss_selectors_entry_t * mycss_selectors_parser_selector_create_new_entry(mycss
             mcobject_async_free(result->entry->mcasync_string, selector->value);
         }
         
-        selector = selector->prev;
-        mycss_selectors_entry_clean(selectors->selector);
+        mycss_selectors_entry_t* selector_prev = selector->prev;
+        mycss_selectors_entry_clean(selector);
+        selector->prev = selector_prev;
         
-        selectors->selector->prev = selector;
         return selector;
     }
     

@@ -219,12 +219,16 @@ size_t test_data(myhtml_tree_t* tree, size_t count_of_files, size_t* bad_res)
     
     for(size_t i = 0; i < collection->length; i++)
     {
-        myhtml_tree_node_t *data_node = collection->list[i]->child->next->child;
+        myhtml_collection_t *col_data = myhtml_get_nodes_by_name_in_scope(tree, NULL, collection->list[i], "data", 4, NULL);
+        
+        myhtml_tree_node_t *data_node = col_data->list[0]->child;
         myhtml_string_t *data_str = &data_node->token->my_str_tm;
         
         mycss_parse(entry, MyHTML_ENCODING_UTF_8, data_str->data, data_str->length);
         
         test_cmp(entry->result, tree, collection->list[i], &css_res, &res_res);
+        
+        mycss_result_destroy(entry->result, true);
         
         count++;
         printf("\t%zu: ", count);
@@ -244,6 +248,7 @@ size_t test_data(myhtml_tree_t* tree, size_t count_of_files, size_t* bad_res)
         
         myhtml_string_clean(&css_res);
         myhtml_string_clean(&res_res);
+        myhtml_collection_destroy(col_data);
     }
     
     myhtml_collection_destroy(collection);
@@ -323,19 +328,21 @@ size_t test_dir(const char* dir_path, const char* test_name, size_t *bad_count)
 
 int main(int argc, const char * argv[])
 {
-    if (argc < 3) {
-        printf("Bad ARGV!\nUse: test <path_to_dir_test> <test_name> [ <test_name>]*\n");
-        exit(EXIT_FAILURE);
-    }
+//    if (argc < 3) {
+//        printf("Bad ARGV!\nUse: test <path_to_dir_test> <test_name> [ <test_name>]*\n");
+//        exit(EXIT_FAILURE);
+//    }
     
     printf("\nDirectory: %s\n", argv[1]);
     
     size_t bad_count = 0;
     size_t all_count = 0;
     
-    for(size_t i = 2; i < argc; i++) {
-        all_count += test_dir(argv[1], argv[i], &bad_count);
-    }
+    //for(size_t i = 2; i < argc; i++) {
+    //    all_count += test_dir(argv[1], argv[i], &bad_count);
+    //}
+    
+    all_count += test_dir("/new/C-git/mycss/test", "Selectors", &bad_count);
     
     printf("\nTotal count: %zu; Good: %zu; Bad: %zu\n", all_count, (all_count - bad_count), bad_count);
     

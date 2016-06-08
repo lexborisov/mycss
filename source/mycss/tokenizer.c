@@ -98,6 +98,8 @@ mycss_status_t mycss_tokenizer_end(mycss_entry_t* entry)
         mt->length = state_f[end_state](entry, entry->token, mt->data, mt->length, mt->size);
     }
     
+    entry->type |= MyCSS_ENTRY_TYPE_END;
+    
     return MyCSS_STATUS_OK;
 }
 

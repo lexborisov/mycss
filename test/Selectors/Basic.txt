@@ -14,3 +14,11 @@
         <selector key="key_ns" value="" ns="" type="attribute" comb=" "></selector>
     </result>
 </entry>
+<entry><data>div</data><result><selector key="div" value="" ns="" type="element" comb=""></selector></result></entry>
+<entry><data>.same-class</data><result><selector key="same-class" value="" ns="" type="class" comb=""></selector></result></entry>
+<entry><data>#hash</data><result><selector key="hash" value="" ns="" type="id" comb=""></selector></result></entry>
+<entry><data>[key]</data><result><selector key="key" value="" ns="" type="attribute" comb=""></selector></result></entry>
+<entry><data>[key=value]</data><result><selector key="key" value="value" ns="" type="attribute" comb=""></selector></result></entry>
+<entry><data>[|key=value]</data><result><selector key="key" value="value" ns="" type="attribute" comb=""></selector></result></entry>
+<entry><data>[svg|key=value]</data><result><selector key="key" value="value" ns="SVG" type="attribute" comb=""></selector></result></entry>
+<entry><data>[key=value i]</data><result><selector key="key" value="value" ns="" type="attribute" mod="i" comb=""></selector></result></entry>
