@@ -1,0 +1,16 @@
+<entry>
+    <data>div HtMl|span |svg |* * .class #hash [attr_key=attr_value i] [key] [svg|attr_key_ns=attr_value_ns i] [|key_ns]</data>
+    <result>
+        <selector key="div" value="" ns="" type="element" comb=" "></selector>
+        <selector key="span" value="" ns="HTML" type="element" comb=" "></selector>
+        <selector key="svg" value="" ns="" type="element" comb=" "></selector>
+        <selector key="*" value="" ns="" type="element" comb=" "></selector>
+        <selector key="*" value="" ns="" type="element" comb=" "></selector>
+        <selector key="class" value="" ns="" type="class" comb=" "></selector>
+        <selector key="hash" value="" ns="" type="id" comb=" "></selector>
+        <selector key="attr_key" value="attr_value" mod="i" ns="" type="attribute" comb=" "></selector>
+        <selector key="key" value="" ns="" type="attribute" comb=" "></selector>
+        <selector key="attr_key_ns" value="attr_value_ns" mod="i" ns="SVG" type="attribute" comb=" "></selector>
+        <selector key="key_ns" value="" ns="" type="attribute" comb=" "></selector>
+    </result>
+</entry>

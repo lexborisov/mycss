@@ -93,6 +93,12 @@ bool mycss_selectors_state_combinator(mycss_result_t* result, mycss_selectors_t*
             }
             break;
         }
+        case MyCSS_TOKEN_TYPE_WHITESPACE: {
+            if(selector->combinator != MyCSS_SELECTORS_COMBINATOR_DESCENDANT)
+                mycss_selectors_parser_selector_combinator_whitespace(result, selectors, selector, token);
+            
+            break;
+        }
         default: {
             mycss_selectors_parser_expectations_error(result, selectors, selector, token);
             result->parser = mycss_parser_token;
@@ -128,7 +134,9 @@ bool mycss_selectors_state_simple_selector(mycss_result_t* result, mycss_selecto
     switch (token->type) {
         case MyCSS_TOKEN_TYPE_IDENT: {
             mycss_selectors_parser_selector_ident_type(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
             printf("mycss_selectors_state_simple_selector_ident\n");  /* End of selector */
+#endif
             
             selectors->state = mycss_selectors_state_simple_selector_ident;
             
@@ -139,7 +147,9 @@ bool mycss_selectors_state_simple_selector(mycss_result_t* result, mycss_selecto
         case MyCSS_TOKEN_TYPE_DELIM: {
             if(*token->data == '*') {
                 mycss_selectors_parser_selector_ident_type(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
                 printf("mycss_selectors_state_simple_selector_asterisk\n");  /* End of selector */
+#endif
                 result->parser = mycss_parser_token;
             }
             else if(*token->data == '.') {
@@ -178,7 +188,9 @@ bool mycss_selectors_state_simple_selector(mycss_result_t* result, mycss_selecto
         }
         case MyCSS_TOKEN_TYPE_HASH: {
             mycss_selectors_parser_selector_id(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
             printf("mycss_selectors_state_simple_selector_hash\n");  /* End of selector */
+#endif
             result->parser = mycss_parser_token;
             break;
         }
@@ -204,7 +216,8 @@ bool mycss_selectors_state_simple_selector_left_bracket(mycss_result_t* result, 
     }
     else if(token->type == MyCSS_TOKEN_TYPE_DELIM) {
         if(*token->data == '|') {
-            mycss_selectors_parser_selector_namespace(result, selectors, selector, token);
+            mycss_selectors_parser_selector_ident_attr(result, selectors, selector, token);
+            mycss_selectors_parser_selector_namespace(result, selectors, selectors->selector, token);
             selectors->state = mycss_selectors_state_simple_selector_left_bracket_vertical_bar;
             
             if(result->parser != mycss_selectors_state_token_all)
@@ -317,7 +330,9 @@ bool mycss_selectors_state_simple_selector_left_bracket_ident(mycss_result_t* re
         }
         case MyCSS_TOKEN_TYPE_RIGHT_SQUARE_BRACKET: {
             mycss_selectors_parser_selector_end(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
             printf("mycss_selectors_state_simple_selector_left_bracket_ident_right_bracket\n");  /* End of selector */
+#endif
             result->parser = mycss_parser_token;
             break;
         }
@@ -371,7 +386,9 @@ bool mycss_selectors_state_simple_selector_colon_colon(mycss_result_t* result, m
 {
     if(token->type == MyCSS_TOKEN_TYPE_IDENT) {
         mycss_selectors_parser_selector_pseudo_class(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
         printf("mycss_selectors_state_simple_selector_colon_colon_ident\n");  /* End of selector */
+#endif
         result->parser = mycss_parser_token;
     }
     else if(token->type == MyCSS_TOKEN_TYPE_FUNCTION) {
@@ -394,7 +411,9 @@ bool mycss_selectors_state_simple_selector_colon_colon_function(mycss_result_t* 
 {
     if(token->type == MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS) {
         mycss_selectors_parser_selector_function_end(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
         printf("mycss_selectors_state_simple_selector_colon_colon_function_right_parenthesis\n");  /* End of selector */
+#endif
         result->parser = mycss_parser_token;
     }
     else {
@@ -410,7 +429,9 @@ bool mycss_selectors_state_simple_selector_full_stop(mycss_result_t* result, myc
 {
     if(token->type == MyCSS_TOKEN_TYPE_IDENT) {
         mycss_selectors_parser_selector_class(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
         printf("mycss_selectors_state_simple_selector_full_stop_ident\n");  /* End of selector */
+#endif
         result->parser = mycss_parser_token;
     }
     else {
@@ -426,13 +447,19 @@ bool mycss_selectors_state_simple_selector_vertical_bar(mycss_result_t* result, 
 {
     if(token->type == MyCSS_TOKEN_TYPE_IDENT) {
         mycss_selectors_parser_selector_after_namespace(result, selectors, selector, token);
+        mycss_selectors_parser_selector_end(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
         printf("mycss_selectors_state_simple_selector_vertical_bar_ident\n");  /* End of selector */
+#endif
         result->parser = mycss_parser_token;
     }
     else if(token->type == MyCSS_TOKEN_TYPE_DELIM) {
         if(*token->data == '*') {
             mycss_selectors_parser_selector_after_namespace(result, selectors, selector, token);
+            mycss_selectors_parser_selector_end(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
             printf("mycss_selectors_state_simple_selector_vertical_bar_asterisk\n");  /* End of selector */
+#endif
             result->parser = mycss_parser_token;
         }
         else {
@@ -480,13 +507,18 @@ bool mycss_selectors_state_simple_selector_ident_vertical_bar(mycss_result_t* re
     if(token->type == MyCSS_TOKEN_TYPE_IDENT) {
         mycss_selectors_parser_selector_after_namespace(result, selectors, selector, token);
         mycss_selectors_parser_selector_end(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
         printf("mycss_selectors_state_simple_selector_ident_vertical_bar_ident\n");  /* End of selector */
+#endif
         result->parser = mycss_parser_token;
     }
     else if(token->type == MyCSS_TOKEN_TYPE_DELIM) {
         if(*token->data == '*') {
             mycss_selectors_parser_selector_after_namespace(result, selectors, selector, token);
+            mycss_selectors_parser_selector_end(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
             printf("mycss_selectors_state_simple_selector_ident_vertical_bar_asterisk\n");  /* End of selector */
+#endif
             result->parser = mycss_parser_token;
         }
         else {
@@ -504,11 +536,45 @@ bool mycss_selectors_state_simple_selector_ident_vertical_bar(mycss_result_t* re
     return true;
 }
 
+bool mycss_selectors_state_shared_after_attribute_value(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
+{
+    if(token->type == MyCSS_TOKEN_TYPE_IDENT) {
+        if(*token->data == 'i') {
+            mycss_selectors_parser_selector_modifier(result, selectors, selector, token);
+            selectors->state = mycss_selectors_state_shared_after_attr_modifier;
+            
+            if(result->parser != mycss_selectors_state_token_skip_whitespace)
+                result->parser = mycss_selectors_state_token_skip_whitespace;
+        }
+        else {
+            mycss_selectors_parser_expectations_error(result, selectors, selector, token);
+            result->parser = mycss_parser_token;
+            return false;
+        }
+    }
+    else if(token->type == MyCSS_TOKEN_TYPE_RIGHT_SQUARE_BRACKET) {
+        mycss_selectors_parser_selector_end(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
+        printf("mycss_selectors_state_shared_after_attribute_value_right_bracket\n");  /* End of selector */
+#endif
+        result->parser = mycss_parser_token;
+    }
+    else {
+        mycss_selectors_parser_expectations_error(result, selectors, selector, token);
+        result->parser = mycss_parser_token;
+        return false;
+    }
+    
+    return true;
+}
+
 bool mycss_selectors_state_shared_after_attr_modifier(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     if(token->type == MyCSS_TOKEN_TYPE_RIGHT_SQUARE_BRACKET) {
         mycss_selectors_parser_selector_end(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
         printf("mycss_selectors_state_shared_after_attr_modifier_right_bracket\n");  /* End of selector */
+#endif
         result->parser = mycss_parser_token;
     }
     else {
@@ -580,7 +646,9 @@ bool mycss_selectors_state_shared_after_wq_name_attr(mycss_result_t* result, myc
         }
         case MyCSS_TOKEN_TYPE_RIGHT_SQUARE_BRACKET: {
             mycss_selectors_parser_selector_end(result, selectors, selector, token);
+#ifdef MyCSS_DEBUG
             printf("mycss_selectors_state_shared_after_wq_name_attr_right_bracket\n");  /* End of selector */
+#endif
             result->parser = mycss_parser_token;
             break;
         }
@@ -619,36 +687,5 @@ bool mycss_selectors_state_shared_after_attr_matcher(mycss_result_t* result, myc
     
     return true;
 }
-
-bool mycss_selectors_state_shared_after_attribute_value(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
-{
-    if(token->type == MyCSS_TOKEN_TYPE_DELIM) {
-        if(*token->data == 'i') {
-            selectors->state = mycss_selectors_state_shared_after_attr_modifier;
-            
-            if(result->parser != mycss_selectors_state_token_skip_whitespace)
-                result->parser = mycss_selectors_state_token_skip_whitespace;
-        }
-        else {
-            mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-            result->parser = mycss_parser_token;
-            return false;
-        }
-    }
-    else if(token->type == MyCSS_TOKEN_TYPE_RIGHT_SQUARE_BRACKET) {
-        mycss_selectors_parser_selector_end(result, selectors, selector, token);
-        printf("mycss_selectors_state_shared_after_attribute_value_right_bracket\n");  /* End of selector */
-        result->parser = mycss_parser_token;
-    }
-    else {
-        mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-        result->parser = mycss_parser_token;
-        return false;
-    }
-    
-    return true;
-}
-
-
 
 

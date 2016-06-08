@@ -7,7 +7,7 @@ SRCS := $(wildcard $(SRCDIR)/*.c)
 HDRS := $(wildcard $(SRCDIR)/*.h)
 OBJS := $(patsubst %.c,%.o,$(SRCS))
 
-SUBDIRS := examples
+SUBDIRS := examples test
 LIBNAME := mycss
 
 all: create
@@ -19,6 +19,9 @@ clean:
 	$(MAKE) -C $(SRCDIR) clean
 	for f in $(SUBDIRS); do $(MAKE) -C $$f clean; done
 	rm -rf lib/*
+
+test:
+	test/test test Selectors
 
 clone: create
 	find include -name "*.h" -exec rm -f {} \;
@@ -37,4 +40,4 @@ create:
 	mkdir -p bin lib include/mycss/rules
 	mkdir -p bin lib include/mycss/media
 
-.PHONY:all clean
+.PHONY:all clean test

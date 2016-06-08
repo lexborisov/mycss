@@ -23,37 +23,10 @@
 
 mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry, mycss_token_t* token)
 {
-//    if(token->type == MyCSS_TOKEN_TYPE_COMMENT)
-//        return token;
-//
-    while(entry->result->parser(entry->result, token) == false) {};
-//
-//    entry->token = mcobject_async_malloc(entry->mcasync_token, entry->token_id, NULL);
-//    entry->selectors->parser(entry, token);
-//    
-//    myhtml_string_t str;
-//    mycss_token_data_to_string(entry, token, &str);
-//    
-//    //printf("%s\n", str.data);
-//    if(token->type == MyCSS_TOKEN_TYPE_NUMBER)
-//    {
-//        double return_num;
-//        mycss_convert_data_to_double(str.data, str.length, &return_num);
-//        
-//        //printf("Number %s: %f\n", str.data, return_num);
-//    }
-//    else if(token->type == MyCSS_TOKEN_TYPE_UNICODE_RANGE)
-//    {
-//        size_t start, end;
-//        mycss_convert_unicode_range_to_codepoint(str.data, str.length, &start, &end);
-//        
-//        if(end)
-//            //printf("Unicode range: %zu-%zu\n", start, end);
-//        else
-//            //printf("Unicode range: %zu\n", start);
-//    }
+    if(token->type == MyCSS_TOKEN_TYPE_COMMENT)
+        return token;
     
-//    myhtml_string_destroy(&str, false);
+    while(entry->result->parser(entry->result, token) == false) {};
     
     return entry->token;
 }
@@ -63,7 +36,9 @@ bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token)
     switch (token->type) {
     /* Selectors */
         case MyCSS_TOKEN_TYPE_IDENT: {
+#ifdef MyCSS_DEBUG
             printf("mycss_selectors_state_simple_selector_ident\n");  /* End of selector */
+#endif
             mycss_selectors_parser_selector_ident_type(result, result->selectors, result->selectors->selector, token);
             result->selectors->state = mycss_selectors_state_simple_selector_ident;
             
@@ -77,13 +52,16 @@ bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token)
             /* combinator */
                 case '+': {
                     mycss_selectors_parser_selector_combinator_plus(result, result->selectors, result->selectors->selector, token);
-                    //printf("mycss_selectors_state_combinator_plus\n");  /* End of selector */
+#ifdef MyCSS_DEBUG
+                    printf("mycss_selectors_state_combinator_plus\n");  /* End of selector */
+#endif
                     return true;
                 }
                 case '>': {
                     mycss_selectors_parser_selector_combinator_greater_than(result, result->selectors, result->selectors->selector, token);
-                    //printf("mycss_selectors_state_combinator_greater_than\n");  /* End of selector */
-                    
+#ifdef MyCSS_DEBUG
+                    printf("mycss_selectors_state_combinator_greater_than\n");  /* End of selector */
+#endif
                     result->selectors->state = mycss_selectors_state_combinator_greater_than;
                     
                     if(result->parser != mycss_selectors_state_token_skip_whitespace)
@@ -93,13 +71,19 @@ bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token)
                 }
                 case '~': {
                     mycss_selectors_parser_selector_combinator_tilde(result, result->selectors, result->selectors->selector, token);
-                    //printf("mycss_selectors_state_combinator_tilde\n");  /* End of selector */
+#ifdef MyCSS_DEBUG
+                    printf("mycss_selectors_state_combinator_tilde\n");  /* End of selector */
+#endif
                     return true;
                 }
                 
             /* simple-selector */
                 case '*': {
-                    //printf("mycss_selectors_state_simple_selector_asterisk\n");  /* End of selector */
+                    mycss_selectors_parser_selector_ident_type(result, result->selectors, result->selectors->selector, token);
+                    mycss_selectors_parser_selector_end(result, result->selectors, result->selectors->selector, token);
+#ifdef MyCSS_DEBUG
+                    printf("mycss_selectors_state_simple_selector_asterisk\n");  /* End of selector */
+#endif
                     return true;
                 }
                 case '.': {
@@ -107,6 +91,8 @@ bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token)
                     break;
                 }
                 case '|': {
+                    mycss_selectors_parser_selector_ident_type(result, result->selectors, result->selectors->selector, token);
+                    mycss_selectors_parser_selector_namespace(result, result->selectors, result->selectors->selector, token);
                     result->selectors->state = mycss_selectors_state_simple_selector_vertical_bar;
                     break;
                 }
@@ -124,8 +110,16 @@ bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token)
         /* combinator */
         case MyCSS_TOKEN_TYPE_COLUMN: {
             mycss_selectors_parser_selector_combinator_column(result, result->selectors, result->selectors->selector, token);
+#ifdef MyCSS_DEBUG
             printf("mycss_selectors_state_combinator_column\n");  /* End of selector */
+#endif
             result->parser = mycss_parser_token;
+            break;
+        }
+        case MyCSS_TOKEN_TYPE_WHITESPACE: {
+            if(result->selectors->selector && result->selectors->selector->combinator != MyCSS_SELECTORS_COMBINATOR_DESCENDANT)
+                mycss_selectors_parser_selector_combinator_whitespace(result, result->selectors, result->selectors->selector, token);
+            
             break;
         }
         case MyCSS_TOKEN_TYPE_COLON: {
@@ -146,7 +140,9 @@ bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token)
         }
         case MyCSS_TOKEN_TYPE_HASH: {
             mycss_selectors_parser_selector_id(result, result->selectors, result->selectors->selector, token);
+#ifdef MyCSS_DEBUG
             printf("mycss_selectors_state_simple_selector_hash\n");  /* End of selector */
+#endif
             break;
         }
     /* Namespace and Media */

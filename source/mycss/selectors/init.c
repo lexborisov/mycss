@@ -88,7 +88,8 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
             if(selector->ns)
                 mycss_namespace_print(selectors->result->ns, selector->ns, fh, true);
             
-            fprintf(fh, "%s", selector->key->data);
+            if(selector->key)
+                fprintf(fh, "%s", selector->key->data);
             
             if(selector->value == NULL) {
                 fprintf(fh, "]");
@@ -101,11 +102,13 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
             break;
         }
         case MyCSS_SELECTORS_TYPE_ID: {
-            fprintf(fh, "#%s", selector->key->data);
+            if(selector->key)
+                fprintf(fh, "#%s", selector->key->data);
             break;
         }
         case MyCSS_SELECTORS_TYPE_CLASS: {
-            fprintf(fh, ".%s", selector->key->data);
+            if(selector->key)
+                fprintf(fh, ".%s", selector->key->data);
             break;
         }
         default: {

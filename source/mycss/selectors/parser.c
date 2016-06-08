@@ -24,7 +24,20 @@ mycss_selectors_entry_t * mycss_selectors_parser_selector_create_new_entry(mycss
 {
     if(selector && (selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_GOOD) == 0)
     {
+        if(selector->key) {
+            myhtml_string_destroy(selector->key, 0);
+            mcobject_async_free(result->entry->mcasync_string, selector->key);
+        }
+        
+        if(selector->value) {
+            myhtml_string_destroy(selector->value, 0);
+            mcobject_async_free(result->entry->mcasync_string, selector->value);
+        }
+        
+        selector = selector->prev;
         mycss_selectors_entry_clean(selectors->selector);
+        
+        selectors->selector->prev = selector;
         return selector;
     }
     
@@ -65,6 +78,11 @@ void mycss_selectors_parser_selector_combinator_tilde(mycss_result_t* result, my
 void mycss_selectors_parser_selector_combinator_column(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     selector->combinator = MyCSS_SELECTORS_COMBINATOR_COLUMN;
+}
+
+void mycss_selectors_parser_selector_combinator_whitespace(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
+{
+    selector->combinator = MyCSS_SELECTORS_COMBINATOR_DESCENDANT;
 }
 
 /////////////////////////////////////////////////////////
@@ -127,17 +145,21 @@ void mycss_selectors_parser_selector_namespace(mycss_result_t* result, mycss_sel
 {
     myhtml_string_t *str = selector->key;
     
-    if(str == NULL || str->length == 0 ||
-       (str->length == 1 && *str->data == '*'))
-    {
-        myhtml_string_destroy(selector->key, 0);
+    if(str == NULL || str->length == 0) {
+        myhtml_string_destroy(str, 0);
+        selector->key = NULL;
+        return;
+    }
+    
+    if(str->length == 1 && *str->data == '*') {
+        myhtml_string_destroy(str, 0);
         selector->key = NULL;
         return;
     }
     
     selector->ns = mycss_result_detect_namespace_by_name(result, str->data, str->length);
     
-    myhtml_string_destroy(selector->key, 0);
+    myhtml_string_destroy(str, 0);
     selector->key = NULL;
 }
 
@@ -196,6 +218,9 @@ void mycss_selectors_parser_selector_end(mycss_result_t* result, mycss_selectors
 
 void mycss_selectors_parser_expectations_error(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
+    if(selector == NULL)
+        return;
+    
     if(selector->key) {
         myhtml_string_destroy(selector->key, 0);
         mcobject_async_free(result->entry->mcasync_string, selector->key);
@@ -203,11 +228,12 @@ void mycss_selectors_parser_expectations_error(mycss_result_t* result, mycss_sel
     
     if(selector->value) {
         myhtml_string_destroy(selector->value, 0);
-        mcobject_async_free(result->entry->mcasync_string, selector->key);
+        mcobject_async_free(result->entry->mcasync_string, selector->value);
     }
+    
+    selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
     
     //printf("Expectations error!\n");
 }
-
 
 

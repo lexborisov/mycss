@@ -135,13 +135,23 @@ sub selector_ident_attr {
 
 sub selector_namespace {
 	my ($creater, $cfunc, $fname, $type) = @_;
+	
+	if ($fname eq "mycss_selectors_state_simple_selector_left_bracket_vertical_bar") {
+		return ["mycss_selectors_parser_selector_ident_attr(result, selectors, selector, token);",
+				"mycss_selectors_parser_selector_namespace(result, selectors, selectors->selector, token);"];
+	}
+	
 	["mycss_selectors_parser_selector_namespace(result, selectors, selector, token);"]
 }
 
 sub selector_after_namespace {
 	my ($creater, $cfunc, $fname, $type) = @_;
 	
-	if ($fname eq "mycss_selectors_state_simple_selector_ident_vertical_bar_ident") {
+	if ($fname eq "mycss_selectors_state_simple_selector_ident_vertical_bar_ident" ||
+		$fname eq "mycss_selectors_state_simple_selector_ident_vertical_bar_asterisk" ||
+		$fname eq "mycss_selectors_state_simple_selector_vertical_bar_ident" ||
+		$fname eq "mycss_selectors_state_simple_selector_vertical_bar_asterisk")
+	{
 		return ["mycss_selectors_parser_selector_after_namespace(result, selectors, selector, token);",
 				"mycss_selectors_parser_selector_end(result, selectors, selector, token);"];
 	}
@@ -287,12 +297,16 @@ sub function_last {
 	
 	if($find_next) {
 		return [
-			"printf(\"$fname\\n\");  /* End of selector */"
+			"#ifdef MyCSS_DEBUG",
+			"printf(\"$fname\\n\");  /* End of selector */",
+			"#endif"
 		];
 	}
 	
 	[
+		"#ifdef MyCSS_DEBUG",
 		"printf(\"$fname\\n\");  /* End of selector */",
+		"#endif",
 		"result->parser = mycss_parser_token;"
 	];
 }

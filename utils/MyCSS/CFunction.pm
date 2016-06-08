@@ -513,6 +513,23 @@ sub default_function_for_all {
 sub default_type_values {
 	my ($self, $cfunc, $prefix, $type, $all, $by, $is_switcher) = @_;
 	
+	my @delim  = grep {$_->{type_name} eq "MyCSS_TOKEN_TYPE_DELIM"} @$by;
+	my @string = grep {$_->{type_name} eq "MyCSS_TOKEN_TYPE_STRING" ||
+					   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_AT_KEYWORD" ||
+					   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_IDENT"
+					   } @$by;
+	
+	my $max = 0;
+	foreach my $entry (@string) {
+		$max = length($entry->entry->{attr}->{value})
+			if $max < length($entry->entry->{attr}->{value});
+	}
+	
+	if ($max == 1) {
+		@delim = @string;
+		@string = ();
+	}
+	
 	my @data;
 	my $npos = 0;
 	foreach my $npos (0..$#$by) {
@@ -524,6 +541,9 @@ sub default_type_values {
 		}
 		elsif(length($attr->{value}) == 0) {
 			die "Length Value is 0\n";
+		}
+		elsif(@string == 0) {
+			push @data, map {"\t$_"} $self->cont_if_char($attr->{value}, $npos);
 		}
 		else {
 			push @data, map {"\t$_"} $self->cont_if_string($attr->{value}, $npos);
@@ -585,6 +605,17 @@ sub default {
 						   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_AT_KEYWORD" ||
 						   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_IDENT"
 						   } @$by;
+		
+		my $max = 0;
+		foreach my $entry (@string) {
+			$max = length($entry->entry->{attr}->{value})
+				if $max < length($entry->entry->{attr}->{value});
+		}
+		
+		if ($max == 1) {
+			@delim = @string;
+			@string = ();
+		}
 		
 		if (@delim) {
 			push @data, map {"\t$_"} @{$cfunc->{func_delim_before}->($self, $cfunc, scalar(@string))};

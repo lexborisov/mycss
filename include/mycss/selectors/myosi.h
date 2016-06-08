@@ -70,7 +70,7 @@ enum mycss_selectors_flags {
     MyCSS_SELECTORS_FLAGS_SELECTOR_BAD  = 0x02
 }
 typedef mycss_selectors_flags_t;
-    
+
 enum mycss_selectors_type {
     MyCSS_SELECTORS_TYPE_UNDEF             = 0x00, // tag name <div> = div in css
     MyCSS_SELECTORS_TYPE_ELEMENT           = 0x01, // tag name <div> = div in css

@@ -15,9 +15,9 @@
 <id-selector> = <hash-token ws func=selector_id>
 <class-selector> = <delim-token value="."> <ident-token ws func=selector_class>
 <attribute-value> = [ <string-token ws func=selector_value> | <ident-token ws func=selector_value> ]
-<attribute-selector> = <[-token ws> <wq-name-attr> <]-token ws func=selector_end> | <[-token ws> <wq-name-attr> <attr-matcher> <attribute-value> <attr-modifier func=selector_modifier>? <]-token ws func=selector_end>
+<attribute-selector> = <[-token ws> <wq-name-attr> <]-token ws func=selector_end> | <[-token ws> <wq-name-attr> <attr-matcher> <attribute-value> <attr-modifier>? <]-token ws func=selector_end>
 <attr-matcher> = <delim-token value="=" ws func=selector_matcher_eq> | <include-match-token ws func=selector_matcher_include> | <dash-match-token ws func=selector_matcher_dash> | <prefix-match-token ws func=selector_matcher_prefix> | <suffix-match-token ws func=selector_matcher_suffix> | <substring-match-token ws func=selector_matcher_substring>
-<attr-modifier> = <delim-token value="i" ws>
+<attr-modifier> = <ident-token value="i" ws func=selector_modifier>
 <pseudo-class-selector> = <colon-token> <ident-token ws func=selector_pseudo_class> | <colon-token> <function-token func=selector_function> <)-token ws func=selector_function_end>
 <pseudo-element-selector> = <colon-token> <pseudo-class-selector>
 
