@@ -23,7 +23,7 @@
 #pragma once
 
 #ifdef __cplusplus
-//extern "C" {
+extern "C" {
 #endif
 
 typedef struct mycss_selectors mycss_selectors_t;

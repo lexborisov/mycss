@@ -28,7 +28,7 @@
 #define mycss_selector_value_destroy(result, type, value, self_destroy) (mycss_selectors_value_destroy_map[type](result, type, value, self_destroy))
 
 #ifdef __cplusplus
-//extern "C" {
+extern "C" {
 #endif
 
 #include <mycss/result.h>

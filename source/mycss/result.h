@@ -33,7 +33,7 @@
 #include "mycss/media/init.h"
 
 #ifdef __cplusplus
-//extern "C" {
+extern "C" {
 #endif
 
 struct mycss_result {

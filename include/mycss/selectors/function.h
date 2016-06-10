@@ -25,7 +25,7 @@
 #define MyCSS_SELECTORS_FUNCTION_NAME_STATIC_SIZE 57
 
 #ifdef __cplusplus
-//extern "C" {
+extern "C" {
 #endif
     
 #include <mycss/result.h>
