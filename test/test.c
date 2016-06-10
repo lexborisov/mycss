@@ -394,21 +394,21 @@ size_t test_dir(const char* dir_path, const char* test_name, size_t *bad_count)
 
 int main(int argc, const char * argv[])
 {
-//    if (argc < 3) {
-//        printf("Bad ARGV!\nUse: test <path_to_dir_test> <test_name> [ <test_name>]*\n");
-//        exit(EXIT_FAILURE);
-//    }
+    if (argc < 3) {
+        printf("Bad ARGV!\nUse: test <path_to_dir_test> <test_name> [ <test_name>]*\n");
+        exit(EXIT_FAILURE);
+    }
     
     printf("\nDirectory: %s\n", argv[1]);
     
     size_t bad_count = 0;
     size_t all_count = 0;
     
-    //for(size_t i = 2; i < argc; i++) {
-    //    all_count += test_dir(argv[1], argv[i], &bad_count);
-    //}
+    for(size_t i = 2; i < argc; i++) {
+        all_count += test_dir(argv[1], argv[i], &bad_count);
+    }
     
-    all_count += test_dir("/new/C-git/mycss/test", "Selectors", &bad_count);
+//    all_count += test_dir("/new/C-git/mycss/test", "Selectors", &bad_count);
     
     printf("\nTotal count: %zu; Good: %zu; Bad: %zu\n", all_count, (all_count - bad_count), bad_count);
     
