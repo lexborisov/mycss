@@ -213,6 +213,9 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
         }
     };
     
+    if(selector->sub_type & MyCSS_SELECTORS_SUB_TYPE_UNKNOWN)
+        fprintf(fh, "^UST");
+    
     if(selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD)
         fprintf(fh, "^B");
 }

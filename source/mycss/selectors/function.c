@@ -64,11 +64,13 @@ mycss_selectors_function_begin_f mycss_function_begin_by_name(const char *name, 
 
 void mycss_selectors_function_begin_nth_child(mycss_result_t* result, mycss_selectors_entry_t* selector)
 {
-    
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_CHILD;
 }
 
 void mycss_selectors_function_begin_has(mycss_result_t* result, mycss_selectors_entry_t* selector)
 {
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_FUNCTION_HAS;
+    
     mycss_result_entry_t *res_entry = mycss_selectors_value_function_create(result, true);
     selector->value = res_entry;
     
@@ -85,21 +87,23 @@ void mycss_selectors_function_begin_has(mycss_result_t* result, mycss_selectors_
 
 void mycss_selectors_function_begin_nth_last_child(mycss_result_t* result, mycss_selectors_entry_t* selector)
 {
-    
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_CHILD;
 }
 
 void mycss_selectors_function_begin_drop(mycss_result_t* result, mycss_selectors_entry_t* selector)
 {
-    
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_FUNCTION_DROP;
 }
 
 void mycss_selectors_function_begin_nth_last_of_type(mycss_result_t* result, mycss_selectors_entry_t* selector)
 {
-    
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_OF_TYPE;
 }
 
 void mycss_selectors_function_begin_not(mycss_result_t* result, mycss_selectors_entry_t* selector)
 {
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NOT;
+    
     mycss_result_entry_t *res_entry = mycss_selectors_value_function_create(result, true);
     selector->value = res_entry;
     
@@ -116,37 +120,79 @@ void mycss_selectors_function_begin_not(mycss_result_t* result, mycss_selectors_
 
 void mycss_selectors_function_begin_current(mycss_result_t* result, mycss_selectors_entry_t* selector)
 {
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_FUNCTION_CURRENT;
     mycss_selectors_function_begin_not(result, selector);
 }
 
 void mycss_selectors_function_begin_nth_of_type(mycss_result_t* result, mycss_selectors_entry_t* selector)
 {
-    
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_OF_TYPE;
 }
 
 void mycss_selectors_function_begin_nth_last_column(mycss_result_t* result, mycss_selectors_entry_t* selector)
 {
-    
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_COLUMN;
 }
 
 void mycss_selectors_function_begin_dir(mycss_result_t* result, mycss_selectors_entry_t* selector)
 {
-    
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_FUNCTION_DIR;
 }
 
 void mycss_selectors_function_begin_matches(mycss_result_t* result, mycss_selectors_entry_t* selector)
 {
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_FUNCTION_MATCHES;
     mycss_selectors_function_begin_not(result, selector);
 }
 
 void mycss_selectors_function_begin_nth_column(mycss_result_t* result, mycss_selectors_entry_t* selector)
 {
-    
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_COLUMN;
 }
 
 void mycss_selectors_function_begin_lang(mycss_result_t* result, mycss_selectors_entry_t* selector)
 {
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_FUNCTION_LANG;
+}
+
+/* Unknown, for not exists function */
+void mycss_selectors_begin_unknown(mycss_result_t* result, mycss_selectors_entry_t* selector)
+{
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_UNKNOWN;
     
+    mycss_result_entry_t *res_entry = mycss_selectors_value_function_create(result, true);
+    selector->value = res_entry;
+    
+    res_entry->parent = result->result_entry;
+    result->result_entry = res_entry;
+    
+    result->selectors->selector = mycss_selectors_entry_create(result->selectors);
+    mycss_result_entry_append_selector(result, result->result_entry, result->selectors->selector);
+    
+    result->selectors->switch_parser = mycss_selectors_unknown_parser;
+    result->selectors->state = mycss_selectors_state_function_skip_all;
+}
+
+bool mycss_selectors_unknown_parser(mycss_result_t* result, mycss_token_t* token)
+{
+    mycss_selectors_t *selectors = result->selectors;
+    
+    mycss_selectors_end(selectors);
+    
+    result->result_entry = result->result_entry->parent;
+    selectors->selector = result->result_entry->selector_list[ (result->result_entry->selector_list_length - 1) ];
+    
+    while(selectors->selector->next)
+        selectors->selector = selectors->selector->next;
+    
+    mycss_selectors_parser_selector_function_end(result, result->selectors, result->selectors->selector, token);
+    
+    if(result->result_entry->parent == NULL) {
+        result->parser = mycss_parser_token;
+        result->selectors->switch_parser = mycss_parser_token;
+    }
+    
+    return true;
 }
 
 /* ::not or ::matches */

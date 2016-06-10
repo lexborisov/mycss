@@ -62,8 +62,12 @@ void mycss_selectors_function_begin_nth_last_of_type(mycss_result_t* result, myc
 void mycss_selectors_function_begin_has(mycss_result_t* result, mycss_selectors_entry_t* selector);
 void mycss_selectors_function_begin_nth_column(mycss_result_t* result, mycss_selectors_entry_t* selector);
 
+void mycss_selectors_begin_unknown(mycss_result_t* result, mycss_selectors_entry_t* selector);
+bool mycss_selectors_unknown_parser(mycss_result_t* result, mycss_token_t* token);
+
 bool mycss_selectors_function_not_or_matches_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_has_parser(mycss_result_t* result, mycss_token_t* token);
+
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -35,6 +35,7 @@ extern "C" {
 bool mycss_selectors_state_token_all(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token);
 void mycss_selectors_state_end(mycss_result_t* result);
+bool mycss_selectors_state_function_skip_all(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 
 /* <combinator> */
 bool mycss_selectors_state_combinator(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);

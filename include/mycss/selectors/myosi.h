@@ -23,7 +23,7 @@
 #pragma once
 
 #ifdef __cplusplus
-extern "C" {
+//extern "C" {
 #endif
 
 typedef struct mycss_selectors mycss_selectors_t;
@@ -69,16 +69,35 @@ enum mycss_selectors_flags {
 typedef mycss_selectors_flags_t;
 
 enum mycss_selectors_type {
-    MyCSS_SELECTORS_TYPE_UNDEF             = 0x00, // tag name <div> = div in css
-    MyCSS_SELECTORS_TYPE_ELEMENT           = 0x01, // tag name <div> = div in css
-    MyCSS_SELECTORS_TYPE_ID                = 0x02, // #hash
-    MyCSS_SELECTORS_TYPE_CLASS             = 0x03, // .class
-    MyCSS_SELECTORS_TYPE_ATTRIBUTE         = 0x04, // [key=val], in html <div key="val">
-    MyCSS_SELECTORS_TYPE_FUNCTION          = 0x05, // :function(...) or ::function(...)
-    MyCSS_SELECTORS_TYPE_PSEUDO_CLASS      = 0x06, // :pseudo or ::pseudo
-    MyCSS_SELECTORS_TYPE_LAST_ENTRY        = 0x07
+    MyCSS_SELECTORS_TYPE_UNDEF             = 0x000, // tag name <div> = div in css
+    MyCSS_SELECTORS_TYPE_ELEMENT           = 0x001, // tag name <div> = div in css
+    MyCSS_SELECTORS_TYPE_ID                = 0x002, // #hash
+    MyCSS_SELECTORS_TYPE_CLASS             = 0x003, // .class
+    MyCSS_SELECTORS_TYPE_ATTRIBUTE         = 0x004, // [key=val], in html <div key="val">
+    MyCSS_SELECTORS_TYPE_FUNCTION          = 0x005, // :function(...) or ::function(...)
+    MyCSS_SELECTORS_TYPE_PSEUDO_CLASS      = 0x006, // :pseudo or ::pseudo
+    MyCSS_SELECTORS_TYPE_LAST_ENTRY        = 0x007
 }
 typedef mycss_selectors_type_t;
+
+enum mycss_selectors_sub_type {
+    MyCSS_SELECTORS_SUB_TYPE_UNDEF                     = 0x000,
+    MyCSS_SELECTORS_SUB_TYPE_UNKNOWN                   = 0x001,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_CURRENT          = 0x002,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_DIR              = 0x003,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_DROP             = 0x004,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_HAS              = 0x005,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_LANG             = 0x006,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_MATCHES          = 0x007,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NOT              = 0x008,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_CHILD        = 0x009,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_COLUMN       = 0x00a,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_CHILD   = 0x00b,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_COLUMN  = 0x00c,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_OF_TYPE = 0x00d,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_OF_TYPE      = 0x00e,
+}
+typedef mycss_selectors_sub_type_t;
 
 struct mycss_selectors {
     // refs
@@ -92,6 +111,7 @@ struct mycss_selectors {
 
 struct mycss_selectors_entry {
     mycss_selectors_type_t type;
+    mycss_selectors_sub_type_t sub_type;
     mycss_selectors_flags_t flags;
     
     size_t ns; /* namespace */

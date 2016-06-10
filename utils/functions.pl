@@ -31,15 +31,20 @@ sub create_result {
         my ($static_list_index_length) = @_;
         my $result = {};
         
-        foreach my $ns (qw( not matches has dir lang current drop
-                        nth-child nth-last-child
-                        nth-of-type nth-last-of-type
-                        nth-column nth-last-column ))
+        foreach my $ns (sort {$a cmp $b} keys %$func_map)
         {
                 my $id = get_index_id($ns, $static_list_index_length);
                 
                 push @{$result->{$id}}, [$ns, length($ns)];
         }
+        
+        my $count = 1;
+        print "MyCSS_SELECTORS_SUB_TYPE_UNKNOWN = 0x001,\n";
+        foreach my $name (sort {$a cmp $b} keys %$func_map) {
+                print "MyCSS_SELECTORS_SUB_TYPE_FUNCTION_", uc(name_to_correct_name($name)), " = ", sprintf("0x%03x", ++$count), ",\n";
+        }
+        
+        print "\n";
         
         $result;
 }

@@ -222,7 +222,8 @@ void mycss_selectors_parser_selector_function(mycss_result_t* result, mycss_sele
     }
     else {
         /* skip and set bad type for current selector */
-        mycss_selectors_parser_expectations_error(result, selectors, selector, token);
+        selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+        mycss_selectors_begin_unknown(result, selector);
     }
 }
 
