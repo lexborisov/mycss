@@ -35,6 +35,8 @@
 #include <mycss/selectors/myosi_resource.h>
 #include <mycss/selectors/init.h>
 #include <mycss/namespace/init.h>
+#include <mycss/result.h>
+#include <mycss/selectors/value.h>
 
 struct res_html {
     char  *html;
@@ -74,6 +76,57 @@ struct res_html load_html_file(const char* filename)
         return res;
 }
 
+void test_print_selector_value_attribute(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str)
+{
+    myhtml_string_append(str, " ns=\"", strlen(" ns=\""));
+    if(selector->ns) {
+        size_t length;
+        const char *name = mycss_namespace_name_by_id(selectors->result->ns, selector->ns, &length);
+        
+        if(length)
+            myhtml_string_append(str, name, length);
+    }
+    myhtml_string_append(str, "\"", strlen("\""));
+    
+    if(selector->value == NULL) {
+        myhtml_string_append(str, ">\n", 2);
+        return;
+    }
+    
+    if(mycss_selector_value_attribute(selector->value)->value)
+    {
+        myhtml_string_append(str, " value=\"", strlen(" value=\""));
+        myhtml_string_append(str, mycss_selector_value_attribute(selector->value)->value->data,
+                             mycss_selector_value_attribute(selector->value)->value->length);
+        myhtml_string_append(str, "\"", strlen("\""));
+    }
+    
+    if(mycss_selector_value_attribute(selector->value)->mod)
+    {
+        myhtml_string_append(str, " mod=\"", strlen(" mod=\""));
+        if(mycss_selector_value_attribute(selector->value)->mod)
+            myhtml_string_append(str, "i", 1);
+        myhtml_string_append(str, "\"", strlen("\""));
+    }
+    
+    myhtml_string_append(str, ">\n", 2);
+}
+
+void test_print_selector_value_element(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str)
+{
+    myhtml_string_append(str, " ns=\"", strlen(" ns=\""));
+    if(selector->ns) {
+        size_t length;
+        const char *name = mycss_namespace_name_by_id(selectors->result->ns, selector->ns, &length);
+        
+        if(length)
+            myhtml_string_append(str, name, length);
+    }
+    myhtml_string_append(str, "\"", strlen("\""));
+    
+    myhtml_string_append(str, ">\n", 2);
+}
+
 void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str, bool is_last)
 {
     myhtml_string_append(str, "<selector type=\"", strlen("<selector type=\""));
@@ -102,16 +155,6 @@ void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* 
     };
     myhtml_string_append(str, "\"", strlen("\""));
     
-    myhtml_string_append(str, " ns=\"", strlen(" ns=\""));
-    if(selector->ns) {
-        size_t length;
-        const char *name = mycss_namespace_name_by_id(selectors->result->ns, selector->ns, &length);
-        
-        if(length)
-            myhtml_string_append(str, name, length);
-    }
-    myhtml_string_append(str, "\"", strlen("\""));
-    
     if(selector->key && selector->key->length) {
         myhtml_string_append(str, " key=\"", strlen(" key=\""));
         myhtml_string_append(str, selector->key->data, selector->key->length);
@@ -120,36 +163,69 @@ void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* 
     else
         myhtml_string_append(str, " key=\"\"", strlen(" key=\"\""));
     
-    if(selector->value && selector->value->length) {
-        myhtml_string_append(str, " value=\"", strlen(" value=\""));
-        myhtml_string_append(str, selector->value->data, selector->value->length);
-        myhtml_string_append(str, "\"", strlen("\""));
-    }
-    else
-        myhtml_string_append(str, " value=\"\"", strlen(" value=\"\""));
-    
     myhtml_string_append(str, " comb=\"", strlen(" comb=\""));
-    if(is_last == false)
-        myhtml_string_append(str, mycss_selectors_resource_combinator_names_map[ selector->combinator ],
-                             strlen(mycss_selectors_resource_combinator_names_map[ selector->combinator ]));
+    myhtml_string_append(str, mycss_selectors_resource_combinator_names_map[ selector->combinator ],
+                         strlen(mycss_selectors_resource_combinator_names_map[ selector->combinator ]));
     myhtml_string_append(str, "\"", strlen("\""));
     
-    myhtml_string_append(str, " mod=\"", strlen(" mod=\""));
-    if(selector->mod)
-        myhtml_string_append(str, "i", 1);
-    myhtml_string_append(str, "\"", strlen("\""));
-    
-    myhtml_string_append(str, ">\n", 2);
+    switch(selector->type) {
+        case MyCSS_SELECTORS_TYPE_ELEMENT:
+            test_print_selector_value_element(selectors, selector, str);
+            break;
+        case MyCSS_SELECTORS_TYPE_CLASS:
+            test_print_selector_value_element(selectors, selector, str);
+            break;
+        case MyCSS_SELECTORS_TYPE_ID:
+            test_print_selector_value_element(selectors, selector, str);
+            break;
+        case MyCSS_SELECTORS_TYPE_ATTRIBUTE:
+            test_print_selector_value_attribute(selectors, selector, str);
+            break;
+            
+        case MyCSS_SELECTORS_TYPE_FUNCTION:
+            myhtml_string_append(str, ">\n", 2);
+            break;
+            
+        default:
+            myhtml_string_append(str, ">\n", 2);
+            break;
+    }
+}
+
+void test_result_entry_print(mycss_result_t* result, mycss_result_entry_t* res_entry, myhtml_string_t* str)
+{
+    while(res_entry) {
+        for(size_t i = 0; i < res_entry->selector_list_length; i++) {
+            
+            mycss_selectors_entry_t* selector = res_entry->selector_list[i];
+            
+            while(selector) {
+                test_print_selector(result->selectors, selector, str, (selector->next == NULL));
+                selector = selector->next;
+            }
+            
+            if((i + 1) != res_entry->selector_list_length)
+                myhtml_string_append(str, ", ", 2);
+        }
+        
+        if(res_entry->next)
+            myhtml_string_append(str, "\n", 1);
+        
+        res_entry = res_entry->next;
+    }
 }
 
 const char * test_node_attr_value(myhtml_tree_node_t *node, const char* key, myhtml_string_t* str)
 {
     myhtml_tree_attr_t *attr = myhtml_attribute_by_key(node, key, strlen(key));
     
+    if(attr == NULL)
+        return NULL;
+    
     myhtml_string_append(str, " ", 1);
     myhtml_string_append(str, key, strlen(key));
     
-    if(attr && attr->value_length && attr->entry.data) {
+    if(attr->value_length && attr->entry.data) {
         myhtml_string_append(str, "=\"", 2);
         myhtml_string_append(str, &attr->entry.data[attr->value_begin], attr->value_length);
         myhtml_string_append(str, "\"", 1);
@@ -167,15 +243,10 @@ void test_print_tag_selector(myhtml_tree_node_t* node, myhtml_string_t* str, boo
     myhtml_string_append(str, "<selector", strlen("<selector"));
     
     test_node_attr_value(node, "type", str);
-    test_node_attr_value(node, "ns", str);
     test_node_attr_value(node, "key", str);
+    test_node_attr_value(node, "comb", str);
+    test_node_attr_value(node, "ns", str);
     test_node_attr_value(node, "value", str);
-    
-    if(is_last)
-        myhtml_string_append(str, " comb=\"\"", strlen(" comb=\"\""));
-    else
-        test_node_attr_value(node, "comb", str);
-    
     test_node_attr_value(node, "mod", str);
     
     myhtml_string_append(str, ">\n", 2);
@@ -184,13 +255,8 @@ void test_print_tag_selector(myhtml_tree_node_t* node, myhtml_string_t* str, boo
 bool test_cmp(mycss_result_t *css_result, myhtml_tree_t* tree, myhtml_tree_node_t *node, myhtml_string_t* css_res, myhtml_string_t* res_res)
 {
     myhtml_collection_t *collection = myhtml_get_nodes_by_name_in_scope(tree, NULL, node, "selector", 8, NULL);
-    mycss_selectors_entry_t *selector = mycss_selectors_entry_find_first(css_result->selectors->selector);
     
-    while(selector) {
-        test_print_selector(css_result->selectors, selector, css_res, (selector->next == NULL));
-        
-        selector = selector->next;
-    }
+    test_result_entry_print(css_result, css_result->result_entry_first, css_res);
     
     for(size_t i = 0; i < collection->length; i++) {
         test_print_tag_selector(collection->list[i], res_res, ((i+1) == collection->length));

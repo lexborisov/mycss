@@ -26,8 +26,15 @@
 extern "C" {
 #endif
 
+#include <mycss/result.h>
+#include <mycss/entry.h>
 #include <mycss/selectors/myosi.h>
+#include <mycss/selectors/value.h>
+#include <mycss/selectors/function.h>
 
+mycss_selectors_entry_t * mycss_selectors_parser_selector_create_new_entry(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector);
+
+void mycss_selectors_parser_selector_comma(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 void mycss_selectors_parser_selector_combinator_greater_than(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 void mycss_selectors_parser_selector_combinator_plus(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 void mycss_selectors_parser_selector_combinator_tilde(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
@@ -46,6 +53,7 @@ void mycss_selectors_parser_selector_pseudo_class(mycss_result_t* result, mycss_
 void mycss_selectors_parser_selector_function(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 void mycss_selectors_parser_selector_function_end(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 void mycss_selectors_parser_expectations_error(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+void mycss_selectors_parser_bad_token(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

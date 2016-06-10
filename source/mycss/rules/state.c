@@ -41,6 +41,8 @@ bool mycss_rules_state_body(mycss_result_t* result, mycss_rules_t* rules, mycss_
 {
     if(token->type == MyCSS_TOKEN_TYPE_RIGHT_CURLY_BRACKET) {
         //printf("mycss_rules_state_body_closing_brace\n");  /* End of rules */
+        
+        mycss_result_entry_create_and_push(result);
         result->parser = mycss_parser_token;
     }
     

@@ -581,7 +581,12 @@ sub default_type_else {
 	push @data, map {"\t$_"} @{$cfunc->func_else->($self, $cfunc, $fname)};
 	
 	if ($is_switcher) {
-		push @data, $self->cont_case_token_type_default_end();
+		if ($data[-1] !~ /return/) {
+			push @data, $self->cont_case_token_type_default_end();
+		}
+		else {
+			push @data, "}";
+		}
 	}
 	else {
 		push @data, $self->cont_if_token_type_default_end();

@@ -87,6 +87,7 @@ mycss_status_t mycss_parse(mycss_entry_t* entry, myhtml_encoding_t encoding, con
         return status;
     
     status = mycss_tokenizer_end(entry);
+    mycss_result_end(entry->result);
     
     return status;
 }
@@ -117,7 +118,10 @@ mycss_status_t mycss_parse_chunk(mycss_entry_t* entry, const char* css, size_t c
 
 mycss_status_t mycss_parse_chunk_end(mycss_entry_t* entry)
 {
-    return mycss_tokenizer_end(entry);
+    mycss_status_t status = mycss_tokenizer_end(entry);
+    mycss_result_end(entry->result);
+    
+    return status;
 }
 
 // token
@@ -152,9 +156,10 @@ const char * mycss_token_name_by_type(mycss_token_type_t type)
     return mycss_token_type_description[type];
 }
 
-size_t mycss_token_data_to_string(mycss_entry_t* entry, mycss_token_t* token, myhtml_string_t* str)
+size_t mycss_token_data_to_string(mycss_entry_t* entry, mycss_token_t* token, myhtml_string_t* str, bool init_string)
 {
-    myhtml_string_init(entry->mchar, entry->mchar_node_id, str, (token->length + 4));
+    if(init_string)
+        myhtml_string_init(entry->mchar, entry->mchar_node_id, str, (token->length + 4));
     
     mycss_string_res_t out_res;
     mycss_string_res_clean(&out_res);

@@ -76,7 +76,7 @@ foreach my $key (@$index_res) {
 
 #my $key = "<combinator>";
 my $key = "<simple-selector>";
-#my $key = "<type-selector>";
+#my $key = "<pseudo-element-selector>";
 #my $key = "<attribute-selector>";
 
 my $ghash = {};
@@ -171,32 +171,44 @@ sub selector_class {
 
 sub selector_matcher_eq {
 	my ($creater, $cfunc, $fname, $type) = @_;
-	["selector->match = MyCSS_SELECTORS_MATCH_EQUAL;"]
+	["if(selector->value == NULL)",
+	 "\tselector->value = mycss_selectors_value_attribute_create(result, true);", "",
+	 "mycss_selector_value_attribute(selector->value)->match = MyCSS_SELECTORS_MATCH_EQUAL;"]
 }
 
 sub selector_matcher_include {
 	my ($creater, $cfunc, $fname, $type) = @_;
-	["selector->match = MyCSS_SELECTORS_MATCH_INCLUDE;"]
+	["if(selector->value == NULL)",
+	 "\tselector->value = mycss_selectors_value_attribute_create(result, true);", "",
+	 "mycss_selector_value_attribute(selector->value)->match = MyCSS_SELECTORS_MATCH_INCLUDE;"]
 }
 
 sub selector_matcher_dash {
 	my ($creater, $cfunc, $fname, $type) = @_;
-	["selector->match = MyCSS_SELECTORS_MATCH_DASH;"]
+	["if(selector->value == NULL)",
+	 "\tselector->value = mycss_selectors_value_attribute_create(result, true);", "",
+	 "mycss_selector_value_attribute(selector->value)->match = MyCSS_SELECTORS_MATCH_DASH;"]
 }
 
 sub selector_matcher_prefix {
 	my ($creater, $cfunc, $fname, $type) = @_;
-	["selector->match = MyCSS_SELECTORS_MATCH_PREFIX;"]
+	["if(selector->value == NULL)",
+	 "\tselector->value = mycss_selectors_value_attribute_create(result, true);", "",
+	 "mycss_selector_value_attribute(selector->value)->match = MyCSS_SELECTORS_MATCH_PREFIX;"]
 }
 
 sub selector_matcher_suffix {
 	my ($creater, $cfunc, $fname, $type) = @_;
-	["selector->match = MyCSS_SELECTORS_MATCH_SUFFIX;"]
+	["if(selector->value == NULL)",
+	 "\tselector->value = mycss_selectors_value_attribute_create(result, true);", "",
+	 "mycss_selector_value_attribute(selector->value)->match = MyCSS_SELECTORS_MATCH_SUFFIX;"]
 }
 
 sub selector_matcher_substring {
 	my ($creater, $cfunc, $fname, $type) = @_;
-	["selector->match = MyCSS_SELECTORS_MATCH_SUBSTRING;"]
+	["if(selector->value == NULL)",
+	 "\tselector->value = mycss_selectors_value_attribute_create(result, true);", "",
+	 "mycss_selector_value_attribute(selector->value)->match = MyCSS_SELECTORS_MATCH_SUBSTRING;"]
 }
 
 sub selector_value {
@@ -268,7 +280,12 @@ sub function_string_after {
 sub function_default {
 	my ($creater, $cfunc, $fname, $type) = @_;
 	
-	["selectors->state = $fname;"];
+	if ($fname ne "mycss_selectors_state_simple_selector_colon_colon_function" &&
+		$fname ne "mycss_selectors_state_simple_selector_colon_function") {
+		return ["selectors->state = $fname;"];
+	}
+	
+	[];
 }
 
 sub function_else {
@@ -280,14 +297,23 @@ sub function_else {
 	if($fname eq "mycss_selectors_state_simple_selector_ident") {
 		return [
 			"mycss_selectors_parser_selector_end(result, selectors, selector, token);",
-			"result->parser = mycss_parser_token;",
+			"result->parser = selectors->switch_parser;",
+			"return false;"
+		];
+	}
+	elsif($fname eq "mycss_selectors_state_simple_selector" ||
+		  $fname eq "mycss_selectors_state_simple_selector_delim" ||
+		  $fname eq "mycss_selectors_state_combinator_greater_than")
+	{
+		return [
+			"result->parser = selectors->switch_parser;",
 			"return false;"
 		];
 	}
 	
 	[
 		"mycss_selectors_parser_expectations_error(result, selectors, selector, token);",
-		"result->parser = mycss_parser_token;",
+		"result->parser = selectors->switch_parser;",
 		"return false;"
 	];
 }
@@ -297,17 +323,13 @@ sub function_last {
 	
 	if($find_next) {
 		return [
-			"#ifdef MyCSS_DEBUG",
-			"printf(\"$fname\\n\");  /* End of selector */",
-			"#endif"
+			"MyCSS_DEBUG_MESSAGE(\"$fname\")"
 		];
 	}
 	
 	[
-		"#ifdef MyCSS_DEBUG",
-		"printf(\"$fname\\n\");  /* End of selector */",
-		"#endif",
-		"result->parser = mycss_parser_token;"
+		"MyCSS_DEBUG_MESSAGE(\"$fname\")",
+		"result->parser = selectors->switch_parser;"
 	];
 }
 

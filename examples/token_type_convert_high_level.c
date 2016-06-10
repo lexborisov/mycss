@@ -27,7 +27,7 @@
 mycss_token_t * token_ready_callback(mycss_entry_t* entry, mycss_token_t* token)
 {
     myhtml_string_t str;
-    mycss_token_data_to_string(entry, token, &str);
+    mycss_token_data_to_string(entry, token, &str, true);
     
     if(mycss_token_type(token) == MyCSS_TOKEN_TYPE_NUMBER)
     {

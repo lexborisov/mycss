@@ -40,7 +40,7 @@ bool mycss_namespace_state_namespace(mycss_result_t* result, mycss_namespace_t* 
 {
     if(token->type == MyCSS_TOKEN_TYPE_AT_KEYWORD) {
         myhtml_string_t str;
-        mycss_token_data_to_string(result->entry, token, &str);
+        mycss_token_data_to_string(result->entry, token, &str, true);
         
         if(myhtml_strncasecmp(str.data, "namespace", 9) == 0) {
             mycss_namespace_parser_begin(result, ns, ns_entry, token);

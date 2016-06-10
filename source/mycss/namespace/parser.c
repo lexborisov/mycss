@@ -37,7 +37,7 @@ void mycss_namespace_parser_begin(mycss_result_t* result, mycss_namespace_t* ns,
 void mycss_namespace_parser_name(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token)
 {
     myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
-    mycss_token_data_to_string(result->entry, token, str);
+    mycss_token_data_to_string(result->entry, token, str, true);
     
     ns_entry->name = str;
 }
@@ -45,7 +45,7 @@ void mycss_namespace_parser_name(mycss_result_t* result, mycss_namespace_t* ns, 
 void mycss_namespace_parser_url(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token)
 {
     myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
-    mycss_token_data_to_string(result->entry, token, str);
+    mycss_token_data_to_string(result->entry, token, str, true);
     
     ns_entry->url = str;
 }

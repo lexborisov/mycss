@@ -577,8 +577,7 @@ size_t mycss_tokenizer_global_state_ident(mycss_entry_t* entry, mycss_token_t* t
         else {
             css_offset++;
             
-            token->length += 1;
-            token->type    = MyCSS_TOKEN_TYPE_FUNCTION;
+            token->type = MyCSS_TOKEN_TYPE_FUNCTION;
             
             MyCSS_TOKEN_READY_CALLBACK_FUNCTION(entry, token);
             

@@ -19,6 +19,6 @@
 <attr-matcher> = <delim-token value="=" ws func=selector_matcher_eq> | <include-match-token ws func=selector_matcher_include> | <dash-match-token ws func=selector_matcher_dash> | <prefix-match-token ws func=selector_matcher_prefix> | <suffix-match-token ws func=selector_matcher_suffix> | <substring-match-token ws func=selector_matcher_substring>
 <attr-modifier> = <ident-token value="i" ws func=selector_modifier>
 <pseudo-class-selector> = <colon-token> <ident-token ws func=selector_pseudo_class> | <colon-token> <function-token func=selector_function> <)-token ws func=selector_function_end>
-<pseudo-element-selector> = <colon-token> <pseudo-class-selector>
+<pseudo-element-selector> = <colon-token> <colon-token>? [ <ident-token ws func=selector_pseudo_class> | <function-token func=selector_function> <)-token ws func=selector_function_end> ]
 
 

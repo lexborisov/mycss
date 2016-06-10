@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "98733C220E4E0BC91F352AF8F6264AF568DFB45B",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "98733C220E4E0BC91F352AF8F6264AF568DFB45B" : 0,
+    "B060867C3997F583FF228863A439187BDC805025" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "9FD2EC02-1236-4D9D-9061-311E5D1B93BF",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "98733C220E4E0BC91F352AF8F6264AF568DFB45B" : "mycss\/",
+    "B060867C3997F583FF228863A439187BDC805025" : "myhtml\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "mycss",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "projects\/mycss.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/lexborisov\/mycss.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "98733C220E4E0BC91F352AF8F6264AF568DFB45B"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/lexborisov\/myhtml.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "B060867C3997F583FF228863A439187BDC805025"
+    }
+  ]
+}

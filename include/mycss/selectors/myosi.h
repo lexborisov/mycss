@@ -23,7 +23,7 @@
 #pragma once
 
 #ifdef __cplusplus
-extern "C" {
+//extern "C" {
 #endif
 
 typedef struct mycss_selectors mycss_selectors_t;
@@ -31,8 +31,6 @@ typedef struct mycss_selectors_entry mycss_selectors_entry_t;
 
 #include <mycss/myosi.h>
 #include <mycss/mystring.h>
-#include <mycss/parser.h>
-#include <mycss/selectors/state.h>
 
 typedef bool (*mycss_selectors_state_f)(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 
@@ -66,8 +64,7 @@ typedef mycss_selectors_mod_t;
 
 enum mycss_selectors_flags {
     MyCSS_SELECTORS_FLAGS_UNDEF         = 0x00,
-    MyCSS_SELECTORS_FLAGS_SELECTOR_GOOD = 0x01,
-    MyCSS_SELECTORS_FLAGS_SELECTOR_BAD  = 0x02
+    MyCSS_SELECTORS_FLAGS_SELECTOR_BAD  = 0x01
 }
 typedef mycss_selectors_flags_t;
 
@@ -89,6 +86,8 @@ struct mycss_selectors {
     mycss_result_t* result;
     mycss_selectors_entry_t* selector; // current selectors entry
     mycss_selectors_state_f state;
+    
+    mycss_parser_token_f switch_parser;
 };
 
 struct mycss_selectors_entry {
@@ -98,16 +97,13 @@ struct mycss_selectors_entry {
     size_t ns; /* namespace */
     
     myhtml_string_t* key;
-    myhtml_string_t* value;
+    void* value;
     
     mycss_selectors_combinator_t combinator;
-    mycss_selectors_match_t match;
-    mycss_selectors_mod_t mod;
     
     mycss_selectors_entry_t* next;
     mycss_selectors_entry_t* prev;
 };
-
 
 #ifdef __cplusplus
 } /* extern "C" */

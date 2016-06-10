@@ -907,8 +907,9 @@ size_t mycss_tokenizer_state_commercial_at_rsolidus(mycss_entry_t* entry, mycss_
 
 size_t mycss_tokenizer_state_commercial_at_back(mycss_entry_t* entry, mycss_token_t* token, const char* css, size_t css_offset, size_t css_size)
 {
-    token->type   = MyCSS_TOKEN_TYPE_AT_KEYWORD;
-    token->begin += 1;
+    token->type    = MyCSS_TOKEN_TYPE_AT_KEYWORD;
+    token->begin  += 1;
+    token->length -= 1;
     
     MyCSS_TOKEN_READY_CALLBACK_FUNCTION(entry, token);
     

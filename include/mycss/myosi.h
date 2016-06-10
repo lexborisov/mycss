@@ -61,6 +61,9 @@ enum mycss_status {
     MyCSS_STATUS_ERROR_NAMESPACE_ENTRIES_INIT           = 0x010203,
     MyCSS_STATUS_ERROR_NAMESPACE_NODE_ADD               = 0x010204,
     MyCSS_STATUS_ERROR_RESULT_CREATE                    = 0x010300,
+    MyCSS_STATUS_ERROR_RESULT_ENTRIES_CREATE            = 0x010301,
+    MyCSS_STATUS_ERROR_RESULT_ENTRIES_INIT              = 0x010302,
+    MyCSS_STATUS_ERROR_RESULT_ENTRIES_ADD_NODE          = 0x010303,
     MyCSS_STATUS_ERROR_RULES_CREATE                     = 0x010400,
     MyCSS_STATUS_ERROR_STRING_CREATE                    = 0x010501,
     MyCSS_STATUS_ERROR_STRING_INIT                      = 0x010502,
@@ -237,7 +240,15 @@ enum mycss_token_type {
 typedef mycss_token_type_t;
 
 // result
+typedef struct mycss_result_entry mycss_result_entry_t;
 typedef struct mycss_result mycss_result_t;
+
+enum mycss_result_entry_type {
+    MyCSS_RESULT_ENTRY_TYPE_UNDEF = 0x00,
+    MyCSS_RESULT_ENTRY_TYPE_GOOD  = 0x01,
+    MyCSS_RESULT_ENTRY_TYPE_BAD   = 0x02
+}
+typedef mycss_result_entry_type_t;
 
 // mystring
 typedef struct mycss_string_escaped_res mycss_string_escaped_res_t;

@@ -33,13 +33,18 @@
 #include "mycss/media/init.h"
 
 #ifdef __cplusplus
-extern "C" {
+//extern "C" {
 #endif
 
 struct mycss_result {
     /* refs */
     mycss_entry_t* entry;
+    size_t mchar_value_node_id;
+    size_t mchar_selector_list_node_id;
+    size_t mcobject_result_entries_node_id;
     
+    mycss_result_entry_t* result_entry_first; /* first */
+    mycss_result_entry_t* result_entry;       /* current */
     mycss_namespace_t* ns;
     mycss_selectors_t* selectors;
     mycss_rules_t* rules;
@@ -52,11 +57,28 @@ struct mycss_result {
     size_t namespace_entries_id;
 };
 
+struct mycss_result_entry {
+    mycss_selectors_entry_t** selector_list;
+    size_t selector_list_length;
+    
+    mycss_result_entry_t* parent;
+    mycss_result_entry_t* next;
+    mycss_result_entry_t* prev;
+};
 
 mycss_result_t * mycss_result_create(void);
 mycss_status_t mycss_result_init(mycss_entry_t* entry, mycss_result_t* result);
 mycss_status_t mycss_result_clean_all(mycss_result_t* result);
 mycss_result_t * mycss_result_destroy(mycss_result_t* result, bool self_destroy);
+void mycss_result_end(mycss_result_t* result);
+
+mycss_result_entry_t * mycss_result_entry_create(mycss_result_t* result);
+void mycss_result_entry_clean(mycss_result_entry_t* result_entry);
+mycss_result_entry_t * mycss_result_entry_destroy(mycss_result_t* result, mycss_result_entry_t* result_entry, bool self_destroy);
+mycss_result_entry_t * mycss_result_entry_create_and_push(mycss_result_t* result);
+mycss_result_entry_t * mycss_result_entry_append_selector(mycss_result_t* result, mycss_result_entry_t* res_entry, mycss_selectors_entry_t* selector);
+
+void mycss_result_entry_print(mycss_result_t* result, mycss_result_entry_t* res_entry, FILE* fh);
 
 size_t mycss_result_detect_namespace_by_name(mycss_result_t* result, const char* ns, size_t length);
 

@@ -381,12 +381,13 @@ mycss_token_name_by_type(mycss_token_type_t type);
  * @param[in] mycss_entry_t*
  * @param[in] mycss_token_t*, token from which data will be obtained
  * @param[in] myhtml_string_t*, a pointer to the row in which the data will be written
+ * @param[in] initialization myhtml_string_t* object
  *
  * @return length of processed data
  */
 size_t
 mycss_token_data_to_string(mycss_entry_t* entry, mycss_token_t* token,
-                           myhtml_string_t* str);
+                           myhtml_string_t* str, bool init_string);
 
 /***********************************************************************************
  *

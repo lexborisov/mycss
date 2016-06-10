@@ -26,6 +26,20 @@
 extern "C" {
 #endif
 
+#ifdef MyCSS_DEBUG
+    #define MyCSS_DEBUG_MESSAGE(format, ...) \
+        myhtml_print(stderr, "DEBUG: "format"\n", ##__VA_ARGS__)
+#else
+    #define MyCSS_DEBUG_MESSAGE(format, ...)
+#endif
+    
+#ifdef DEBUG_MODE
+#define MyHTML_DEBUG_ERROR(format, ...)      \
+myhtml_print(stderr, "DEBUG ERROR: "format"\n", ##__VA_ARGS__)
+#else
+#define MyHTML_DEBUG_ERROR(format, ...)
+#endif
+
 #include "mycss/myosi.h"
 #include "mycss/entry.h"
 #include "mycss/tokenizer.h"
@@ -50,7 +64,7 @@ size_t mycss_token_length(mycss_token_t* token);
 size_t mycss_token_position(mycss_token_t* token, size_t *return_length);
 mycss_token_type_t mycss_token_type(mycss_token_t* token);
 const char * mycss_token_name_by_type(mycss_token_type_t type);
-size_t mycss_token_data_to_string(mycss_entry_t* entry, mycss_token_t* token, myhtml_string_t* str);
+size_t mycss_token_data_to_string(mycss_entry_t* entry, mycss_token_t* token, myhtml_string_t* str, bool init_string);
 
 myhtml_incoming_buffer_t * mycss_token_buffer_first(mycss_entry_t* entry, mycss_token_t* token);
 

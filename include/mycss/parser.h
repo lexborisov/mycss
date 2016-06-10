@@ -34,6 +34,7 @@ extern "C" {
 #include <mycss/selectors/state.h>
 #include <mycss/namespace/state.h>
 #include <mycss/rules/state.h>
+#include <mycss/selectors/parser.h>
 #include <myhtml/incoming.h>
 
 mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry, mycss_token_t* token);
