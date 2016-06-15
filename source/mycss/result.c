@@ -92,6 +92,15 @@ mycss_status_t mycss_result_init(mycss_entry_t* entry, mycss_result_t* result)
     if(status != MyCSS_STATUS_OK)
         return status;
     
+    /* An+B */
+    result->anb = mycss_an_plus_b_create();
+    if(result->ns == NULL)
+        return MyCSS_STATUS_ERROR_AN_PLUS_B_CREATE;
+    
+    status = mycss_an_plus_b_init(entry, result->anb);
+    if(status != MyCSS_STATUS_OK)
+        return status;
+    
     /* create first result entry */
     result->result_entry = result->result_entry_first = mycss_result_entry_create(result);
     mycss_result_entry_append_selector(result, result->result_entry, result->selectors->selector);
@@ -119,6 +128,9 @@ mycss_status_t mycss_result_clean_all(mycss_result_t* result)
     
     /* Result entries */
     mcobject_async_node_clean(result->entry->mcasync_result_entries, result->mcobject_result_entries_node_id);
+    
+    /* An+B */
+    mycss_an_plus_b_clean_all(result->anb);
     
     return MyCSS_STATUS_OK;
 }
@@ -149,6 +161,9 @@ mycss_result_t * mycss_result_destroy(mycss_result_t* result, bool self_destroy)
     
     /* Result entries */
     mcobject_async_node_delete(result->entry->mcasync_result_entries, result->mcobject_result_entries_node_id);
+    
+    /* An+B */
+    mycss_an_plus_b_destroy(result->anb, true);
     
     if(result) {
         myfree(result);

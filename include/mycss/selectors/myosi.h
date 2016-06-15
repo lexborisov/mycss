@@ -23,7 +23,7 @@
 #pragma once
 
 #ifdef __cplusplus
-//extern "C" {
+extern "C" {
 #endif
 
 typedef struct mycss_selectors mycss_selectors_t;
@@ -96,6 +96,7 @@ enum mycss_selectors_sub_type {
     MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_COLUMN  = 0x00c,
     MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_OF_TYPE = 0x00d,
     MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_OF_TYPE      = 0x00e,
+    MyCSS_SELECTORS_SUB_TYPE_FUNCTION_LAST_ENTRY       = 0x00f,
 }
 typedef mycss_selectors_sub_type_t;
 

@@ -148,6 +148,10 @@ void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* 
             myhtml_string_append(str, "class", strlen("class"));
             break;
         }
+        case MyCSS_SELECTORS_TYPE_FUNCTION: {
+            myhtml_string_append(str, "function", strlen("function"));
+            break;
+        }
         default: {
             myhtml_string_append(str, "undef", strlen("undef"));
             break;
@@ -243,11 +247,13 @@ void test_print_tag_selector(myhtml_tree_node_t* node, myhtml_string_t* str, boo
     myhtml_string_append(str, "<selector", strlen("<selector"));
     
     test_node_attr_value(node, "type", str);
+    test_node_attr_value(node, "subtype", str);
     test_node_attr_value(node, "key", str);
     test_node_attr_value(node, "comb", str);
     test_node_attr_value(node, "ns", str);
     test_node_attr_value(node, "value", str);
     test_node_attr_value(node, "mod", str);
+    test_node_attr_value(node, "bad", str);
     
     myhtml_string_append(str, ">\n", 2);
 }

@@ -245,7 +245,13 @@ sub selector_function_end {
 package My::Functions::Basic;
 
 sub function_whitespace {
-	my ($creater, $cfunc, $exists_delim) = @_;
+	my ($creater, $cfunc, $fname, $type_name) = @_;
+	
+	if (($fname ne "mycss_selectors_state_simple_selector_colon_colon" && $type_name eq "MyCSS_TOKEN_TYPE_FUNCTION") ||
+		($fname ne "mycss_selectors_state_simple_selector_colon" && $type_name eq "MyCSS_TOKEN_TYPE_FUNCTION"))
+	{
+		return [];
+	}
 	
 	[
 		"if(result->parser != mycss_selectors_state_token_skip_whitespace)",
@@ -254,7 +260,13 @@ sub function_whitespace {
 }
 
 sub function_not_whitespace {
-	my ($creater, $cfunc, $exists_delim) = @_;
+	my ($creater, $cfunc, $fname, $type_name) = @_;
+	
+	if (($fname ne "mycss_selectors_state_simple_selector_colon_colon" && $type_name eq "MyCSS_TOKEN_TYPE_FUNCTION") ||
+		($fname ne "mycss_selectors_state_simple_selector_colon" && $type_name eq "MyCSS_TOKEN_TYPE_FUNCTION"))
+	{
+		return [];
+	}
 	
 	[
 		"if(result->parser != mycss_selectors_state_token_all)",
@@ -267,7 +279,7 @@ sub function_string_before {
 	
 	[
 		"myhtml_string_t str;",
-		"mycss_token_data_to_string(result->entry, token, &str);"
+		"mycss_token_data_to_string(result->entry, token, &str, true);"
 	];
 }
 

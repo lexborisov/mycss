@@ -88,7 +88,10 @@ size_t mycss_tokenizer_global_state_numeric_minus(mycss_entry_t* entry, mycss_to
     if(mycss_begin_chars_state_map[ (const unsigned char)(css[css_offset]) ] == MyCSS_TOKENIZER_STATE_NAME_START_CODE_POINT) {
         css_offset++;
         
-        entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_IDENT;
+        token->type = MyCSS_TOKEN_TYPE_DIMENSION;
+        
+        entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_NAME;
+        entry->state_back = MyCSS_TOKENIZER_GLOBAL_BACK;
     }
     else if(css[css_offset] == '\\') {
         css_offset++;

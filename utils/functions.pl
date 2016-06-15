@@ -39,12 +39,44 @@ sub create_result {
         }
         
         my $count = 1;
-        print "MyCSS_SELECTORS_SUB_TYPE_UNKNOWN = 0x001,\n";
+        print "enum mycss_selectors_sub_type {\n";
+        print "\tMyCSS_SELECTORS_SUB_TYPE_UNDEF = 0x000,\n";
+        print "\tMyCSS_SELECTORS_SUB_TYPE_UNKNOWN = 0x001,\n";
         foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "MyCSS_SELECTORS_SUB_TYPE_FUNCTION_", uc(name_to_correct_name($name)), " = ", sprintf("0x%03x", ++$count), ",\n";
+                print "\tMyCSS_SELECTORS_SUB_TYPE_FUNCTION_", uc(name_to_correct_name($name)), " = ", sprintf("0x%03x", ++$count), ",\n";
+        }
+        print "}\n\n";
+        
+        foreach my $name (sort {$a cmp $b} keys %$func_map) {
+                print "void * mycss_selectors_value_function_", lc(name_to_correct_name($name)), "_create(mycss_result_t* result, bool set_clean);\n";
+        }
+        print "\n";
+        
+        foreach my $name (sort {$a cmp $b} keys %$func_map) {
+                print "void * mycss_selectors_value_function_", lc(name_to_correct_name($name)), "_create(mycss_result_t* result, bool set_clean)\n{\n";
+                print "\treturn NULL;\n";
+                print "}\n\n";
         }
         
+        foreach my $name (sort {$a cmp $b} keys %$func_map) {
+                print "void * mycss_selectors_value_function_", lc(name_to_correct_name($name)), "_destroy(mycss_result_t* result, void* value, bool self_destroy);\n";
+        }
         print "\n";
+        
+        foreach my $name (sort {$a cmp $b} keys %$func_map) {
+                print "void * mycss_selectors_value_function_", lc(name_to_correct_name($name)), "_destroy(mycss_result_t* result, void* value, bool self_destroy)\n{\n";
+                print "\tif(self_destroy) {\n";
+                print "\t\treturn NULL;\n";
+                print "\t}\n\n";
+                print "\treturn value;";
+                print "\n}\n\n";
+        }
+        
+        print "static const mycss_selectors_value_function_destroy_f mycss_selectors_value_function_destroy_map[MyCSS_SELECTORS_TYPE_LAST_ENTRY] = {\n";
+        foreach my $name (sort {$a cmp $b} keys %$func_map) {
+                print "\tmycss_selectors_value_function_", lc(name_to_correct_name($name)), "_destroy,\n";
+        }
+        print "};\n\n";
         
         $result;
 }

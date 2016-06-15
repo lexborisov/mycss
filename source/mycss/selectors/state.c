@@ -55,6 +55,7 @@ void mycss_selectors_state_end(mycss_result_t* result)
     }
 }
 
+/* for unknown functions */
 bool mycss_selectors_state_function_skip_all(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     if(token->type == MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS)
@@ -393,9 +394,6 @@ bool mycss_selectors_state_simple_selector_colon(mycss_result_t* result, mycss_s
         }
         case MyCSS_TOKEN_TYPE_FUNCTION: {
             mycss_selectors_parser_selector_function(result, selectors, selector, token);
-            
-            if(result->parser != mycss_selectors_state_token_all)
-                result->parser = mycss_selectors_state_token_all;
             break;
         }
         default: {
@@ -417,9 +415,6 @@ bool mycss_selectors_state_simple_selector_colon_colon(mycss_result_t* result, m
     }
     else if(token->type == MyCSS_TOKEN_TYPE_FUNCTION) {
         mycss_selectors_parser_selector_function(result, selectors, selector, token);
-        
-        if(result->parser != mycss_selectors_state_token_all)
-            result->parser = mycss_selectors_state_token_all;
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);

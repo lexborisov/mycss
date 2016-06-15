@@ -21,8 +21,14 @@
 #include "convert.h"
 #include "myhtml/utils/resources.h"
 
+const char * mycss_convert_split_dimension_string(myhtml_string_t* str, double* value, bool* is_float)
+{
+    size_t length = mycss_convert_data_to_double(str->data, str->length, value, is_float);
+    return &str->data[length];
+}
+
 // TODO: float or double???
-size_t mycss_convert_data_to_double(const char *data, size_t size, double *return_num)
+size_t mycss_convert_data_to_double(const char *data, size_t size, double *return_num, bool* is_float)
 {
     double p10;
     bool is_negative = false;
@@ -43,7 +49,7 @@ size_t mycss_convert_data_to_double(const char *data, size_t size, double *retur
     // digits
     while(offset < size && (data[offset] >= '0' && data[offset] <= '9'))
     {
-        number = (data[offset] - '0') + number * 10.0f;
+        number = (data[offset] - '0') + number * 10;
         
         ++offset;
         ++num_digits;
@@ -53,6 +59,10 @@ size_t mycss_convert_data_to_double(const char *data, size_t size, double *retur
         if(is_negative) number = -number;
         
         *return_num = number;
+        
+        if(is_float)
+            *is_float = false;
+        
         return offset;
     }
     
@@ -75,6 +85,10 @@ size_t mycss_convert_data_to_double(const char *data, size_t size, double *retur
         if(is_negative) number = -number;
         
         *return_num = number;
+        
+        if(is_float)
+            *is_float = false;
+        
         return offset;
     }
     
@@ -93,6 +107,10 @@ size_t mycss_convert_data_to_double(const char *data, size_t size, double *retur
         
         if(offset >= size) {
             *return_num = number;
+            
+            if(is_float)
+                *is_float = false;
+            
             return (offset - 1);
         }
         
@@ -138,6 +156,36 @@ size_t mycss_convert_data_to_double(const char *data, size_t size, double *retur
     }
     
     *return_num = number;
+    
+    if(is_float)
+        *is_float = true;
+    
+    return offset;
+}
+
+size_t mycss_convert_data_to_integer(const char* data, size_t size, long* return_num)
+{
+    long res_num = 0;
+    bool is_negative = false;
+    size_t offset = 0;
+    
+    switch (data[offset]) {
+        case '-': is_negative = true;
+        case '+': offset++;
+    }
+    
+    const unsigned char* u_data = (const unsigned char*)data;
+    
+    while(offset < size && myhtml_string_chars_num_map[u_data[offset]] != 0xff)
+    {
+        res_num = myhtml_string_chars_num_map[ u_data[offset] ] + res_num * 10;
+        ++offset;
+    }
+    
+    if(is_negative)
+        res_num = -res_num;
+    
+    *return_num = res_num;
     
     return offset;
 }

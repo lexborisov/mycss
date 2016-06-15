@@ -187,6 +187,8 @@ sub new {
 		data_string         => "str.data",
 		data_delim          => "*token->data",
 		func_proto_args     => "mycss_entry_t* entry, mycss_token_t* token",
+		all_chars_for_name  => 0,
+		reg_name            => 0,
 		@_
 	);
 	
@@ -294,6 +296,8 @@ sub func_list { $_[0]->{func_list} }
 sub func_def  { $_[0]->{func_def} }
 sub func_else { $_[0]->{func_else} }
 sub func_last { $_[0]->{func_last} }
+sub all_chars_for_name { $_[0]->{all_chars_for_name} }
+sub reg_name { $_[0]->{reg_name} }
 
 sub token_type_by_name {
 	my $type_name = MyCSS::Token->convert_name_to_type_like($_[1]) || MyCSS::Token->get_type_undef();
@@ -315,7 +319,29 @@ sub create_func_name {
 		my ($only_name, $value) = split / /, $c_name, 2;
 		
 		if(defined $value) {
-			if(length($value) == 1 && exists $MyCSS_CFUNCTION_CHAR_NAME->{ ord(lc($value)) }) {
+			if($cfunc->all_chars_for_name) {
+				my @nname;
+				
+				foreach my $char (split //, $value) {
+					if($cfunc->reg_name) {
+						if($char eq "^") {
+							push @nname, "begin";
+						}
+						elsif($char eq "\$") {
+							push @nname, "end";
+						}
+						else {
+							push @nname, lc($MyCSS_CFUNCTION_CHAR_NAME->{ ord(lc($char)) });
+						}
+					}
+					else {
+						push @nname, lc($MyCSS_CFUNCTION_CHAR_NAME->{ ord(lc($char)) });
+					}
+				}
+				
+				$func_name = join "_", @nname;
+			}
+			elsif(length($value) == 1 && exists $MyCSS_CFUNCTION_CHAR_NAME->{ ord(lc($value)) }) {
 				$func_name = lc($MyCSS_CFUNCTION_CHAR_NAME->{ ord(lc($value)) });
 			}
 			else {
@@ -513,10 +539,14 @@ sub default_function_for_all {
 sub default_type_values {
 	my ($self, $cfunc, $prefix, $type, $all, $by, $is_switcher) = @_;
 	
+	my $type_name = $cfunc->token->num_to_type($type);
+	my $function_name = $cfunc->create_func_name($cfunc->token->type_to_name($type_name), "$prefix", 1);
+	
 	my @delim  = grep {$_->{type_name} eq "MyCSS_TOKEN_TYPE_DELIM"} @$by;
 	my @string = grep {$_->{type_name} eq "MyCSS_TOKEN_TYPE_STRING" ||
 					   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_AT_KEYWORD" ||
-					   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_IDENT"
+					   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_IDENT" ||
+					   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_DIMENSION"
 					   } @$by;
 	
 	my $max = 0;
@@ -552,11 +582,11 @@ sub default_type_values {
 		push @data, map {"\t\t$_"} @{$self->default_function($cfunc, $prefix, $type, $val, $all, $by, $is_switcher)};
 		
 		if (exists $val->entry->{attr}->{ws} && $val->entry->{is_next}) {
-			my @after = @{$cfunc->{func_whitespace}->($self, $cfunc)};
+			my @after = @{$cfunc->{func_whitespace}->($self, $cfunc, $function_name, $type_name)};
 			push @data, "\t\t", (map {"\t\t$_"} @after) if @after;
 		}
 		elsif($val->entry->{is_next}) {
-			my @after = @{$cfunc->{func_not_whitespace}->($self, $cfunc)};
+			my @after = @{$cfunc->{func_not_whitespace}->($self, $cfunc, $function_name, $type_name)};
 			push @data, "\t\t", (map {"\t\t$_"} @after) if @after;
 		}
 		
@@ -608,7 +638,8 @@ sub default {
 		my @delim  = grep {$_->{type_name} eq "MyCSS_TOKEN_TYPE_DELIM"} @$by;
 		my @string = grep {$_->{type_name} eq "MyCSS_TOKEN_TYPE_STRING" ||
 						   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_AT_KEYWORD" ||
-						   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_IDENT"
+						   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_IDENT" ||
+						   $_->{type_name} eq  "MyCSS_TOKEN_TYPE_DIMENSION"
 						   } @$by;
 		
 		my $max = 0;
@@ -664,12 +695,14 @@ sub default {
 	my @ws = grep {exists $_->entry->{attr}->{ws}} @$all;
 	my @is_next = grep {$_->entry->{is_next}} @$all;
 	
+	my $type_name = $cfunc->token->num_to_type($type);
+	
 	if (@ws && @is_next) {
-		my @after = @{$cfunc->{func_whitespace}->($self, $cfunc)};
+		my @after = @{$cfunc->{func_whitespace}->($self, $cfunc, $function_name, $type_name)};
 		push @data, "\t", (map {"\t$_"} @after) if @after;
 	}
 	elsif(@is_next) {
-		my @after = @{$cfunc->{func_not_whitespace}->($self, $cfunc)};
+		my @after = @{$cfunc->{func_not_whitespace}->($self, $cfunc, $function_name, $type_name)};
 		push @data, "\t", (map {"\t$_"} @after) if @after;
 	}
 	

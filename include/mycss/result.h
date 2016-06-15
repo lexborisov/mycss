@@ -23,6 +23,7 @@
 #pragma once
 
 #include <mycss/myosi.h>
+#include <mycss/an_plus_b.h>
 #include <mycss/namespace/myosi.h>
 #include <mycss/namespace/init.h>
 #include <mycss/selectors/myosi.h>
@@ -49,6 +50,7 @@ struct mycss_result {
     mycss_selectors_t* selectors;
     mycss_rules_t* rules;
     mycss_media_t* media;
+    mycss_an_plus_b_t* anb;
     
     mycss_parser_token_f parser;
     

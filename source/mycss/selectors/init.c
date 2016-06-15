@@ -114,7 +114,7 @@ mycss_selectors_entry_t * mycss_selectors_entry_destroy(mycss_selectors_t* selec
     }
     
     if(selector->value) {
-        mycss_selector_value_destroy(result, selector->type, selector->value, true);
+        mycss_selector_value_destroy(result, selector->type, selector->sub_type, selector->value, true);
     }
     
     if(self_destroy) {
@@ -197,9 +197,23 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
                 fprintf(fh, ":%s", selector->key->data);
             
             fprintf(fh, "(");
-            if(selector->value) {
-                mycss_result_entry_print(selectors->result, selector->value, fh);
+            
+            switch (selector->sub_type) {
+                case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_HAS:
+                case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NOT:
+                case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_MATCHES:
+                    if(selector->value)
+                        mycss_result_entry_print(selectors->result, selector->value, fh);
+                    break;
+                
+                case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_CHILD:
+                    mycss_an_plus_b_print(selector->value, fh);
+                    break;
+                
+                default:
+                    break;
             }
+            
             fprintf(fh, ")");
             
             break;
@@ -213,7 +227,7 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
         }
     };
     
-    if(selector->sub_type & MyCSS_SELECTORS_SUB_TYPE_UNKNOWN)
+    if(selector->sub_type == MyCSS_SELECTORS_SUB_TYPE_UNKNOWN)
         fprintf(fh, "^UST");
     
     if(selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD)

@@ -32,7 +32,7 @@ mycss_token_t * token_ready_callback(mycss_entry_t* entry, mycss_token_t* token)
     if(mycss_token_type(token) == MyCSS_TOKEN_TYPE_NUMBER)
     {
         double return_num;
-        mycss_convert_data_to_double(myhtml_string_data(&str), myhtml_string_length(&str), &return_num);
+        mycss_convert_data_to_double(myhtml_string_data(&str), myhtml_string_length(&str), &return_num, NULL);
         
         printf("Number %s: %f\n", myhtml_string_data(&str), return_num);
     }

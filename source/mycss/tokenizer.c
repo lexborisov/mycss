@@ -492,7 +492,8 @@ size_t mycss_tokenizer_state_hyphen_minus(mycss_entry_t* entry, mycss_token_t* t
     else if(mycss_begin_chars_state_map[ u_css[css_offset] ] == MyCSS_TOKENIZER_STATE_NAME_START_CODE_POINT) {
         css_offset++;
         
-        entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_IDENT;
+        entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_NAME;
+        entry->state_back = MyCSS_TOKENIZER_GLOBAL_STATE_IDENT;
     }
     else if(css[css_offset] == '\\') {
         css_offset++;
@@ -549,7 +550,8 @@ size_t mycss_tokenizer_state_hyphen_minus_minus(mycss_entry_t* entry, mycss_toke
     else if(mycss_begin_chars_state_map[ ((const unsigned char *)css)[css_offset] ] == MyCSS_TOKENIZER_STATE_NAME_START_CODE_POINT) {
         css_offset++;
         
-        entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_IDENT;
+        entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_NAME;
+        entry->state_back = MyCSS_TOKENIZER_GLOBAL_STATE_IDENT;
     }
     else if(css[css_offset] == '\\') {
         css_offset++;
@@ -583,7 +585,8 @@ size_t mycss_tokenizer_state_hyphen_minus_minus_rsolidus(mycss_entry_t* entry, m
     else {
         css_offset++;
         
-        entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_IDENT;
+        entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_NAME;
+        entry->state_back = MyCSS_TOKENIZER_GLOBAL_STATE_IDENT;
     }
     
     return css_offset;
@@ -603,7 +606,8 @@ size_t mycss_tokenizer_state_hyphen_minus_rsolidus(mycss_entry_t* entry, mycss_t
     else {
         css_offset++;
         
-        entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_IDENT;
+        entry->state = MyCSS_TOKENIZER_GLOBAL_STATE_NAME;
+        entry->state_back = MyCSS_TOKENIZER_GLOBAL_STATE_IDENT;
     }
     
     return css_offset;

@@ -453,11 +453,12 @@ mycss_encoding_check_charset_rule(const char* css, size_t size);
  * @param[in]  data to convert
  * @param[in]  data size
  * @param[out] converting result
+ * @param[out] is integer or float
  *
  * @return length of data converting
  */
 size_t
-mycss_convert_data_to_double(const char* data, size_t size, double* return_num);
+mycss_convert_data_to_double(const char* data, size_t size, double* return_num, bool* is_float);
 
 /**
  * Convert data to unicode range code point

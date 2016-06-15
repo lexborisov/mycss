@@ -67,7 +67,9 @@ enum mycss_status {
     MyCSS_STATUS_ERROR_RULES_CREATE                     = 0x010400,
     MyCSS_STATUS_ERROR_STRING_CREATE                    = 0x010501,
     MyCSS_STATUS_ERROR_STRING_INIT                      = 0x010502,
-    MyCSS_STATUS_ERROR_STRING_NODE_INIT                 = 0x010503
+    MyCSS_STATUS_ERROR_STRING_NODE_INIT                 = 0x010503,
+    MyCSS_STATUS_ERROR_AN_PLUS_B_CREATE                 = 0x010600,
+    MyCSS_STATUS_ERROR_AN_PLUS_B_INIT                   = 0x010601
 }
 typedef mycss_status_t;
 
@@ -239,6 +241,10 @@ enum mycss_token_type {
 }
 typedef mycss_token_type_t;
 
+// an+b
+typedef struct mycss_an_plus_b mycss_an_plus_b_t;
+typedef struct mycss_an_plus_b_entry mycss_an_plus_b_entry_t;
+
 // result
 typedef struct mycss_result_entry mycss_result_entry_t;
 typedef struct mycss_result mycss_result_t;
@@ -258,6 +264,7 @@ typedef size_t (*mycss_tokenizer_state_f)(mycss_entry_t* entry, mycss_token_t* t
 typedef mycss_token_t * (*mycss_token_ready_callback_f)(mycss_entry_t* entry, mycss_token_t* token);
 typedef size_t (*mycss_string_process_state_f)(myhtml_string_t* str, const char* data, size_t length, size_t size, mycss_string_res_t *out_res);
 typedef bool (*mycss_parser_token_f)(mycss_result_t* result, mycss_token_t* token);
+typedef bool (*mycss_an_plus_b_state_f)(mycss_result_t* result, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

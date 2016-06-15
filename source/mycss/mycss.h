@@ -32,7 +32,7 @@ extern "C" {
 #else
     #define MyCSS_DEBUG_MESSAGE(format, ...)
 #endif
-    
+
 #ifdef DEBUG_MODE
 #define MyHTML_DEBUG_ERROR(format, ...)      \
 myhtml_print(stderr, "DEBUG ERROR: "format"\n", ##__VA_ARGS__)
