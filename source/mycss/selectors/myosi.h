@@ -104,10 +104,6 @@ struct mycss_selectors {
     // refs
     mycss_entry_t* entry;
     mycss_result_t* result;
-    mycss_selectors_entry_t* selector; // current selectors entry
-    mycss_selectors_state_f state;
-    
-    mycss_parser_token_f switch_parser;
 };
 
 struct mycss_selectors_entry {

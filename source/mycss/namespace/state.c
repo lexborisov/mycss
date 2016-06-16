@@ -23,14 +23,14 @@
 bool mycss_namespace_state_token_all(mycss_result_t* result, mycss_token_t* token)
 {
     mycss_namespace_t *ns = result->ns;
-    return ns->state(result, ns, ns->ns_entry, token);
+    return ((mycss_namespace_state_f)result->state)(result, ns, ns->ns_entry, token);
 }
 
 bool mycss_namespace_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token)
 {
     if(token->type != MyCSS_TOKEN_TYPE_WHITESPACE) {
         mycss_namespace_t *ns = result->ns;
-        return ns->state(result, ns, ns->ns_entry, token);
+        return ((mycss_namespace_state_f)result->state)(result, ns, ns->ns_entry, token);
     }
     
     return true;
@@ -44,7 +44,7 @@ bool mycss_namespace_state_namespace(mycss_result_t* result, mycss_namespace_t* 
         
         if(myhtml_strncasecmp(str.data, "namespace", 9) == 0) {
             mycss_namespace_parser_begin(result, ns, ns_entry, token);
-            ns->state = mycss_namespace_state_namespace_namespace;
+            result->state = mycss_namespace_state_namespace_namespace;
             
             if(result->parser != mycss_namespace_state_token_skip_whitespace)
                 result->parser = mycss_namespace_state_token_skip_whitespace;
@@ -69,7 +69,7 @@ bool mycss_namespace_state_namespace_namespace(mycss_result_t* result, mycss_nam
     switch (token->type) {
         case MyCSS_TOKEN_TYPE_IDENT: {
             mycss_namespace_parser_name(result, ns, ns_entry, token);
-            ns->state = mycss_namespace_state_namespace_namespace_ident;
+            result->state = mycss_namespace_state_namespace_namespace_ident;
             
             if(result->parser != mycss_namespace_state_token_skip_whitespace)
                 result->parser = mycss_namespace_state_token_skip_whitespace;
@@ -77,7 +77,7 @@ bool mycss_namespace_state_namespace_namespace(mycss_result_t* result, mycss_nam
         }
         case MyCSS_TOKEN_TYPE_STRING: {
             mycss_namespace_parser_url(result, ns, ns_entry, token);
-            ns->state = mycss_namespace_state_namespace_namespace_string;
+            result->state = mycss_namespace_state_namespace_namespace_string;
             
             if(result->parser != mycss_namespace_state_token_skip_whitespace)
                 result->parser = mycss_namespace_state_token_skip_whitespace;
@@ -85,7 +85,7 @@ bool mycss_namespace_state_namespace_namespace(mycss_result_t* result, mycss_nam
         }
         case MyCSS_TOKEN_TYPE_URL: {
             mycss_namespace_parser_url(result, ns, ns_entry, token);
-            ns->state = mycss_namespace_state_namespace_namespace_url;
+            result->state = mycss_namespace_state_namespace_namespace_url;
             
             if(result->parser != mycss_namespace_state_token_skip_whitespace)
                 result->parser = mycss_namespace_state_token_skip_whitespace;
@@ -105,14 +105,14 @@ bool mycss_namespace_state_namespace_namespace_ident(mycss_result_t* result, myc
 {
     if(token->type == MyCSS_TOKEN_TYPE_STRING) {
         mycss_namespace_parser_url(result, ns, ns_entry, token);
-        ns->state = mycss_namespace_state_namespace_namespace_ident_string;
+        result->state = mycss_namespace_state_namespace_namespace_ident_string;
         
         if(result->parser != mycss_namespace_state_token_skip_whitespace)
             result->parser = mycss_namespace_state_token_skip_whitespace;
     }
     else if(token->type == MyCSS_TOKEN_TYPE_URL) {
         mycss_namespace_parser_url(result, ns, ns_entry, token);
-        ns->state = mycss_namespace_state_namespace_namespace_ident_url;
+        result->state = mycss_namespace_state_namespace_namespace_ident_url;
         
         if(result->parser != mycss_namespace_state_token_skip_whitespace)
             result->parser = mycss_namespace_state_token_skip_whitespace;

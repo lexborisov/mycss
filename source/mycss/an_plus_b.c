@@ -115,15 +115,16 @@ void mycss_an_plus_b_print(mycss_an_plus_b_entry_t* anb_entry, FILE* fh)
     }
 }
 
-
 /////////////////////////////////////////////////////////
 //// An+B State
 ////
 /////////////////////////////////////////////////////////
-bool mycss_an_plus_b_state_skip_all(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
+bool mycss_an_plus_b_state_skip_all(mycss_result_t* result, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token)
 {
-    if(token->type == MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS)
+    if(token->type == MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS) {
+        result->parser = anb->switch_parser;
         return false;
+    }
     
     return true;
 }

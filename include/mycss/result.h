@@ -53,6 +53,8 @@ struct mycss_result {
     mycss_an_plus_b_t* anb;
     
     mycss_parser_token_f parser;
+    mycss_parser_token_f switch_parser;
+    void* state;
     
     size_t selectors_entries_id;
     size_t string_node_id;
@@ -62,6 +64,8 @@ struct mycss_result {
 struct mycss_result_entry {
     mycss_selectors_entry_t** selector_list;
     size_t selector_list_length;
+    
+    mycss_selectors_entry_t* selector; /* current selector/last entry */
     
     mycss_result_entry_t* parent;
     mycss_result_entry_t* next;
@@ -79,6 +83,8 @@ void mycss_result_entry_clean(mycss_result_entry_t* result_entry);
 mycss_result_entry_t * mycss_result_entry_destroy(mycss_result_t* result, mycss_result_entry_t* result_entry, bool self_destroy);
 mycss_result_entry_t * mycss_result_entry_create_and_push(mycss_result_t* result);
 mycss_result_entry_t * mycss_result_entry_append_selector(mycss_result_t* result, mycss_result_entry_t* res_entry, mycss_selectors_entry_t* selector);
+mycss_result_entry_t * mycss_result_get_parent_set_parser(mycss_result_t* result, mycss_result_entry_t* res_entry);
+mycss_result_entry_t * mycss_result_entry_create_next_level_of_selectors(mycss_result_t* result, mycss_result_entry_t* current_res_entry);
 
 void mycss_result_entry_print(mycss_result_t* result, mycss_result_entry_t* res_entry, FILE* fh);
 

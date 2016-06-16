@@ -34,7 +34,6 @@ typedef bool (*mycss_media_state_f)(mycss_result_t* result, mycss_media_t* media
 
 
 struct mycss_media {
-    mycss_media_state_f state;
 };
 
 

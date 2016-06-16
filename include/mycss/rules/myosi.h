@@ -34,7 +34,6 @@ typedef bool (*mycss_rules_state_f)(mycss_result_t* result, mycss_rules_t* rules
 
 
 struct mycss_rules {
-    mycss_rules_state_f state;
 };
 
 

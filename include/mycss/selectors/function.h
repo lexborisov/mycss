@@ -34,6 +34,12 @@ extern "C" {
 
 typedef void (*mycss_selectors_function_begin_f)(mycss_result_t* result, mycss_selectors_entry_t* selector);
 
+struct mycss_selectors_function_index {
+    mycss_parser_token_f parser;
+    mycss_parser_token_f switch_parser;
+}
+typedef mycss_selectors_function_index_t;
+
 struct mycss_selectots_function_begin_entry {
     const char* name;
     size_t length;
@@ -68,6 +74,7 @@ bool mycss_selectors_unknown_parser(mycss_result_t* result, mycss_token_t* token
 bool mycss_selectors_function_not_or_matches_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_has_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_nth_parser(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_function_nth_of_selectors_parser(mycss_result_t* result, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -31,7 +31,7 @@ mycss_selectors_entry_t * mycss_selectors_parser_selector_create_new_entry(mycss
         new_selector->prev = selector;
     }
     
-    selectors->selector = new_selector;
+    result->result_entry->selector = new_selector;
     return new_selector;
 }
 

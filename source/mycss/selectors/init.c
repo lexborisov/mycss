@@ -29,21 +29,15 @@ mycss_selectors_t * mycss_selectors_create(void)
 
 mycss_status_t mycss_selectors_init(mycss_entry_t* entry, mycss_selectors_t* selectors)
 {
-    selectors->entry         = entry;
-    selectors->result        = entry->result;
-    selectors->state         = NULL;
-    selectors->selector      = mycss_selectors_entry_create(selectors);
-    selectors->switch_parser = mycss_parser_token;
+    selectors->entry  = entry;
+    selectors->result = entry->result;
     
     return MyCSS_STATUS_OK;
 }
 
 mycss_status_t mycss_selectors_clean_all(mycss_selectors_t* selectors)
 {
-    selectors->state         = NULL;
-    selectors->selector      = mycss_selectors_entry_create(selectors);
-    selectors->result        = NULL;
-    selectors->switch_parser = mycss_parser_token;
+    selectors->result = NULL;
     
     return MyCSS_STATUS_OK;
 }
@@ -61,23 +55,21 @@ mycss_selectors_t * mycss_selectors_destroy(mycss_selectors_t* selectors, bool s
     return selectors;
 }
 
-void mycss_selectors_end(mycss_selectors_t* selectors)
+void mycss_selectors_end(mycss_result_entry_t* res_entry, mycss_selectors_t* selectors)
 {
-    if(selectors->selector->type == MyCSS_SELECTORS_TYPE_UNDEF) {
-        if(selectors->selector->prev) {
-            selectors->selector->prev->next = NULL;
-            selectors->selector->prev = NULL;
+    if(res_entry->selector->type == MyCSS_SELECTORS_TYPE_UNDEF) {
+        if(res_entry->selector->prev) {
+            res_entry->selector->prev->next = NULL;
+            res_entry->selector->prev = NULL;
         }
         else {
-            mycss_result_t* result = selectors->result;
-            
-            if(result->result_entry->selector_list_length) {
-                result->result_entry->selector_list_length--;
-                result->result_entry->selector_list[ result->result_entry->selector_list_length ] = NULL;
+            if(res_entry->selector_list_length) {
+                res_entry->selector_list_length--;
+                res_entry->selector_list[ res_entry->selector_list_length ] = NULL;
             }
         }
         
-        mycss_selectors_entry_destroy(selectors, selectors->selector, false);
+        mycss_selectors_entry_destroy(selectors, res_entry->selector, false);
     }
 }
 
@@ -208,6 +200,11 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
                 
                 case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_CHILD:
                     mycss_an_plus_b_print(selector->value, fh);
+                    
+                    if(mycss_selector_value_an_plus_b(selector->value)->of) {
+                        mycss_result_entry_print(selectors->result, mycss_selector_value_an_plus_b(selector->value)->of, fh);
+                    }
+                    
                     break;
                 
                 default:

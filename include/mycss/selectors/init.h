@@ -35,7 +35,7 @@ mycss_selectors_t * mycss_selectors_create(void);
 mycss_status_t mycss_selectors_init(mycss_entry_t* entry, mycss_selectors_t* selectors);
 mycss_status_t mycss_selectors_clean_all(mycss_selectors_t* selectors);
 mycss_selectors_t * mycss_selectors_destroy(mycss_selectors_t* selectors, bool self_destroy);
-void mycss_selectors_end(mycss_selectors_t* selectors);
+void mycss_selectors_end(mycss_result_entry_t* res_entry, mycss_selectors_t* selectors);
 
 void mycss_selectors_entry_clean(mycss_selectors_entry_t* sel_entry);
 mycss_selectors_entry_t * mycss_selectors_entry_destroy(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, bool self_destroy);

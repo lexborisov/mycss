@@ -74,8 +74,8 @@ foreach my $key (@$index_res) {
 	#$hash_full->{$key} = $grammar->make_combine_hash_from_decomposing_list($work_full->{$key}, sub{ $_[1]->entry->name });
 }
 
-#my $key = "<combinator>";
-my $key = "<simple-selector>";
+my $key = "<combinator>";
+#my $key = "<simple-selector>";
 #my $key = "<pseudo-element-selector>";
 #my $key = "<attribute-selector>";
 
@@ -138,7 +138,7 @@ sub selector_namespace {
 	
 	if ($fname eq "mycss_selectors_state_simple_selector_left_bracket_vertical_bar") {
 		return ["mycss_selectors_parser_selector_ident_attr(result, selectors, selector, token);",
-				"mycss_selectors_parser_selector_namespace(result, selectors, selectors->selector, token);"];
+				"mycss_selectors_parser_selector_namespace(result, selectors, result->result_entry->selector, token);"];
 	}
 	
 	["mycss_selectors_parser_selector_namespace(result, selectors, selector, token);"]
@@ -294,7 +294,7 @@ sub function_default {
 	
 	if ($fname ne "mycss_selectors_state_simple_selector_colon_colon_function" &&
 		$fname ne "mycss_selectors_state_simple_selector_colon_function") {
-		return ["selectors->state = $fname;"];
+		return ["result->state = $fname;"];
 	}
 	
 	[];
@@ -309,7 +309,7 @@ sub function_else {
 	if($fname eq "mycss_selectors_state_simple_selector_ident") {
 		return [
 			"mycss_selectors_parser_selector_end(result, selectors, selector, token);",
-			"result->parser = selectors->switch_parser;",
+			"result->parser = result->switch_parser;",
 			"return false;"
 		];
 	}
@@ -318,14 +318,14 @@ sub function_else {
 		  $fname eq "mycss_selectors_state_combinator_greater_than")
 	{
 		return [
-			"result->parser = selectors->switch_parser;",
+			"result->parser = result->switch_parser;",
 			"return false;"
 		];
 	}
 	
 	[
 		"mycss_selectors_parser_expectations_error(result, selectors, selector, token);",
-		"result->parser = selectors->switch_parser;",
+		"result->parser = result->switch_parser;",
 		"return false;"
 	];
 }
@@ -341,7 +341,7 @@ sub function_last {
 	
 	[
 		"MyCSS_DEBUG_MESSAGE(\"$fname\")",
-		"result->parser = selectors->switch_parser;"
+		"result->parser = result->switch_parser;"
 	];
 }
 

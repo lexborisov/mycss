@@ -19,7 +19,7 @@
 */
 
 #include "mycss/result.h"
-
+#include "mycss/selectors/function_resource.h"
 
 mycss_result_t * mycss_result_create(void)
 {
@@ -28,8 +28,10 @@ mycss_result_t * mycss_result_create(void)
 
 mycss_status_t mycss_result_init(mycss_entry_t* entry, mycss_result_t* result)
 {
-    result->entry = entry;
-    result->parser = mycss_parser_token;
+    result->entry         = entry;
+    result->parser        = mycss_parser_token;
+    result->switch_parser = mycss_parser_token;
+    result->state         = NULL;
     
     result->mchar_value_node_id = mchar_async_node_add(entry->mchar);
     result->mchar_selector_list_node_id = mchar_async_node_add(entry->mchar);
@@ -101,15 +103,20 @@ mycss_status_t mycss_result_init(mycss_entry_t* entry, mycss_result_t* result)
     if(status != MyCSS_STATUS_OK)
         return status;
     
-    /* create first result entry */
+    /* create first result entry and selector */
     result->result_entry = result->result_entry_first = mycss_result_entry_create(result);
-    mycss_result_entry_append_selector(result, result->result_entry, result->selectors->selector);
+    result->result_entry->selector = mycss_selectors_entry_create(result->selectors);
+    mycss_result_entry_append_selector(result, result->result_entry, result->result_entry->selector);
     
     return MyCSS_STATUS_OK;
 }
 
 mycss_status_t mycss_result_clean_all(mycss_result_t* result)
 {
+    result->parser        = mycss_parser_token;
+    result->switch_parser = mycss_parser_token;
+    result->state         = NULL;
+    
     mchar_async_node_clean(result->entry->mchar, result->mchar_value_node_id);
     mchar_async_node_clean(result->entry->mchar, result->mchar_selector_list_node_id);
     
@@ -175,7 +182,7 @@ mycss_result_t * mycss_result_destroy(mycss_result_t* result, bool self_destroy)
 
 void mycss_result_end(mycss_result_t* result)
 {
-    mycss_selectors_end(result->selectors);
+    mycss_selectors_end(result->result_entry, result->selectors);
 }
 
 mycss_result_entry_t * mycss_result_entry_create(mycss_result_t* result)
@@ -235,6 +242,60 @@ mycss_result_entry_t * mycss_result_entry_append_selector(mycss_result_t* result
     
     return res_entry;
 }
+
+mycss_result_entry_t * mycss_result_entry_create_next_level_of_selectors(mycss_result_t* result, mycss_result_entry_t* current_res_entry)
+{
+    mycss_result_entry_t *res_entry = mycss_result_entry_create(result);
+    
+    res_entry->parent = current_res_entry;
+    result->result_entry = res_entry;
+    
+    res_entry->selector = mycss_selectors_entry_create(result->selectors);
+    mycss_result_entry_append_selector(result, result->result_entry, res_entry->selector);
+    
+    return res_entry;
+}
+
+mycss_result_entry_t * mycss_result_get_parent_set_parser(mycss_result_t* result, mycss_result_entry_t* res_entry)
+{
+    if(res_entry->parent == NULL) {
+        if(result->parser != mycss_parser_token)
+            result->parser = mycss_parser_token;
+        
+        if(result->switch_parser != mycss_parser_token)
+            result->switch_parser = mycss_parser_token;
+        
+        return res_entry;
+    }
+    
+    res_entry = res_entry->parent;
+    
+    if(res_entry->parent) {
+        mycss_selectors_entry_t* selector = res_entry->parent->selector;
+        
+        if(selector->type == MyCSS_SELECTORS_TYPE_FUNCTION) {
+            const mycss_selectors_function_index_t *findex = &mycss_selectors_function_parser_map_by_sub_type[ selector->sub_type ];
+            
+            result->parser = findex->parser;
+            result->switch_parser = findex->switch_parser;
+        }
+        else {
+            result->parser = mycss_parser_token;
+            result->switch_parser = mycss_parser_token;
+        }
+    }
+    else {
+        if(result->parser != mycss_parser_token)
+            result->parser = mycss_parser_token;
+        
+        if(result->switch_parser != mycss_parser_token)
+            result->switch_parser = mycss_parser_token;
+    }
+    
+    return res_entry;
+}
+
+/* Print */
 
 size_t mycss_result_detect_namespace_by_name(mycss_result_t* result, const char* ns, size_t length)
 {

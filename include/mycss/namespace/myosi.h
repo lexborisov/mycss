@@ -38,8 +38,6 @@ typedef bool (*mycss_namespace_state_f)(mycss_result_t* result, mycss_namespace_
 
 struct mycss_namespace {
     mycss_namespace_entry_t* ns_entry; /* current namespace entry */
-    
-    mycss_namespace_state_f state;
     mctree_t* name_tree; // tree for namespace names
     
     size_t ns_id_counter;

@@ -246,6 +246,8 @@ typedef struct mycss_an_plus_b mycss_an_plus_b_t;
 typedef struct mycss_an_plus_b_entry mycss_an_plus_b_entry_t;
 
 // result
+typedef struct mycss_result_list_parser mycss_result_list_parser_t;
+typedef struct mycss_result_list mycss_result_list_t;
 typedef struct mycss_result_entry mycss_result_entry_t;
 typedef struct mycss_result mycss_result_t;
 

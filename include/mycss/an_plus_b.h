@@ -42,6 +42,7 @@ struct mycss_an_plus_b_entry {
     long n;
     
     bool is_broken;
+    mycss_result_entry_t* of;
 };
 
 mycss_an_plus_b_t * mycss_an_plus_b_create(void);
@@ -51,6 +52,7 @@ mycss_an_plus_b_t * mycss_an_plus_b_destroy(mycss_an_plus_b_t* anb, bool self_de
 
 bool mycss_an_plus_b_state_token_all(mycss_result_t* result, mycss_token_t* token);
 bool mycss_an_plus_b_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token);
+bool mycss_an_plus_b_state_skip_all(mycss_result_t* result, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
 
 void mycss_an_plus_b_print(mycss_an_plus_b_entry_t* anb_entry, FILE* fh);
 

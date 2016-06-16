@@ -24,14 +24,14 @@
 bool mycss_rules_state_token_all(mycss_result_t* result, mycss_token_t* token)
 {
     mycss_rules_t *rules = result->rules;
-    return rules->state(result, rules, token);
+    return ((mycss_rules_state_f)result->state)(result, rules, token);
 }
 
 bool mycss_rules_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token)
 {
     if(token->type != MyCSS_TOKEN_TYPE_WHITESPACE) {
         mycss_rules_t *rules = result->rules;
-        return rules->state(result, rules, token);
+        return ((mycss_rules_state_f)result->state)(result, rules, token);
     }
     
     return true;
