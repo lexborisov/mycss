@@ -34,7 +34,7 @@ static const mycss_string_process_state_f mycss_string_state_list_map_utf_8[] = 
 void mycss_string_append_codepoint_to_string(myhtml_string_t* str, size_t code_point)
 {
     if((str->length + 4) >= str->size) {
-        myhtml_string_realloc(str->mchar, str->node_idx, str, (str->size + 8));
+        myhtml_string_realloc(str, (str->size + 8));
     }
     
     // If this number is zero
@@ -155,7 +155,7 @@ size_t mycss_string_process_state_data(myhtml_string_t* str, const char* data, s
         if(encoding_status == MyHTML_ENCODING_STATUS_OK)
         {
             if((str->length + 4) >= str->size) {
-                myhtml_string_realloc(str->mchar, str->node_idx, str, (str->size + 16));
+                myhtml_string_realloc(str, (str->size + 16));
                 
                 str_data = str->data;
             }
@@ -208,7 +208,7 @@ size_t mycss_string_process_state_data_utf_8(myhtml_string_t* str, const char* d
         }
         
         if(str->length >= str->size) {
-            myhtml_string_realloc(str->mchar, str->node_idx, str, (str->size + 16));
+            myhtml_string_realloc(str, (str->size + 16));
             
             str_data = str->data;
         }
@@ -264,7 +264,7 @@ void mycss_string_data_process_end(myhtml_string_t* str, mycss_string_res_t *out
     }
     
     if(str->length >= str->size)
-        myhtml_string_realloc(str->mchar, str->node_idx, str, (str->size + 2));
+        myhtml_string_realloc(str, (str->size + 2));
     
     str->data[str->length] = '\0';
 }

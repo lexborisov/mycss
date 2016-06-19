@@ -180,13 +180,12 @@ size_t mycss_token_data_to_string(mycss_entry_t* entry, mycss_token_t* token, my
     // if the data are spread across multiple buffers that join them
     size_t length = token->length;
     while(buffer) {
-        size_t relative_end = relative_begin + length;
-        
-        if(relative_end > buffer->size)
+        if((relative_begin + length) > buffer->size)
         {
-            length = relative_end - buffer->size;
+            size_t relative_end = (buffer->size - relative_begin);
+            length -= relative_end;
             
-            mycss_string_data_process(str, buffer->data, relative_begin, (relative_end - length), &out_res);
+            mycss_string_data_process(str, buffer->data, relative_begin, relative_end, &out_res);
             
             relative_begin = 0;
             buffer         = buffer->next;

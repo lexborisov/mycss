@@ -55,13 +55,13 @@ mycss_token_t * token_ready_callback(mycss_entry_t* entry, mycss_token_t* token)
     // if the data are spread across multiple buffers that join them
     while(buffer) {
         const char *data = myhtml_incoming_buffer_data(buffer);
-        size_t end       = relative_begin + length;
         
-        if(end > myhtml_incoming_buffer_size(buffer))
+        if((relative_begin + length) > myhtml_incoming_buffer_size(buffer))
         {
-            length = end - myhtml_incoming_buffer_size(buffer);
+            size_t relative_end = (myhtml_incoming_buffer_size(buffer) - relative_begin);
+            length -= relative_end;
             
-            printf("%.*s", (int)((end - relative_begin) - length), &data[relative_begin]);
+            printf("%.*s", (int)relative_end, &data[relative_begin]);
             
             relative_begin = 0;
             buffer         = myhtml_incoming_buffer_next(buffer);
