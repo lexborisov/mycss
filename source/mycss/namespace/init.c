@@ -22,7 +22,7 @@
 
 mycss_namespace_t * mycss_namespace_create(void)
 {
-    return (mycss_namespace_t*)mycalloc(1, sizeof(mycss_namespace_t));
+    return (mycss_namespace_t*)myhtml_calloc(1, sizeof(mycss_namespace_t));
 }
 
 mycss_status_t mycss_namespace_init(mycss_entry_t* entry, mycss_namespace_t* ns)
@@ -50,7 +50,7 @@ mycss_namespace_t * mycss_namespace_destroy(mycss_namespace_t* ns, bool self_des
     mctree_destroy(ns->name_tree);
     
     if(self_destroy) {
-        myfree(ns);
+        myhtml_free(ns);
         return NULL;
     }
     

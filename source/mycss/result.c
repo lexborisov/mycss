@@ -23,7 +23,7 @@
 
 mycss_result_t * mycss_result_create(void)
 {
-    return (mycss_result_t*)mycalloc(1, sizeof(mycss_result_t));
+    return (mycss_result_t*)myhtml_calloc(1, sizeof(mycss_result_t));
 }
 
 mycss_status_t mycss_result_init(mycss_entry_t* entry, mycss_result_t* result)
@@ -173,7 +173,7 @@ mycss_result_t * mycss_result_destroy(mycss_result_t* result, bool self_destroy)
     mycss_an_plus_b_destroy(result->anb, true);
     
     if(result) {
-        myfree(result);
+        myhtml_free(result);
         return NULL;
     }
     

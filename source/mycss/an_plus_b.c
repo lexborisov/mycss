@@ -23,7 +23,7 @@
 
 mycss_an_plus_b_t * mycss_an_plus_b_create(void)
 {
-    return (mycss_an_plus_b_t*)mycalloc(1, sizeof(mycss_an_plus_b_t));
+    return (mycss_an_plus_b_t*)myhtml_calloc(1, sizeof(mycss_an_plus_b_t));
 }
 
 mycss_status_t mycss_an_plus_b_init(mycss_entry_t* entry, mycss_an_plus_b_t* anb)
@@ -46,7 +46,7 @@ mycss_an_plus_b_t * mycss_an_plus_b_destroy(mycss_an_plus_b_t* anb, bool self_de
         return NULL;
     
     if(self_destroy) {
-        myfree(anb);
+        myhtml_free(anb);
         return NULL;
     }
     

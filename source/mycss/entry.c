@@ -23,17 +23,19 @@
 
 mycss_entry_t * mycss_entry_create(void)
 {
-    return (mycss_entry_t*)mycalloc(1, sizeof(mycss_entry_t));
+    return (mycss_entry_t*)myhtml_calloc(1, sizeof(mycss_entry_t));
 }
 
 mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
 {
     entry->mycss = mycss;
     
-    mcobject_async_status_t mcstatus;
-    entry->incoming_buffer_id = mcobject_async_node_add(mycss->async_incoming_buffer, &mcstatus);
+    entry->mcobject_incoming_buffer = mcobject_create();
+    if(entry->mcobject_incoming_buffer == NULL)
+        return MyCSS_STATUS_ERROR_ENTRY_INCOMING_BUFFER_CREATE;
     
-    if(mcstatus)
+    myhtml_status_t myhtml_status = mcobject_init(entry->mcobject_incoming_buffer, 256, sizeof(myhtml_incoming_buffer_t));
+    if(myhtml_status)
         return MyCSS_STATUS_ERROR_ENTRY_INCOMING_BUFFER_INIT;
      
     // init for selectors entry objects
@@ -41,7 +43,7 @@ mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
     if(entry->mcasync_selectors_entries == NULL)
         return MyCSS_STATUS_ERROR_SELECTORS_ENTRIES_CREATE;
     
-    mcstatus = mcobject_async_init(entry->mcasync_selectors_entries, 32, 1024, sizeof(mycss_selectors_entry_t));
+    mcobject_async_status_t mcstatus = mcobject_async_init(entry->mcasync_selectors_entries, 32, 1024, sizeof(mycss_selectors_entry_t));
     if(mcstatus != MCOBJECT_ASYNC_STATUS_OK)
         return MyCSS_STATUS_ERROR_SELECTORS_ENTRIES_INIT;
     
@@ -83,7 +85,7 @@ mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
 
 mycss_status_t mycss_entry_clean_all(mycss_entry_t* entry)
 {
-    mcobject_async_node_clean(entry->mycss->async_incoming_buffer, entry->incoming_buffer_id);
+    mcobject_clean(entry->mcobject_incoming_buffer);
     mchar_async_node_clean(entry->mchar, entry->mchar_node_id);
     
     entry->token                = NULL;
@@ -98,7 +100,7 @@ mycss_status_t mycss_entry_clean_all(mycss_entry_t* entry)
     entry->type                 = MyCSS_ENTRY_TYPE_CLEAN;
     
     if(entry->token) {
-        free(entry->token);
+        myhtml_free(entry->token);
         entry->token = NULL;
     }
     
@@ -110,7 +112,7 @@ mycss_entry_t * mycss_entry_destroy(mycss_entry_t* entry, bool self_destroy)
     if(entry == NULL)
         return NULL;
     
-    mcobject_async_node_delete(entry->mycss->async_incoming_buffer, entry->incoming_buffer_id);
+    mcobject_destroy(entry->mcobject_incoming_buffer, true);
     
     entry->mchar                     = mchar_async_destroy(entry->mchar, 1);
     entry->mcasync_selectors_entries = mcobject_async_destroy(entry->mcasync_selectors_entries, 1);
@@ -118,12 +120,12 @@ mycss_entry_t * mycss_entry_destroy(mycss_entry_t* entry, bool self_destroy)
     entry->mcasync_result_entries    = mcobject_async_destroy(entry->mcasync_result_entries, 1);
     
     if(entry->token) {
-        free(entry->token);
+        myhtml_free(entry->token);
         entry->token = NULL;
     }
     
     if(self_destroy) {
-        myfree(entry);
+        myhtml_free(entry);
         return NULL;
     }
     

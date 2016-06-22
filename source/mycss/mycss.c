@@ -23,7 +23,7 @@
 
 mycss_t * mycss_create(void)
 {
-    return (mycss_t*)mycalloc(1, sizeof(mycss_t));
+    return (mycss_t*)myhtml_calloc(1, sizeof(mycss_t));
 }
 
 mycss_status_t mycss_init(mycss_t* mycss)
@@ -32,14 +32,6 @@ mycss_status_t mycss_init(mycss_t* mycss)
     
     if(status != MyCSS_STATUS_OK)
         return status;
-    
-    mycss->async_incoming_buffer = mcobject_async_create();
-    if(mycss->async_incoming_buffer == NULL)
-        return MyCSS_STATUS_ERROR_MEMORY_ALLOCATION;
-    
-    mcobject_async_status_t mcstatus = mcobject_async_init(mycss->async_incoming_buffer, 32, 1024, sizeof(myhtml_incoming_buffer_t));
-    if(mcstatus != MCOBJECT_ASYNC_STATUS_OK)
-        return MyCSS_STATUS_ERROR_INCOMING_BUFFER_INIT;
     
     return MyCSS_STATUS_OK;
 }
@@ -50,10 +42,9 @@ mycss_t * mycss_destroy(mycss_t* mycss, bool self_destroy)
         return NULL;
     
     mycss_tokenizer_state_destroy(mycss);
-    mcobject_async_destroy(mycss->async_incoming_buffer, 1);
     
     if(self_destroy) {
-        myfree(mycss);
+        myhtml_free(mycss);
         return NULL;
     }
     

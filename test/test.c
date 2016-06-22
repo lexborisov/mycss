@@ -229,12 +229,12 @@ const char * test_node_attr_value(myhtml_tree_node_t *node, const char* key, myh
     myhtml_string_append(str, " ", 1);
     myhtml_string_append(str, key, strlen(key));
     
-    if(attr->value_length && attr->entry.data) {
+    if(attr->value.length && attr->value.data) {
         myhtml_string_append(str, "=\"", 2);
-        myhtml_string_append(str, &attr->entry.data[attr->value_begin], attr->value_length);
+        myhtml_string_append(str, attr->value.data, attr->value.length);
         myhtml_string_append(str, "\"", 1);
         
-        return attr->entry.data;
+        return attr->value.data;
     }
     
     myhtml_string_append(str, "=\"\"", 3);
@@ -294,7 +294,7 @@ size_t test_data(myhtml_tree_t* tree, size_t count_of_files, size_t* bad_res)
         myhtml_collection_t *col_data = myhtml_get_nodes_by_name_in_scope(tree, NULL, collection->list[i], "data", 4, NULL);
         
         myhtml_tree_node_t *data_node = col_data->list[0]->child;
-        myhtml_string_t *data_str = &data_node->token->my_str_tm;
+        myhtml_string_t *data_str = &data_node->token->str;
         
         mycss_parse(entry, MyHTML_ENCODING_UTF_8, data_str->data, data_str->length);
         

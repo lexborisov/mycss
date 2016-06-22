@@ -48,7 +48,6 @@ myhtml_print(stderr, "DEBUG ERROR: "format"\n", ##__VA_ARGS__)
 
 struct mycss {
     mycss_tokenizer_state_f* parse_state_func;
-    mcobject_async_t *async_incoming_buffer;
 };
 
 mycss_t * mycss_create(void);

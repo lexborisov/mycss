@@ -24,10 +24,7 @@
 
 mycss_status_t mycss_tokenizer_chunk(mycss_entry_t* entry, const char* css, size_t css_length)
 {
-    mycss_t *mycss = entry->mycss;
-    
-    entry->current_buffer = myhtml_incomming_buffer_add(entry->current_buffer, mycss->async_incoming_buffer,
-                                                        entry->incoming_buffer_id,
+    entry->current_buffer = myhtml_incomming_buffer_add(entry->current_buffer, entry->mcobject_incoming_buffer,
                                                         css, css_length);
     
     if(entry->current_buffer == NULL)
@@ -38,7 +35,7 @@ mycss_status_t mycss_tokenizer_chunk(mycss_entry_t* entry, const char* css, size
         entry->first_buffer = entry->current_buffer;
     
     if(entry->token == NULL) {
-        entry->token = (mycss_token_t*)mycalloc(1, sizeof(mycss_token_t));
+        entry->token = (mycss_token_t*)myhtml_calloc(1, sizeof(mycss_token_t));
         
         if(entry->token == NULL)
             return MyCSS_STATUS_ERROR_TOKENIZER_TOKEN_ALLOCATION;
@@ -1188,7 +1185,7 @@ size_t mycss_tokenizer_state_delim_single_code_point(mycss_entry_t* entry, mycss
 /////////////////////////////////////////////////////////
 mycss_status_t mycss_tokenizer_state_init(mycss_t* mycss)
 {
-    mycss->parse_state_func = (mycss_tokenizer_state_f*)mycalloc((MyCSS_TOKENIZER_STATE_LAST_ENTRY * 2), sizeof(mycss_tokenizer_state_f));
+    mycss->parse_state_func = (mycss_tokenizer_state_f*)myhtml_calloc((MyCSS_TOKENIZER_STATE_LAST_ENTRY * 2), sizeof(mycss_tokenizer_state_f));
     
     if(mycss->parse_state_func == NULL)
         return MyCSS_STATUS_ERROR_TOKENIZER_STATE_ALLOCATION;

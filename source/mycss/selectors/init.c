@@ -24,7 +24,7 @@
 
 mycss_selectors_t * mycss_selectors_create(void)
 {
-    return (mycss_selectors_t*)mycalloc(1, sizeof(mycss_selectors_t));
+    return (mycss_selectors_t*)myhtml_calloc(1, sizeof(mycss_selectors_t));
 }
 
 mycss_status_t mycss_selectors_init(mycss_entry_t* entry, mycss_selectors_t* selectors)
@@ -48,7 +48,7 @@ mycss_selectors_t * mycss_selectors_destroy(mycss_selectors_t* selectors, bool s
         return NULL;
     
     if(self_destroy) {
-        myfree(selectors);
+        myhtml_free(selectors);
         return NULL;
     }
     

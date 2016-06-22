@@ -22,7 +22,7 @@
 
 mycss_rules_t * mycss_rules_create(void)
 {
-    return (mycss_rules_t*)mycalloc(1, sizeof(mycss_rules_t));
+    return (mycss_rules_t*)myhtml_calloc(1, sizeof(mycss_rules_t));
 }
 
 mycss_status_t mycss_rules_init(mycss_entry_t* entry, mycss_rules_t* rules)
@@ -41,7 +41,7 @@ mycss_rules_t * mycss_rules_destroy(mycss_rules_t* rules, bool self_destroy)
         return NULL;
     
     if(self_destroy) {
-        myfree(rules);
+        myhtml_free(rules);
         return NULL;
     }
     
