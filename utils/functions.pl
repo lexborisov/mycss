@@ -43,7 +43,7 @@ sub create_result {
         print "\tMyCSS_SELECTORS_SUB_TYPE_UNDEF = 0x000,\n";
         print "\tMyCSS_SELECTORS_SUB_TYPE_UNKNOWN = 0x001,\n";
         foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "\tMyCSS_SELECTORS_SUB_TYPE_FUNCTION_", uc(name_to_correct_name($name)), " = ", sprintf("0x%03x", ++$count), ",\n";
+                print "\tMyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_", uc(name_to_correct_name($name)), " = ", sprintf("0x%03x", ++$count), ",\n";
         }
         print "}\n\n";
         

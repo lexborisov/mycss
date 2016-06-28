@@ -273,7 +273,7 @@ mycss_result_entry_t * mycss_result_get_parent_set_parser(mycss_result_t* result
     if(res_entry->parent) {
         mycss_selectors_entry_t* selector = res_entry->parent->selector;
         
-        if(selector->type == MyCSS_SELECTORS_TYPE_FUNCTION) {
+        if(selector->type == MyCSS_SELECTORS_TYPE_PSEUDO_CLASS_FUNCTION) {
             const mycss_selectors_function_index_t *findex = &mycss_selectors_function_parser_map_by_sub_type[ selector->sub_type ];
             
             result->parser = findex->parser;

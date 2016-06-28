@@ -43,7 +43,7 @@ void mycss_selectors_state_end(mycss_result_t* result)
         return;
     
     if(selector->type == MyCSS_SELECTORS_TYPE_ATTRIBUTE ||
-       selector->type == MyCSS_SELECTORS_TYPE_FUNCTION  ||
+       selector->type == MyCSS_SELECTORS_TYPE_PSEUDO_CLASS_FUNCTION ||
        (selector->key == NULL && selector->value == NULL))
     {
         mycss_selectors_entry_clean(selector);
@@ -185,6 +185,15 @@ bool mycss_selectors_state_simple_selector(mycss_result_t* result, mycss_selecto
             break;
         }
         case MyCSS_TOKEN_TYPE_HASH: {
+            // HAND_EDIT_BEGIN
+            //
+            // need if some check after process mycss_selectors_state_simple_selector
+            // if(result->state == mycss_selectors_state_simple_selector)
+            //     printf("error");
+            //
+            result->state = NULL;
+            // HAND_EDIT_END
+            
             mycss_selectors_parser_selector_id(result, selectors, selector, token);
             MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_hash")
             result->parser = result->switch_parser;
@@ -374,6 +383,7 @@ bool mycss_selectors_state_simple_selector_left_bracket_ident_vertical_bar(mycss
     return true;
 }
 
+// HAND_EDIT_BEGIN
 bool mycss_selectors_state_simple_selector_colon(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     switch (token->type) {
@@ -391,7 +401,7 @@ bool mycss_selectors_state_simple_selector_colon(mycss_result_t* result, mycss_s
             break;
         }
         case MyCSS_TOKEN_TYPE_FUNCTION: {
-            mycss_selectors_parser_selector_function(result, selectors, selector, token);
+            mycss_selectors_parser_selector_pseudo_class_function(result, selectors, selector, token);
             break;
         }
         default: {
@@ -407,12 +417,12 @@ bool mycss_selectors_state_simple_selector_colon(mycss_result_t* result, mycss_s
 bool mycss_selectors_state_simple_selector_colon_colon(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     if(token->type == MyCSS_TOKEN_TYPE_IDENT) {
-        mycss_selectors_parser_selector_pseudo_class(result, selectors, selector, token);
+        mycss_selectors_parser_selector_pseudo_element(result, selectors, selector, token);
         MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_colon_colon_ident")
         result->parser = result->switch_parser;
     }
     else if(token->type == MyCSS_TOKEN_TYPE_FUNCTION) {
-        mycss_selectors_parser_selector_function(result, selectors, selector, token);
+        mycss_selectors_parser_selector_pseudo_element_function(result, selectors, selector, token);
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);
@@ -426,7 +436,7 @@ bool mycss_selectors_state_simple_selector_colon_colon(mycss_result_t* result, m
 bool mycss_selectors_state_simple_selector_colon_colon_function(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     if(token->type == MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS) {
-        mycss_selectors_parser_selector_function_end(result, selectors, selector, token);
+        mycss_selectors_parser_selector_pseudo_element_function_end(result, selectors, selector, token);
         MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_colon_colon_function_right_parenthesis")
         result->parser = result->switch_parser;
     }
@@ -442,7 +452,7 @@ bool mycss_selectors_state_simple_selector_colon_colon_function(mycss_result_t* 
 bool mycss_selectors_state_simple_selector_colon_function(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     if(token->type == MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS) {
-        mycss_selectors_parser_selector_function_end(result, selectors, selector, token);
+        mycss_selectors_parser_selector_pseudo_class_function_end(result, selectors, selector, token);
         MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_colon_function_right_parenthesis")
         result->parser = result->switch_parser;
     }
@@ -454,6 +464,7 @@ bool mycss_selectors_state_simple_selector_colon_function(mycss_result_t* result
     
     return true;
 }
+// HAND_EDIT_END
 
 bool mycss_selectors_state_simple_selector_full_stop(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {

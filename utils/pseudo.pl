@@ -61,7 +61,7 @@ sub create_result {
         my $count = 15; # see max number in print of functions.pl (max + 1)
         print "enum mycss_selectors_sub_type {\n";
         foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "\tMyCSS_SELECTORS_SUB_TYPE_PSEUDO_", uc(name_to_correct_name($name)), " = ", sprintf("0x%03x", ++$count), ",\n";
+                print "\tMyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_", uc(name_to_correct_name($name)), " = ", sprintf("0x%03x", ++$count), ",\n";
         }
         print "}\n\n";
         
@@ -118,7 +118,7 @@ sub create_sub_static_list_index {
                 $offset++;
                 push @$struct, "\t{".
                 '"'. $list_sorted[$i]->[0] .'", '. $list_sorted[$i]->[1] .', '.
-                "MyCSS_SELECTORS_SUB_TYPE_PSEUDO_". uc(name_to_correct_name($list_sorted[$i]->[0])), ', '.
+                "MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_". uc(name_to_correct_name($list_sorted[$i]->[0])), ', '.
                 ($i < $#list_sorted ? $offset : 0) .", $cur},\n";
         }
         
@@ -147,7 +147,7 @@ sub create_static_list_index {
                         
                         push @res, "\t{".
                         '"'. $list_sorted[0]->[0] .'", '. $list_sorted[0]->[1] .', '.
-                        "MyCSS_SELECTORS_SUB_TYPE_PSEUDO_". uc(name_to_correct_name($list_sorted[0]->[0])), ', '.
+                        "MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_". uc(name_to_correct_name($list_sorted[0]->[0])), ', '.
                         "$id, $i},\n";
 				}
 				else {
@@ -155,7 +155,7 @@ sub create_static_list_index {
                 }
         }
         
-        "static const mycss_selectots_pseudo_begin_entry_t mycss_selectors_pseudo_begin_map_index[] = \n{\n". join("", @res, @$struct) ."};\n"
+        "static const mycss_selectots_pseudo_begin_entry_t mycss_selectors_pseudo_class_begin_map_index[] = \n{\n". join("", @res, @$struct) ."};\n"
 }
 
 sub name_to_correct_name {

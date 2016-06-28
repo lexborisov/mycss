@@ -148,7 +148,7 @@ void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* 
             myhtml_string_append(str, "class", strlen("class"));
             break;
         }
-        case MyCSS_SELECTORS_TYPE_FUNCTION: {
+        case MyCSS_SELECTORS_TYPE_PSEUDO_CLASS_FUNCTION: {
             myhtml_string_append(str, "function", strlen("function"));
             break;
         }
@@ -186,7 +186,7 @@ void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* 
             test_print_selector_value_attribute(selectors, selector, str);
             break;
             
-        case MyCSS_SELECTORS_TYPE_FUNCTION:
+        case MyCSS_SELECTORS_TYPE_PSEUDO_CLASS_FUNCTION:
             myhtml_string_append(str, ">\n", 2);
             break;
             

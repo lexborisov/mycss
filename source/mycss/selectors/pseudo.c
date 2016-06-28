@@ -26,38 +26,38 @@
 //// Functions for a find Begin Function
 ////
 /////////////////////////////////////////////////////////
-const mycss_selectots_pseudo_begin_entry_t * mycss_pseudo_begin_entry_by_name(const char* name, size_t length)
+const mycss_selectots_pseudo_begin_entry_t * mycss_pseudo_begin_entry_by_name(const char* name, size_t length, const mycss_selectots_pseudo_begin_entry_t* pseudo)
 {
     size_t idx = ((myhtml_string_chars_lowercase_map[ (const unsigned char)name[0] ] *
                    myhtml_string_chars_lowercase_map[ (const unsigned char)name[(length - 1)] ] *
                    length)
                   % MyCSS_SELECTORS_PSEUDO_NAME_STATIC_SIZE) + 1;
     
-    while (mycss_selectors_pseudo_begin_map_index[idx].name)
+    while (pseudo[idx].name)
     {
-        if(mycss_selectors_pseudo_begin_map_index[idx].length == length) {
-            if(myhtml_strncasecmp(mycss_selectors_pseudo_begin_map_index[idx].name, name, length) == 0)
-                return &mycss_selectors_pseudo_begin_map_index[idx];
+        if(pseudo[idx].length == length) {
+            if(myhtml_strncasecmp(pseudo[idx].name, name, length) == 0)
+                return &pseudo[idx];
             
-            if(mycss_selectors_pseudo_begin_map_index[idx].next)
-                idx = mycss_selectors_pseudo_begin_map_index[idx].next;
+            if(pseudo[idx].next)
+                idx = pseudo[idx].next;
             else
                 return NULL;
         }
-        else if(mycss_selectors_pseudo_begin_map_index[idx].length > length) {
+        else if(pseudo[idx].length > length) {
             return NULL;
         }
         else {
-            idx = mycss_selectors_pseudo_begin_map_index[idx].next;
+            idx = pseudo[idx].next;
         }
     }
     
     return NULL;
 }
 
-mycss_selectors_sub_type_t mycss_pseudo_begin_by_name(const char *name, size_t length)
+mycss_selectors_sub_type_t mycss_pseudo_class_by_name(const char *name, size_t length)
 {
-    const mycss_selectots_pseudo_begin_entry_t *entry = mycss_pseudo_begin_entry_by_name(name, length);
+    const mycss_selectots_pseudo_begin_entry_t *entry = mycss_pseudo_begin_entry_by_name(name, length, mycss_selectors_pseudo_class_begin_map_index);
     
     if(entry)
         return entry->sub_type;
