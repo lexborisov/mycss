@@ -32,12 +32,12 @@ static const mycss_selectors_function_index_t mycss_selectors_function_parser_ma
     {mycss_parser_token, mycss_parser_token}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_LANG
     {mycss_selectors_function_not_or_matches_parser, mycss_selectors_function_not_or_matches_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_MATCHES
     {mycss_selectors_function_not_or_matches_parser, mycss_selectors_function_not_or_matches_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NOT
-    {mycss_selectors_function_nth_parser, mycss_selectors_function_nth_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_CHILD
-    {mycss_parser_token, mycss_parser_token}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_COLUMN
-    {mycss_parser_token, mycss_parser_token}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_CHILD
-    {mycss_parser_token, mycss_parser_token}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_COLUMN
-    {mycss_parser_token, mycss_parser_token}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_OF_TYPE
-    {mycss_parser_token, mycss_parser_token}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_OF_TYPE
+    {mycss_selectors_function_nth_with_selectors_parser, mycss_selectors_function_nth_with_selectors_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_CHILD
+    {mycss_selectors_function_nth_without_selectors_parser, mycss_selectors_function_nth_without_selectors_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_COLUMN
+    {mycss_selectors_function_nth_with_selectors_parser, mycss_selectors_function_nth_with_selectors_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_CHILD
+    {mycss_selectors_function_nth_without_selectors_parser, mycss_selectors_function_nth_without_selectors_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_COLUMN
+    {mycss_selectors_function_nth_without_selectors_parser, mycss_selectors_function_nth_without_selectors_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_OF_TYPE
+    {mycss_selectors_function_nth_without_selectors_parser, mycss_selectors_function_nth_without_selectors_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_OF_TYPE
     {mycss_parser_token, mycss_parser_token}, // MyCSS_SELECTORS_SUB_TYPE_UNDEF
     {NULL, NULL}
 };

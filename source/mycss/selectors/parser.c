@@ -204,6 +204,11 @@ void mycss_selectors_parser_selector_pseudo_class(mycss_result_t* result, mycss_
     selector->key  = str;
     selector->type = MyCSS_SELECTORS_TYPE_PSEUDO_CLASS;
     
+    selector->sub_type = mycss_pseudo_begin_by_name(str->data, str->length);
+    
+    if(selector->sub_type == MyCSS_SELECTORS_SUB_TYPE_UNKNOWN)
+        selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+    
     mycss_selectors_parser_selector_end(result, selectors, selector, token);
 }
 

@@ -25,6 +25,8 @@
 #define mycss_selector_value_attribute(obj) ((mycss_selectors_object_attribute_t*)(obj))
 #define mycss_selector_value_string(obj) ((myhtml_string_t*)(obj))
 #define mycss_selector_value_an_plus_b(obj) ((mycss_an_plus_b_entry_t*)(obj))
+#define mycss_selector_value_drop(obj) ((mycss_selectors_function_drop_type_t)(obj))
+#define mycss_selector_value_lang(obj) ((mycss_selectors_value_lang_t*)(obj))
 #define mycss_selector_value_function(obj) ((mycss_result_entry_t*)(obj))
 #define mycss_selector_value_destroy(result, type, sub_type, value, self_destroy) (mycss_selectors_value_destroy_map[type](result, type, sub_type, value, self_destroy))
 
@@ -39,7 +41,6 @@ extern "C" {
 #include <myhtml/utils/mchar_async.h>
 
 typedef void * (*mycss_selectors_value_destroy_f)(mycss_result_t* result, mycss_selectors_type_t type, mycss_selectors_sub_type_t sub_type, void* value, bool self_destroy);
-
 typedef void * (*mycss_selectors_value_function_destroy_f)(mycss_result_t* result, void* value, bool self_destroy);
 
 struct mycss_selectors_value_attribute {
@@ -49,6 +50,12 @@ struct mycss_selectors_value_attribute {
     mycss_selectors_mod_t mod;
 }
 typedef mycss_selectors_object_attribute_t;
+
+struct mycss_selectors_value_lang {
+    myhtml_string_t str;
+    struct mycss_selectors_value_lang* next;
+}
+typedef mycss_selectors_value_lang_t;
 
 mycss_selectors_object_attribute_t * mycss_selectors_value_attribute_create(mycss_result_t* result, bool set_clean);
 void * mycss_selectors_value_attribute_destroy(mycss_result_t* result, mycss_selectors_type_t type, mycss_selectors_sub_type_t sub_type, void* value, bool self_destroy);

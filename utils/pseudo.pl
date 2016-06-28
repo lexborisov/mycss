@@ -3,28 +3,49 @@
 use utf8;
 use strict;
 
-my $static_list_index_length = 57;
+my $static_list_index_length = 73;
 my $func_map = {
-        not => "",
-        matches => "",
-        has => "",
-        dir => "",
-        lang => "",
-        current => "",
-        drop => "",
-        'nth-child' => "",
-        'nth-last-child' => "",
-        'nth-of-type' => "",
-        'nth-last-of-type' => "",
-        'nth-column' => "",
-        'nth-last-column' => ""
+        "any-link" => "",
+        "link" => "",
+        "visited" => "",
+        "target" => "",
+        "scope" => "",
+        "current" => "",
+        "past" => "",
+        'future' => "",
+        'active' => "",
+        'hover' => "",
+        'focus' => "",
+        'drop' => "",
+        'enabled' => "",
+        'disabled' => "",
+        'read-write' => "",
+        'read-only' => "",
+        'placeholder-shown' => "",
+        'default' => "",
+        'checked' => "",
+        'indeterminate' => "",
+        'valid' => "",
+        'invalid' => "",
+        'in-range' => "",
+        'out-of-range' => "",
+        'required' => "",
+        'optional' => "",
+        'user-error' => "",
+        
+        'root' => "",
+        'empty' => "",
+        'blank' => "",
+        'first-child' => "",
+        'last-child' => "",
+        'only-child' => "",
+        'first-of-type' => "",
+        'last-of-type' => "",
+        'only-of-type' => ""
 };
-
-my $INDEX_OF_NAMES = print_functions();
 
 my $result = create_result($static_list_index_length);
 my $static_list = create_static_list_index($result);
-
 print $static_list, "\n";
 
 sub create_result {
@@ -34,51 +55,15 @@ sub create_result {
         foreach my $ns (sort {$a cmp $b} keys %$func_map)
         {
                 my $id = get_index_id($ns, $static_list_index_length);
-                
                 push @{$result->{$id}}, [$ns, length($ns)];
         }
         
-        my $count = 1;
+        my $count = 15; # see max number in print of functions.pl (max + 1)
         print "enum mycss_selectors_sub_type {\n";
-        print "\tMyCSS_SELECTORS_SUB_TYPE_UNDEF = 0x000,\n";
-        print "\tMyCSS_SELECTORS_SUB_TYPE_UNKNOWN = 0x001,\n";
         foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "\tMyCSS_SELECTORS_SUB_TYPE_FUNCTION_", uc(name_to_correct_name($name)), " = ", sprintf("0x%03x", ++$count), ",\n";
+                print "\tMyCSS_SELECTORS_SUB_TYPE_PSEUDO_", uc(name_to_correct_name($name)), " = ", sprintf("0x%03x", ++$count), ",\n";
         }
         print "}\n\n";
-        
-        print "Max number: $count\n";
-        
-        foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "void * mycss_selectors_value_function_", lc(name_to_correct_name($name)), "_create(mycss_result_t* result, bool set_clean);\n";
-        }
-        print "\n";
-        
-        foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "void * mycss_selectors_value_function_", lc(name_to_correct_name($name)), "_create(mycss_result_t* result, bool set_clean)\n{\n";
-                print "\treturn NULL;\n";
-                print "}\n\n";
-        }
-        
-        foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "void * mycss_selectors_value_function_", lc(name_to_correct_name($name)), "_destroy(mycss_result_t* result, void* value, bool self_destroy);\n";
-        }
-        print "\n";
-        
-        foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "void * mycss_selectors_value_function_", lc(name_to_correct_name($name)), "_destroy(mycss_result_t* result, void* value, bool self_destroy)\n{\n";
-                print "\tif(self_destroy) {\n";
-                print "\t\treturn NULL;\n";
-                print "\t}\n\n";
-                print "\treturn value;";
-                print "\n}\n\n";
-        }
-        
-        print "static const mycss_selectors_value_function_destroy_f mycss_selectors_value_function_destroy_map[MyCSS_SELECTORS_TYPE_LAST_ENTRY] = {\n";
-        foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "\tmycss_selectors_value_function_", lc(name_to_correct_name($name)), "_destroy,\n";
-        }
-        print "};\n\n";
         
         $result;
 }
@@ -133,7 +118,7 @@ sub create_sub_static_list_index {
                 $offset++;
                 push @$struct, "\t{".
                 '"'. $list_sorted[$i]->[0] .'", '. $list_sorted[$i]->[1] .', '.
-                $INDEX_OF_NAMES->{$list_sorted[$i]->[0]}, ', '.
+                "MyCSS_SELECTORS_SUB_TYPE_PSEUDO_". uc(name_to_correct_name($list_sorted[$i]->[0])), ', '.
                 ($i < $#list_sorted ? $offset : 0) .", $cur},\n";
         }
         
@@ -162,31 +147,15 @@ sub create_static_list_index {
                         
                         push @res, "\t{".
                         '"'. $list_sorted[0]->[0] .'", '. $list_sorted[0]->[1] .', '.
-                        $INDEX_OF_NAMES->{$list_sorted[0]->[0]}, ', '.
+                        "MyCSS_SELECTORS_SUB_TYPE_PSEUDO_". uc(name_to_correct_name($list_sorted[0]->[0])), ', '.
                         "$id, $i},\n";
 				}
 				else {
-                        push @res, "\t{NULL, 0, NULL, 0, 0},\n";
+                        push @res, "\t{NULL, 0, MyCSS_SELECTORS_SUB_TYPE_UNDEF, 0, 0},\n";
                 }
         }
         
-        "static const mycss_selectots_function_begin_entry_t mycss_selectors_function_begin_map_index[] = \n{\n". join("", @res, @$struct) ."};\n"
-}
-
-sub print_functions {
-        my $headers;
-        foreach my $name (keys %$func_map) {
-                my $corect_name = name_to_correct_name($name);
-                $headers->{$name} = "mycss_selectors_function_begin_$corect_name";
-        }
-        
-        print join( "\n", map {"void ". $headers->{$_} ."(mycss_result_t* result, mycss_selectors_entry_t* selector);"} keys %$headers), "\n\n";
-        
-        foreach my $key (keys %$headers) {
-                print "void ". $headers->{$key} ."(mycss_result_t* result, mycss_selectors_entry_t* selector)\n{\n\t\n}\n\n";
-        }
-        
-        $headers;
+        "static const mycss_selectots_pseudo_begin_entry_t mycss_selectors_pseudo_begin_map_index[] = \n{\n". join("", @res, @$struct) ."};\n"
 }
 
 sub name_to_correct_name {

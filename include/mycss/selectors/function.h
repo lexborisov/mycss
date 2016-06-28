@@ -73,8 +73,14 @@ bool mycss_selectors_unknown_parser(mycss_result_t* result, mycss_token_t* token
 
 bool mycss_selectors_function_not_or_matches_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_has_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_nth_parser(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_function_nth_with_selectors_parser(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_function_nth_without_selectors_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_nth_of_selectors_parser(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_function_drop_parser(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_function_drop_column_parser(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_function_dir_parser(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_function_lang_parser(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_function_lang_comma_parser(mycss_result_t* result, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

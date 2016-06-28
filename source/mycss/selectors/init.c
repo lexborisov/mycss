@@ -199,6 +199,11 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
                     break;
                 
                 case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_CHILD:
+                case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_CHILD:
+                case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_COLUMN:
+                case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_COLUMN:
+                case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_OF_TYPE:
+                case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_OF_TYPE:
                     mycss_an_plus_b_print(selector->value, fh);
                     
                     if(mycss_selector_value_an_plus_b(selector->value)->of) {
@@ -207,14 +212,71 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
                     
                     break;
                 
+                case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_DROP: {
+                    mycss_selectors_function_drop_type_t drop_val = mycss_selector_value_drop(selector->value);
+                    
+                    if(drop_val & MyCSS_SELECTORS_FUNCTION_DROP_TYPE_ACTIVE) {
+                        fprintf(fh, "active");
+                        
+                        if(drop_val != MyCSS_SELECTORS_FUNCTION_DROP_TYPE_ACTIVE)
+                            fprintf(fh, " || ");
+                    }
+                    
+                    if(drop_val & MyCSS_SELECTORS_FUNCTION_DROP_TYPE_VALID) {
+                        fprintf(fh, "valid");
+                        
+                        if(drop_val & MyCSS_SELECTORS_FUNCTION_DROP_TYPE_INVALID)
+                            fprintf(fh, " || ");
+                    }
+                    
+                    if(drop_val & MyCSS_SELECTORS_FUNCTION_DROP_TYPE_INVALID) {
+                        fprintf(fh, "invalid");
+                    }
+                    
+                    break;
+                }
+                
+                case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_DIR: {
+                    if(selector->value)
+                        fprintf(fh, "%s", mycss_selector_value_string(selector->value)->data);
+                    
+                    break;
+                }
+                
+                case MyCSS_SELECTORS_SUB_TYPE_FUNCTION_LANG: {
+                    if(selector->value) {
+                        mycss_selectors_value_lang_t *lang = mycss_selector_value_lang(selector->value);
+                        
+                        while(lang) {
+                            fprintf(fh, "%s", lang->str.data);
+                            
+                            if(lang->next)
+                                fprintf(fh, ", ");
+                            
+                            lang = lang->next;
+                        }
+                        
+                    }
+                    
+                    break;
+                }
+                
                 default:
                     break;
             }
             
             fprintf(fh, ")");
+        }
+            
+        case MyCSS_SELECTORS_TYPE_PSEUDO_CLASS: {
+            fprintf(fh, "::");
+            
+            if(selector->key)
+                fprintf(fh, "%s", selector->key->data);
             
             break;
         }
+            
         default: {
             if(selector->key)
                 fprintf(fh, "%s", selector->key->data);

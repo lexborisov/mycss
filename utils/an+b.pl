@@ -113,7 +113,7 @@ sub function_string_after {
 sub function_default {
 	my ($creater, $cfunc, $fname, $type) = @_;
 	
-	return ["anb->state = $fname;"];
+	return ["result->state = $fname;"];
 }
 
 sub function_else {
@@ -121,7 +121,7 @@ sub function_else {
 	
 	[
 		"mycss_an_plus_b_parser_expectations_error(result, anb, anb_entry, token);",
-		"result->parser = anb->switch_parser;",
+		"result->parser = result->switch_parser;",
 		"return false;"
 	];
 }
@@ -137,7 +137,7 @@ sub function_last {
 	
 	[
 		"MyCSS_DEBUG_MESSAGE(\"$fname\")",
-		"result->parser = anb->switch_parser;"
+		"result->parser = result->switch_parser;"
 	];
 }
 

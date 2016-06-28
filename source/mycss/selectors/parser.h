@@ -31,6 +31,7 @@ extern "C" {
 #include "mycss/selectors/myosi.h"
 #include "mycss/selectors/value.h"
 #include "mycss/selectors/function.h"
+#include "mycss/selectors/pseudo.h"
 
 mycss_selectors_entry_t * mycss_selectors_parser_selector_create_new_entry(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector);
 

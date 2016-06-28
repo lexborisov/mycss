@@ -30,9 +30,6 @@ extern "C" {
 #include <mycss/entry.h>
 
 struct mycss_an_plus_b {
-    mycss_an_plus_b_state_f state;
-    mycss_parser_token_f switch_parser;
-    
     mycss_an_plus_b_entry_t* anb_entry;
 };
 

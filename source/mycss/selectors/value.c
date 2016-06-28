@@ -127,7 +127,12 @@ void * mycss_selectors_value_function_current_create(mycss_result_t* result, boo
 
 void * mycss_selectors_value_function_dir_create(mycss_result_t* result, bool set_clean)
 {
-    return NULL;
+    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    
+    if(set_clean)
+        myhtml_string_clean_all(str);
+    
+    return str;
 }
 
 void * mycss_selectors_value_function_drop_create(mycss_result_t* result, bool set_clean)
@@ -142,7 +147,15 @@ void * mycss_selectors_value_function_has_create(mycss_result_t* result, bool se
 
 void * mycss_selectors_value_function_lang_create(mycss_result_t* result, bool set_clean)
 {
-    return NULL;
+    mycss_selectors_value_lang_t* lang = (mycss_selectors_value_lang_t*)
+    mchar_async_malloc(result->entry->mchar, result->mchar_value_node_id, sizeof(mycss_selectors_value_lang_t));
+    
+    if(set_clean) {
+        lang->next = NULL;
+        myhtml_string_clean_all(&lang->str);
+    }
+    
+    return lang;
 }
 
 void * mycss_selectors_value_function_matches_create(mycss_result_t* result, bool set_clean)
@@ -210,11 +223,7 @@ void * mycss_selectors_value_function_current_destroy(mycss_result_t* result, vo
 
 void * mycss_selectors_value_function_dir_destroy(mycss_result_t* result, void* value, bool self_destroy)
 {
-    if(self_destroy) {
-        return NULL;
-    }
-    
-    return value;
+    return myhtml_string_destroy(value, self_destroy);
 }
 
 void * mycss_selectors_value_function_drop_destroy(mycss_result_t* result, void* value, bool self_destroy)
@@ -233,7 +242,13 @@ void * mycss_selectors_value_function_has_destroy(mycss_result_t* result, void* 
 
 void * mycss_selectors_value_function_lang_destroy(mycss_result_t* result, void* value, bool self_destroy)
 {
+    if(value == NULL)
+        return NULL;
+    
+    myhtml_string_destroy(&mycss_selector_value_lang(value)->str, false);
+    
     if(self_destroy) {
+        mchar_async_free(result->entry->mchar, result->mchar_value_node_id, value);
         return NULL;
     }
     
