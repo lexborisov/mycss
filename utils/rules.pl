@@ -61,7 +61,7 @@ sub function_default {
 }
 
 sub function_else {
-	["result->parser = mycss_parser_token;"];
+	["result->parser = result->parser_switch;"];
 }
 
 sub function_last {
@@ -69,7 +69,7 @@ sub function_last {
 	
 	[
 		"printf(\"$fname\\n\");  /* End of rules */",
-		"result->parser = mycss_parser_token;"
+		"result->parser = result->parser_switch;"
 	];
 }
 

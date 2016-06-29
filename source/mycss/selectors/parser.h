@@ -59,6 +59,23 @@ void mycss_selectors_parser_selector_pseudo_element_function_end(mycss_result_t*
 void mycss_selectors_parser_expectations_error(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 void mycss_selectors_parser_bad_token(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 
+/* for set parent selector bad status if child selector is bad*/
+void mycss_selectors_parser_check_and_set_bad_parent_selector(mycss_result_entry_t* result_entry);
+
+/* selectors list */
+bool mycss_selectors_parser_selectors_list_begin(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_parser_selectors_list_process(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_parser_selectors_list_comma(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_parser_selectors_list_whitespace(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_parser_selectors_list_skip_all(mycss_result_t* result, mycss_token_t* token);
+
+/* selectors list with combinator first */
+bool mycss_selectors_parser_selectors_list_with_combinator_first_process(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_parser_selectors_list_with_combinator_first_greater_than(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_parser_selectors_list_with_combinator_first_comma(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_parser_selectors_list_with_combinator_first_whitespace(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_parser_selectors_list_with_combinator_first_after_combinator(mycss_result_t* result, mycss_token_t* token);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

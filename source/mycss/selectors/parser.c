@@ -234,6 +234,7 @@ void mycss_selectors_parser_selector_pseudo_class_function(mycss_result_t* resul
 
 void mycss_selectors_parser_selector_pseudo_class_function_end(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
+    mycss_selectors_parser_check_and_set_bad_parent_selector(result->result_entry);
     mycss_selectors_parser_selector_end(result, selectors, selector, token);
 }
 
@@ -253,7 +254,7 @@ void mycss_selectors_parser_selector_pseudo_element_function(mycss_result_t* res
 
 void mycss_selectors_parser_selector_pseudo_element_function_end(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
-    
+    mycss_selectors_parser_selector_end(result, selectors, selector, token);
 }
 
 /////////////////////////////////////////////////////////
@@ -262,12 +263,25 @@ void mycss_selectors_parser_selector_pseudo_element_function_end(mycss_result_t*
 /////////////////////////////////////////////////////////
 void mycss_selectors_parser_selector_end(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
+    if(result->callback_selector_done)
+        result->callback_selector_done(selectors, selector);
+    
     mycss_selectors_parser_selector_create_new_entry(result, selectors, selector);
 }
 
 void mycss_selectors_parser_expectations_error(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+    
+    mycss_result_entry_t *result_entry = result->result_entry;
+    if(result_entry->parent && result_entry->parent->selector)
+    {
+        mycss_selectors_entry_t* parent_selector = result_entry->parent->selector;
+        
+        if((parent_selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+            parent_selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+    }
+    
     mycss_selectors_parser_selector_create_new_entry(result, selectors, selector);
     
     //printf("Expectations error!\n");
@@ -288,5 +302,524 @@ void mycss_selectors_parser_bad_token(mycss_result_t* result, mycss_selectors_t*
     mycss_token_data_to_string(result->entry, token, selector->key, false);
 }
 
+/////////////////////////////////////////////////////////
+//// Set bad
+////
+/////////////////////////////////////////////////////////
+void mycss_selectors_parser_check_and_set_bad_parent_selector(mycss_result_entry_t* result_entry)
+{
+    mycss_selectors_entry_t *selector = result_entry->selector;
+    
+    if(selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD)
+    {
+        if(result_entry->parent && result_entry->parent->selector) {
+            selector = result_entry->parent->selector;
+            
+            if((selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+        }
+    }
+}
+
+/////////////////////////////////////////////////////////
+//// Selectors list
+////
+/////////////////////////////////////////////////////////
+bool mycss_selectors_parser_selectors_list_begin(mycss_result_t* result, mycss_token_t* token)
+{
+    switch (token->type) {
+        case MyCSS_TOKEN_TYPE_WHITESPACE: {
+            break;
+        }
+            
+        case MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS: {
+            result->parser = result->parser_original;
+            return false;
+        }
+            
+        default: {
+            result->parser_switch = mycss_selectors_parser_selectors_list_process;
+            result->state = mycss_selectors_state_simple_selector;
+            
+            if(result->parser != mycss_selectors_state_token_all)
+                result->parser = mycss_selectors_state_token_all;
+            
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+bool mycss_selectors_parser_selectors_list_process(mycss_result_t* result, mycss_token_t* token)
+{
+    switch (token->type) {
+        case MyCSS_TOKEN_TYPE_COMMA: {
+            if(result->result_entry->selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD ||
+               result->state == mycss_selectors_state_simple_selector)
+            {
+                mycss_selectors_entry_t *prev_selector = result->result_entry->parent->selector;
+                
+                if((prev_selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                    prev_selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+                
+                result->parser = mycss_selectors_parser_selectors_list_skip_all;
+                break;
+            }
+            
+            mycss_selectors_parser_selector_comma(result, result->selectors, result->result_entry->selector, token);
+            
+            result->parser = mycss_selectors_parser_selectors_list_comma;
+            break;
+        }
+            
+        case MyCSS_TOKEN_TYPE_WHITESPACE: {
+            result->parser = mycss_selectors_parser_selectors_list_whitespace;
+            break;
+        }
+            
+        case MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS: {
+            result->parser = result->parser_original;
+            return false;
+        }
+            
+        default: {
+            if(result->result_entry->selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD ||
+               result->state == mycss_selectors_state_simple_selector)
+            {
+                mycss_selectors_entry_t *prev_selector = result->result_entry->parent->selector;
+                
+                if((prev_selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                    prev_selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+                
+                result->parser = mycss_selectors_parser_selectors_list_skip_all;
+                break;
+            }
+            
+            result->state = mycss_selectors_state_simple_selector;
+            
+            if(result->parser != mycss_selectors_state_token_skip_whitespace)
+                result->parser = mycss_selectors_state_token_skip_whitespace;
+            
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+bool mycss_selectors_parser_selectors_list_comma(mycss_result_t* result, mycss_token_t* token)
+{
+    switch (token->type) {
+        case MyCSS_TOKEN_TYPE_WHITESPACE: {
+            break;
+        }
+            
+        case MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS: {
+            mycss_selectors_entry_t *prev_selector = result->result_entry->parent->selector;
+            
+            if((prev_selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                prev_selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+            
+            result->parser = result->parser_original;
+            return false;
+        }
+            
+        default: {
+            result->state = mycss_selectors_state_simple_selector;
+            
+            if(result->parser != mycss_selectors_state_token_skip_whitespace)
+                result->parser = mycss_selectors_state_token_skip_whitespace;
+            
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+bool mycss_selectors_parser_selectors_list_whitespace(mycss_result_t* result, mycss_token_t* token)
+{
+    switch (token->type) {
+        case MyCSS_TOKEN_TYPE_COMMA: {
+            mycss_selectors_parser_selector_comma(result, result->selectors, result->result_entry->selector, token);
+            
+            result->parser = mycss_selectors_parser_selectors_list_comma;
+            break;
+        }
+            
+        case MyCSS_TOKEN_TYPE_WHITESPACE: {
+            break;
+        }
+            
+        case MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS: {
+            result->parser = result->parser_original;
+            return false;
+        }
+            
+        default: {
+            mycss_selectors_entry_t *prev_selector = result->result_entry->parent->selector;
+            
+            if((prev_selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                prev_selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+            
+            result->parser = mycss_selectors_parser_selectors_list_skip_all;
+            break;
+        }
+    }
+    
+    return true;
+}
+
+bool mycss_selectors_parser_selectors_list_skip_all(mycss_result_t* result, mycss_token_t* token)
+{
+    if(token->type == MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS) {
+        result->parser = result->parser_original;
+        return false;
+    }
+    
+    return true;
+}
+
+/////////////////////////////////////////////////////////
+//// Selectors list with combinator firstly
+////
+/////////////////////////////////////////////////////////
+bool mycss_selectors_parser_selectors_list_with_combinator_first_process(mycss_result_t* result, mycss_token_t* token)
+{
+    switch (token->type) {
+            /* combinator */
+        case MyCSS_TOKEN_TYPE_COLUMN: {
+            mycss_selectors_parser_selector_combinator_column(result, result->selectors, result->result_entry->selector, token);
+            
+            result->state = mycss_selectors_state_simple_selector;
+            result->parser_switch = mycss_selectors_parser_selectors_list_with_combinator_first_after_combinator;
+            
+            if(result->parser != mycss_selectors_state_token_skip_whitespace)
+                result->parser = mycss_selectors_state_token_skip_whitespace;
+            
+            break;
+        }
+        case MyCSS_TOKEN_TYPE_DELIM: {
+            switch(*token->data) {
+                    /* combinator */
+                case '+': {
+                    mycss_selectors_parser_selector_combinator_plus(result, result->selectors, result->result_entry->selector, token);
+                    break;
+                }
+                case '>': {
+                    mycss_selectors_parser_selector_combinator_greater_than(result, result->selectors, result->result_entry->selector, token);
+                    
+                    result->parser = mycss_selectors_parser_selectors_list_with_combinator_first_greater_than;
+                    return true;
+                }
+                case '~': {
+                    mycss_selectors_parser_selector_combinator_tilde(result, result->selectors, result->result_entry->selector, token);
+                    break;
+                }
+                default: {
+                    if(result->result_entry->selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD ||
+                       result->state == mycss_selectors_state_simple_selector)
+                    {
+                        mycss_selectors_entry_t *prev_selector = result->result_entry->parent->selector;
+                        
+                        if((prev_selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                            prev_selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+                        
+                        result->parser = mycss_selectors_parser_selectors_list_skip_all;
+                        break;
+                    }
+                    
+                    result->state = mycss_selectors_state_simple_selector;
+                    
+                    if(result->parser != mycss_selectors_state_token_skip_whitespace)
+                        result->parser = mycss_selectors_state_token_skip_whitespace;
+                    
+                    return false;
+                }
+            }
+            
+            result->state = mycss_selectors_state_simple_selector;
+            result->parser_switch = mycss_selectors_parser_selectors_list_with_combinator_first_after_combinator;
+            
+            if(result->parser != mycss_selectors_state_token_skip_whitespace)
+                result->parser = mycss_selectors_state_token_skip_whitespace;
+            
+            break;
+        }
+            
+        case MyCSS_TOKEN_TYPE_COMMA: {
+            if(result->result_entry->selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD ||
+               result->state == mycss_selectors_state_simple_selector)
+            {
+                mycss_selectors_entry_t *prev_selector = result->result_entry->parent->selector;
+                
+                if((prev_selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                    prev_selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+                
+                result->parser = mycss_selectors_parser_selectors_list_skip_all;
+                break;
+            }
+            
+            mycss_selectors_parser_selector_comma(result, result->selectors, result->result_entry->selector, token);
+            
+            result->parser = mycss_selectors_parser_selectors_list_with_combinator_first_comma;
+            break;
+        }
+            
+        case MyCSS_TOKEN_TYPE_WHITESPACE: {
+            result->parser = mycss_selectors_parser_selectors_list_with_combinator_first_whitespace;
+            break;
+        }
+            
+        case MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS: {
+            result->parser = result->parser_original;
+            return false;
+        }
+            
+        default: {
+            if(result->result_entry->selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD ||
+               result->state == mycss_selectors_state_simple_selector)
+            {
+                mycss_selectors_entry_t *prev_selector = result->result_entry->parent->selector;
+                
+                if((prev_selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                    prev_selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+                
+                result->parser = mycss_selectors_parser_selectors_list_skip_all;
+                break;
+            }
+            
+            result->state = mycss_selectors_state_simple_selector;
+            
+            if(result->parser != mycss_selectors_state_token_skip_whitespace)
+                result->parser = mycss_selectors_state_token_skip_whitespace;
+            
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+bool mycss_selectors_parser_selectors_list_with_combinator_first_greater_than(mycss_result_t* result, mycss_token_t* token)
+{
+    if(token->type == MyCSS_TOKEN_TYPE_DELIM && *token->data == '>') {
+        MyCSS_DEBUG_MESSAGE("mycss_selectors_parser_selectors_list_with_combinator_first_greater_than")
+        
+        mycss_selectors_parser_selector_combinator_greater_than(result, result->selectors, result->result_entry->selector, token);
+    }
+    
+    result->state = mycss_selectors_state_simple_selector;
+    result->parser_switch = mycss_selectors_parser_selectors_list_with_combinator_first_after_combinator;
+    
+    if(result->parser != mycss_selectors_state_token_skip_whitespace)
+        result->parser = mycss_selectors_state_token_skip_whitespace;
+    
+    return true;
+}
+
+bool mycss_selectors_parser_selectors_list_with_combinator_first_comma(mycss_result_t* result, mycss_token_t* token)
+{
+    switch (token->type) {
+        case MyCSS_TOKEN_TYPE_WHITESPACE: {
+            break;
+        }
+            
+        /* combinator */
+        case MyCSS_TOKEN_TYPE_COLUMN: {
+            mycss_selectors_parser_selector_combinator_column(result, result->selectors, result->result_entry->selector, token);
+            
+            result->state = mycss_selectors_state_simple_selector;
+            result->parser_switch = mycss_selectors_parser_selectors_list_with_combinator_first_after_combinator;
+            
+            if(result->parser != mycss_selectors_state_token_skip_whitespace)
+                result->parser = mycss_selectors_state_token_skip_whitespace;
+            
+            break;
+        }
+            
+        case MyCSS_TOKEN_TYPE_DELIM: {
+            switch(*token->data) {
+                case '+': {
+                    mycss_selectors_parser_selector_combinator_plus(result, result->selectors, result->result_entry->selector, token);
+                    break;
+                }
+                case '>': {
+                    mycss_selectors_parser_selector_combinator_greater_than(result, result->selectors, result->result_entry->selector, token);
+                    
+                    result->parser = mycss_selectors_parser_selectors_list_with_combinator_first_greater_than;
+                    return true;
+                }
+                case '~': {
+                    mycss_selectors_parser_selector_combinator_tilde(result, result->selectors, result->result_entry->selector, token);
+                    break;
+                }
+                default: {
+                    result->state = mycss_selectors_state_simple_selector;
+                    
+                    if(result->parser != mycss_selectors_state_token_skip_whitespace)
+                        result->parser = mycss_selectors_state_token_skip_whitespace;
+                    
+                    return false;
+                }
+            }
+            
+            result->state = mycss_selectors_state_simple_selector;
+            result->parser_switch = mycss_selectors_parser_selectors_list_with_combinator_first_after_combinator;
+            
+            if(result->parser != mycss_selectors_state_token_skip_whitespace)
+                result->parser = mycss_selectors_state_token_skip_whitespace;
+            
+            break;
+        }
+            
+        case MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS: {
+            mycss_selectors_entry_t *prev_selector = result->result_entry->parent->selector;
+            
+            if((prev_selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                prev_selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+            
+            result->parser = result->parser_original;
+            return false;
+        }
+            
+        default: {
+            result->state = mycss_selectors_state_simple_selector;
+            
+            if(result->parser != mycss_selectors_state_token_skip_whitespace)
+                result->parser = mycss_selectors_state_token_skip_whitespace;
+            
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+bool mycss_selectors_parser_selectors_list_with_combinator_first_whitespace(mycss_result_t* result, mycss_token_t* token)
+{
+    switch (token->type) {
+        case MyCSS_TOKEN_TYPE_COMMA: {
+            mycss_selectors_parser_selector_comma(result, result->selectors, result->result_entry->selector, token);
+            
+            result->parser = mycss_selectors_parser_selectors_list_comma;
+            break;
+        }
+            
+        case MyCSS_TOKEN_TYPE_WHITESPACE: {
+            break;
+        }
+            
+        /* combinator */
+        case MyCSS_TOKEN_TYPE_COLUMN: {
+            mycss_selectors_parser_selector_combinator_column(result, result->selectors, result->result_entry->selector, token);
+            
+            result->state = mycss_selectors_state_simple_selector;
+            result->parser_switch = mycss_selectors_parser_selectors_list_with_combinator_first_after_combinator;
+            
+            if(result->parser != mycss_selectors_state_token_skip_whitespace)
+                result->parser = mycss_selectors_state_token_skip_whitespace;
+            
+            break;
+        }
+        case MyCSS_TOKEN_TYPE_DELIM: {
+            switch(*token->data) {
+                case '+': {
+                    mycss_selectors_parser_selector_combinator_plus(result, result->selectors, result->result_entry->selector, token);
+                    break;
+                }
+                case '>': {
+                    mycss_selectors_parser_selector_combinator_greater_than(result, result->selectors, result->result_entry->selector, token);
+                    
+                    result->parser = mycss_selectors_parser_selectors_list_with_combinator_first_greater_than;
+                    return true;
+                }
+                case '~': {
+                    mycss_selectors_parser_selector_combinator_tilde(result, result->selectors, result->result_entry->selector, token);
+                    break;
+                }
+                default: {
+                    mycss_selectors_entry_t *prev_selector = result->result_entry->parent->selector;
+                    
+                    if((prev_selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                        prev_selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+                    
+                    result->parser = mycss_selectors_parser_selectors_list_skip_all;
+                    return true;
+                }
+            }
+            
+            result->state = mycss_selectors_state_simple_selector;
+            result->parser_switch = mycss_selectors_parser_selectors_list_with_combinator_first_after_combinator;
+            
+            if(result->parser != mycss_selectors_state_token_skip_whitespace)
+                result->parser = mycss_selectors_state_token_skip_whitespace;
+            
+            break;
+        }
+            
+        case MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS: {
+            result->parser = result->parser_original;
+            return false;
+        }
+            
+        default: {
+            mycss_selectors_entry_t *prev_selector = result->result_entry->parent->selector;
+            
+            if((prev_selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                prev_selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+            
+            result->parser = mycss_selectors_parser_selectors_list_skip_all;
+            break;
+        }
+    }
+    
+    return true;
+}
+
+bool mycss_selectors_parser_selectors_list_with_combinator_first_after_combinator(mycss_result_t* result, mycss_token_t* token)
+{
+    switch (token->type) {
+        case MyCSS_TOKEN_TYPE_WHITESPACE: {
+            break;
+        }
+        
+        case MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS: {
+            if(result->result_entry->selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD ||
+               result->state == mycss_selectors_state_simple_selector)
+            {
+                mycss_selectors_entry_t *prev_selector = result->result_entry->parent->selector;
+                
+                if((prev_selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                    prev_selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+            }
+            
+            result->parser = result->parser_original;
+            return false;
+        }
+        
+        default: {
+            if(result->result_entry->selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD ||
+               result->state == mycss_selectors_state_simple_selector)
+            {
+                mycss_selectors_entry_t *prev_selector = result->result_entry->parent->selector;
+                
+                if((prev_selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                    prev_selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+                
+                result->parser = mycss_selectors_parser_selectors_list_skip_all;
+                break;
+            }
+            
+            result->parser_switch = mycss_selectors_parser_selectors_list_with_combinator_first_process;
+            result->parser = mycss_selectors_parser_selectors_list_with_combinator_first_process;
+            
+            return false;
+        }
+    }
+    
+    return true;
+}
 
 

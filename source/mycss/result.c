@@ -28,10 +28,12 @@ mycss_result_t * mycss_result_create(void)
 
 mycss_status_t mycss_result_init(mycss_entry_t* entry, mycss_result_t* result)
 {
-    result->entry         = entry;
-    result->parser        = mycss_parser_token;
-    result->switch_parser = mycss_parser_token;
-    result->state         = NULL;
+    result->entry                  = entry;
+    result->parser                 = mycss_parser_token;
+    result->parser_switch          = mycss_parser_token;
+    result->parser_original        = NULL;
+    result->state                  = NULL;
+    result->callback_selector_done = NULL;
     
     result->mchar_value_node_id = mchar_async_node_add(entry->mchar);
     result->mchar_selector_list_node_id = mchar_async_node_add(entry->mchar);
@@ -113,9 +115,11 @@ mycss_status_t mycss_result_init(mycss_entry_t* entry, mycss_result_t* result)
 
 mycss_status_t mycss_result_clean_all(mycss_result_t* result)
 {
-    result->parser        = mycss_parser_token;
-    result->switch_parser = mycss_parser_token;
-    result->state         = NULL;
+    result->parser                 = mycss_parser_token;
+    result->parser_switch          = mycss_parser_token;
+    result->parser_original        = NULL;
+    result->state                  = NULL;
+    result->callback_selector_done = NULL;
     
     mchar_async_node_clean(result->entry->mchar, result->mchar_value_node_id);
     mchar_async_node_clean(result->entry->mchar, result->mchar_selector_list_node_id);
@@ -199,6 +203,9 @@ void mycss_result_entry_clean(mycss_result_entry_t* result_entry)
 
 mycss_result_entry_t * mycss_result_entry_destroy(mycss_result_t* result, mycss_result_entry_t* result_entry, bool self_destroy)
 {
+    if(result_entry == NULL)
+        return NULL;
+        
     if(result_entry->selector_list) {
         for(size_t i = 0; i < result_entry->selector_list_length; i++) {
             mcobject_async_free(result->entry->mcasync_selectors_entries, result_entry->selector_list[i]);
@@ -262,8 +269,8 @@ mycss_result_entry_t * mycss_result_get_parent_set_parser(mycss_result_t* result
         if(result->parser != mycss_parser_token)
             result->parser = mycss_parser_token;
         
-        if(result->switch_parser != mycss_parser_token)
-            result->switch_parser = mycss_parser_token;
+        if(result->parser_switch != mycss_parser_token)
+            result->parser_switch = mycss_parser_token;
         
         return res_entry;
     }
@@ -277,19 +284,19 @@ mycss_result_entry_t * mycss_result_get_parent_set_parser(mycss_result_t* result
             const mycss_selectors_function_index_t *findex = &mycss_selectors_function_parser_map_by_sub_type[ selector->sub_type ];
             
             result->parser = findex->parser;
-            result->switch_parser = findex->switch_parser;
+            result->parser_switch = findex->switch_parser;
         }
         else {
             result->parser = mycss_parser_token;
-            result->switch_parser = mycss_parser_token;
+            result->parser_switch = mycss_parser_token;
         }
     }
     else {
         if(result->parser != mycss_parser_token)
             result->parser = mycss_parser_token;
         
-        if(result->switch_parser != mycss_parser_token)
-            result->switch_parser = mycss_parser_token;
+        if(result->parser_switch != mycss_parser_token)
+            result->parser_switch = mycss_parser_token;
     }
     
     return res_entry;

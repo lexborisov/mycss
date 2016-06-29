@@ -33,6 +33,7 @@ typedef struct mycss_selectors_entry mycss_selectors_entry_t;
 #include "mycss/mystring.h"
 
 typedef bool (*mycss_selectors_state_f)(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+typedef void (*mycss_callback_selector_done_f)(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector);
 
 enum mycss_selectors_match {
     MyCSS_SELECTORS_MATCH_EQUAL      = 0x00, //  =

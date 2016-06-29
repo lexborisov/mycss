@@ -38,6 +38,9 @@
 #include <mycss/result.h>
 #include <mycss/selectors/value.h>
 
+void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str);
+void test_result_entry_print(mycss_result_t* result, mycss_result_entry_t* res_entry, myhtml_string_t* str);
+
 struct res_html {
     char  *html;
     size_t size;
@@ -76,20 +79,27 @@ struct res_html load_html_file(const char* filename)
         return res;
 }
 
+/////////////////////////////////////////////////////////
+//// CSS Parsing
+////
+/////////////////////////////////////////////////////////
+
 void test_print_selector_value_attribute(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str)
 {
-    myhtml_string_append(str, " ns=\"", strlen(" ns=\""));
     if(selector->ns) {
+        myhtml_string_append(str, " ns=\"", strlen(" ns=\""));
+        
         size_t length;
         const char *name = mycss_namespace_name_by_id(selectors->result->ns, selector->ns, &length);
         
         if(length)
             myhtml_string_append(str, name, length);
+        
+        myhtml_string_append(str, "\"", strlen("\""));
     }
-    myhtml_string_append(str, "\"", strlen("\""));
     
     if(selector->value == NULL) {
-        myhtml_string_append(str, ">\n", 2);
+        myhtml_string_append(str, ">", 1);
         return;
     }
     
@@ -109,25 +119,170 @@ void test_print_selector_value_attribute(mycss_selectors_t* selectors, mycss_sel
         myhtml_string_append(str, "\"", strlen("\""));
     }
     
-    myhtml_string_append(str, ">\n", 2);
+    myhtml_string_append(str, ">", 1);
 }
 
 void test_print_selector_value_element(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str)
 {
-    myhtml_string_append(str, " ns=\"", strlen(" ns=\""));
     if(selector->ns) {
+        myhtml_string_append(str, " ns=\"", strlen(" ns=\""));
+        
         size_t length;
         const char *name = mycss_namespace_name_by_id(selectors->result->ns, selector->ns, &length);
         
         if(length)
             myhtml_string_append(str, name, length);
+        
+        myhtml_string_append(str, "\"", strlen("\""));
     }
-    myhtml_string_append(str, "\"", strlen("\""));
     
-    myhtml_string_append(str, ">\n", 2);
+    myhtml_string_append(str, ">", 1);
 }
 
-void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str, bool is_last)
+void test_print_number(myhtml_string_t* str, long num)
+{
+    char str_num[1024] = {0};
+    sprintf(str_num, "%ld", num);
+    
+    myhtml_string_append(str, str_num, strlen(str_num));
+}
+
+void test_print_an_plus_b(mycss_an_plus_b_entry_t* anb_entry, myhtml_string_t* str)
+{
+    if(anb_entry->a != 0)
+    {
+        test_print_number(str, anb_entry->a);
+        
+        if(anb_entry->b != 0) {
+            if(anb_entry->n < 0)
+                myhtml_string_append(str, "-n", 2);
+            else
+                myhtml_string_append(str, "n", 1);
+            
+            if(anb_entry->b > 0)
+                myhtml_string_append(str, "+", 1);
+            
+            test_print_number(str, anb_entry->b);
+        }
+    }
+    else {
+        if(anb_entry->n < 0)
+            myhtml_string_append(str, "-n", 2);
+        else
+            myhtml_string_append(str, "n", 1);
+        
+        if(anb_entry->b) {
+            if(anb_entry->b > 0)
+                myhtml_string_append(str, "+", 1);
+            
+            test_print_number(str, anb_entry->b);
+        }
+    }
+}
+
+void test_print_pseudo_class_function(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str)
+{
+    switch (selector->sub_type) {
+        case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_HAS:
+        case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NOT:
+        case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_MATCHES:
+            if(selector->value)
+                test_result_entry_print(selectors->result, selector->value, str);
+            break;
+        
+        case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_CHILD:
+        case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_LAST_CHILD:
+        case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_COLUMN:
+        case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_LAST_COLUMN:
+        case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_OF_TYPE:
+        case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_LAST_OF_TYPE:
+            test_print_an_plus_b(selector->value, str);
+            
+            if(mycss_selector_value_an_plus_b(selector->value)->of) {
+                myhtml_string_append(str, " of ", 4);
+                test_result_entry_print(selectors->result, mycss_selector_value_an_plus_b(selector->value)->of, str);
+            }
+            
+            break;
+        
+        case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_DROP: {
+            mycss_selectors_function_drop_type_t drop_val = mycss_selector_value_drop(selector->value);
+            
+            if(drop_val & MyCSS_SELECTORS_FUNCTION_DROP_TYPE_ACTIVE) {
+                myhtml_string_append(str, "active", strlen("active"));
+                
+                if(drop_val != MyCSS_SELECTORS_FUNCTION_DROP_TYPE_ACTIVE)
+                    myhtml_string_append(str, " || ", strlen(" || "));
+            }
+            
+            if(drop_val & MyCSS_SELECTORS_FUNCTION_DROP_TYPE_VALID) {
+                myhtml_string_append(str, "valid", strlen("valid"));
+                
+                if(drop_val & MyCSS_SELECTORS_FUNCTION_DROP_TYPE_INVALID)
+                    myhtml_string_append(str, " || ", strlen(" || "));
+            }
+            
+            if(drop_val & MyCSS_SELECTORS_FUNCTION_DROP_TYPE_INVALID) {
+                myhtml_string_append(str, "invalid", strlen("invalid"));
+            }
+            
+            break;
+        }
+        
+        case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_DIR: {
+            if(selector->value) {
+                myhtml_string_t *str_val = mycss_selector_value_string(selector->value);
+                myhtml_string_append(str, str_val->data, str_val->length);
+            }
+            
+            break;
+        }
+        
+        case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_LANG: {
+            if(selector->value) {
+                mycss_selectors_value_lang_t *lang = mycss_selector_value_lang(selector->value);
+                
+                while(lang) {
+                    myhtml_string_append(str, lang->str.data, lang->str.length);
+                    
+                    if(lang->next)
+                        myhtml_string_append(str, ", ", strlen(", "));
+                    
+                    lang = lang->next;
+                }
+                
+            }
+            
+            break;
+        }
+            
+        default:
+            break;
+    }
+}
+
+void test_print_flags(mycss_selectors_entry_t* selector, myhtml_string_t* str)
+{
+    if(selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD ||
+       selector->type == MyCSS_SELECTORS_TYPE_UNDEF ||
+       selector->sub_type == MyCSS_SELECTORS_SUB_TYPE_UNKNOWN)
+    {
+        myhtml_string_append(str, " flags=\"", strlen(" flags=\""));
+        
+        if(selector->type == MyCSS_SELECTORS_TYPE_UNDEF)
+            myhtml_string_append(str, "^U", strlen("^U"));
+        
+        if(selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD)
+           myhtml_string_append(str, "^B", strlen("^B"));
+           
+        if(selector->sub_type == MyCSS_SELECTORS_SUB_TYPE_UNKNOWN)
+            myhtml_string_append(str, "^UST", strlen("^UST"));
+        
+        myhtml_string_append(str, "\"", strlen("\""));
+    }
+}
+
+void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str)
 {
     myhtml_string_append(str, "<selector type=\"", strlen("<selector type=\""));
     
@@ -149,7 +304,7 @@ void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* 
             break;
         }
         case MyCSS_SELECTORS_TYPE_PSEUDO_CLASS_FUNCTION: {
-            myhtml_string_append(str, "function", strlen("function"));
+            myhtml_string_append(str, "pseudo_class_function", strlen("pseudo_class_function"));
             break;
         }
         default: {
@@ -167,10 +322,14 @@ void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* 
     else
         myhtml_string_append(str, " key=\"\"", strlen(" key=\"\""));
     
-    myhtml_string_append(str, " comb=\"", strlen(" comb=\""));
-    myhtml_string_append(str, mycss_selectors_resource_combinator_names_map[ selector->combinator ],
-                         strlen(mycss_selectors_resource_combinator_names_map[ selector->combinator ]));
-    myhtml_string_append(str, "\"", strlen("\""));
+    if(selector->combinator > MyCSS_SELECTORS_COMBINATOR_UNDEF) {
+        myhtml_string_append(str, " comb=\"", strlen(" comb=\""));
+        myhtml_string_append(str, mycss_selectors_resource_combinator_names_map[ selector->combinator ],
+                             strlen(mycss_selectors_resource_combinator_names_map[ selector->combinator ]));
+        myhtml_string_append(str, "\"", strlen("\""));
+    }
+    
+    test_print_flags(selector, str);
     
     switch(selector->type) {
         case MyCSS_SELECTORS_TYPE_ELEMENT:
@@ -187,13 +346,22 @@ void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* 
             break;
             
         case MyCSS_SELECTORS_TYPE_PSEUDO_CLASS_FUNCTION:
-            myhtml_string_append(str, ">\n", 2);
+            myhtml_string_append(str, ">", 1);
+            
+            if(selector->value) {
+                myhtml_string_append(str, "\n", 1);
+                test_print_pseudo_class_function(selectors, selector, str);
+                myhtml_string_append(str, "\n", 1);
+            }
+            
             break;
             
         default:
-            myhtml_string_append(str, ">\n", 2);
+            myhtml_string_append(str, ">", 1);
             break;
     }
+    
+    
 }
 
 void test_result_entry_print(mycss_result_t* result, mycss_result_entry_t* res_entry, myhtml_string_t* str)
@@ -204,21 +372,28 @@ void test_result_entry_print(mycss_result_t* result, mycss_result_entry_t* res_e
             mycss_selectors_entry_t* selector = res_entry->selector_list[i];
             
             while(selector) {
-                test_print_selector(result->selectors, selector, str, (selector->next == NULL));
+                test_print_selector(result->selectors, selector, str);
+                
+                myhtml_string_append(str, "</selector>", strlen("</selector>"));
+                
+                if(selector->next)
+                    myhtml_string_append(str, "\n", 1);
+                
                 selector = selector->next;
             }
             
             if((i + 1) != res_entry->selector_list_length)
-                myhtml_string_append(str, ", ", 2);
+                myhtml_string_append(str, ",\n", 2);
         }
-        
-        if(res_entry->next)
-            myhtml_string_append(str, "\n", 1);
         
         res_entry = res_entry->next;
     }
 }
 
+/////////////////////////////////////////////////////////
+//// HTML Result
+////
+/////////////////////////////////////////////////////////
 const char * test_node_attr_value(myhtml_tree_node_t *node, const char* key, myhtml_string_t* str)
 {
     myhtml_tree_attr_t *attr = myhtml_attribute_by_key(node, key, strlen(key));
@@ -242,7 +417,7 @@ const char * test_node_attr_value(myhtml_tree_node_t *node, const char* key, myh
     return NULL;
 }
 
-void test_print_tag_selector(myhtml_tree_node_t* node, myhtml_string_t* str, bool is_last)
+void test_print_tag_selector(myhtml_tree_node_t* node, myhtml_string_t* str)
 {
     myhtml_string_append(str, "<selector", strlen("<selector"));
     
@@ -253,26 +428,86 @@ void test_print_tag_selector(myhtml_tree_node_t* node, myhtml_string_t* str, boo
     test_node_attr_value(node, "ns", str);
     test_node_attr_value(node, "value", str);
     test_node_attr_value(node, "mod", str);
-    test_node_attr_value(node, "bad", str);
+    test_node_attr_value(node, "flags", str);
     
-    myhtml_string_append(str, ">\n", 2);
+    myhtml_string_append(str, ">", 1);
 }
 
-bool test_cmp(mycss_result_t *css_result, myhtml_tree_t* tree, myhtml_tree_node_t *node, myhtml_string_t* css_res, myhtml_string_t* res_res)
+bool test_node_text_is_comma(myhtml_tree_node_t *node)
 {
-    myhtml_collection_t *collection = myhtml_get_nodes_by_name_in_scope(tree, NULL, node, "selector", 8, NULL);
+    const char *data = node->token->str.data;
+    size_t length = node->token->str.length;
     
+    for(size_t i = 0; i < length; i++) {
+        if(myhtml_whithspace(data[i], !=, &&) && data[i] != ',') {
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+void test_html_result(myhtml_tree_t* tree, myhtml_tree_node_t *node, myhtml_string_t* res_res)
+{
+    while(node) {
+        if(node->tag_id == MyHTML_TAG__COMMENT) {
+            node = node->next;
+            continue;
+        }
+        else if(node->tag_id == MyHTML_TAG__TEXT) {
+            if(test_node_text_is_comma(node)) {
+                myhtml_string_append(res_res, ",\n", 2);
+            }
+            
+            node = node->next;
+            continue;
+        }
+        
+        test_print_tag_selector(node, res_res);
+        
+        if(node->child) {
+            myhtml_collection_t *selectors = myhtml_get_nodes_by_name_in_scope(tree, NULL, node, "selector", 8, NULL);
+            
+            if(selectors->length) {
+                myhtml_string_append(res_res, "\n", 1);
+                test_html_result(tree, node->child, res_res);
+                myhtml_string_append(res_res, "\n", 1);
+            }
+            
+            myhtml_collection_destroy(selectors);
+        }
+        
+        myhtml_string_append(res_res, "</selector>", strlen("</selector>"));
+        
+        if(node->next && node->next->tag_id != MyHTML_TAG__TEXT)
+            myhtml_string_append(res_res, "\n", 1);
+        
+        node = node->next;
+    }
+}
+
+/////////////////////////////////////////////////////////
+//// Process
+////
+/////////////////////////////////////////////////////////
+bool test_process(mycss_result_t *css_result, myhtml_tree_t* tree, myhtml_tree_node_t *node, myhtml_string_t* css_res, myhtml_string_t* res_res)
+{
     test_result_entry_print(css_result, css_result->result_entry_first, css_res);
     
-    for(size_t i = 0; i < collection->length; i++) {
-        test_print_tag_selector(collection->list[i], res_res, ((i+1) == collection->length));
-    }
+    myhtml_collection_t *collection = myhtml_get_nodes_by_name_in_scope(tree, NULL, node, "result", 6, NULL);
+    
+    if(collection->length)
+        test_html_result(tree, collection->list[0]->child, res_res);
     
     myhtml_collection_destroy(collection);
     
     return true;
 }
 
+/////////////////////////////////////////////////////////
+//// Find test files
+////
+/////////////////////////////////////////////////////////
 size_t test_data(myhtml_tree_t* tree, size_t count_of_files, size_t* bad_res)
 {
     myhtml_collection_t* collection = myhtml_get_nodes_by_name(tree, NULL, "entry", 5, NULL);
@@ -298,7 +533,7 @@ size_t test_data(myhtml_tree_t* tree, size_t count_of_files, size_t* bad_res)
         
         mycss_parse(entry, MyHTML_ENCODING_UTF_8, data_str->data, data_str->length);
         
-        test_cmp(entry->result, tree, collection->list[i], &css_res, &res_res);
+        test_process(entry->result, tree, collection->list[i], &css_res, &res_res);
         
         mycss_result_destroy(entry->result, true);
         
@@ -306,6 +541,7 @@ size_t test_data(myhtml_tree_t* tree, size_t count_of_files, size_t* bad_res)
         printf("\t%zu: ", count);
         if(css_res.length != res_res.length || strncmp(css_res.data, res_res.data, res_res.length)) {
             printf("bad\n");
+            printf("\tOriginal:\n\t\t%.*s\n\n", (int)data_str->length, data_str->data);
             
             printf("\tAfter Parsing:\n");
             printf("%s\n\n", css_res.data);
@@ -345,6 +581,8 @@ size_t test_dir(const char* dir_path, const char* test_name, size_t *bad_count)
     myhtml_tree_t* tree = myhtml_tree_create();
     myhtml_tree_init(tree, myhtml);
     
+    myhtml_tree_parse_flags_set(tree, MyHTML_TREE_PARSE_FLAGS_SKIP_WHITESPACE_TOKEN|MyHTML_TREE_PARSE_FLAGS_WITHOUT_DOCTYPE_IN_TREE);
+    
     char path[(4096 * 4)];
     char full_dir_path[(4096 * 4)];
     
@@ -377,6 +615,7 @@ size_t test_dir(const char* dir_path, const char* test_name, size_t *bad_count)
             count_files++;
             printf("%zu) %s:\n", count_files, ent->d_name);
             
+            
             myhtml_parse(tree, MyHTML_ENCODING_UTF_8, res.html, res.size);
             
             size_t bad = 0;
@@ -400,21 +639,24 @@ size_t test_dir(const char* dir_path, const char* test_name, size_t *bad_count)
 
 int main(int argc, const char * argv[])
 {
-    if (argc < 3) {
-        printf("Bad ARGV!\nUse: test <path_to_dir_test> <test_name> [ <test_name>]*\n");
-        exit(EXIT_FAILURE);
-    }
-    
-    printf("\nDirectory: %s\n", argv[1]);
+//    if (argc < 3) {
+//        printf("Bad ARGV!\nUse: test <path_to_dir_test> <test_name> [ <test_name>]*\n");
+//        exit(EXIT_FAILURE);
+//    }
+//    
+//    printf("\nDirectory: %s\n", argv[1]);
+//    
+//    size_t bad_count = 0;
+//    size_t all_count = 0;
+//    
+//    for(size_t i = 2; i < argc; i++) {
+//        all_count += test_dir(argv[1], argv[i], &bad_count);
+//    }
     
     size_t bad_count = 0;
     size_t all_count = 0;
     
-    for(size_t i = 2; i < argc; i++) {
-        all_count += test_dir(argv[1], argv[i], &bad_count);
-    }
-    
-//    all_count += test_dir("/new/C-git/mycss/test", "Selectors", &bad_count);
+    all_count += test_dir("/new/C-git/mycss/test", "Selectors", &bad_count);
     
     printf("\nTotal count: %zu; Good: %zu; Bad: %zu\n", all_count, (all_count - bad_count), bad_count);
     

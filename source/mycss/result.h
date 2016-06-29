@@ -53,8 +53,11 @@ struct mycss_result {
     mycss_an_plus_b_t* anb;
     
     mycss_parser_token_f parser;
-    mycss_parser_token_f switch_parser;
+    mycss_parser_token_f parser_switch;
+    mycss_parser_token_f parser_original;
     void* state;
+    
+    mycss_callback_selector_done_f callback_selector_done;
     
     size_t selectors_entries_id;
     size_t string_node_id;

@@ -57,7 +57,7 @@ void mycss_selectors_state_end(mycss_result_t* result)
 bool mycss_selectors_state_function_skip_all(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     if(token->type == MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS)
-        return result->switch_parser(result, token);
+        return result->parser_switch(result, token);
     
     return true;
 }
@@ -71,14 +71,14 @@ bool mycss_selectors_state_combinator(mycss_result_t* result, mycss_selectors_t*
         case MyCSS_TOKEN_TYPE_COLUMN: {
             mycss_selectors_parser_selector_combinator_column(result, selectors, selector, token);
             MyCSS_DEBUG_MESSAGE("mycss_selectors_state_combinator_column")
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             break;
         }
         case MyCSS_TOKEN_TYPE_DELIM: {
             if(*token->data == '+') {
                 mycss_selectors_parser_selector_combinator_plus(result, selectors, selector, token);
                 MyCSS_DEBUG_MESSAGE("mycss_selectors_state_combinator_plus")
-                result->parser = result->switch_parser;
+                result->parser = result->parser_switch;
             }
             else if(*token->data == '>') {
                 mycss_selectors_parser_selector_combinator_greater_than(result, selectors, selector, token);
@@ -91,18 +91,18 @@ bool mycss_selectors_state_combinator(mycss_result_t* result, mycss_selectors_t*
             else if(*token->data == '~') {
                 mycss_selectors_parser_selector_combinator_tilde(result, selectors, selector, token);
                 MyCSS_DEBUG_MESSAGE("mycss_selectors_state_combinator_tilde")
-                result->parser = result->switch_parser;
+                result->parser = result->parser_switch;
             }
             else {
                 mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-                result->parser = result->switch_parser;
+                result->parser = result->parser_switch;
                 return false;
             }
             break;
         }
         default: {
             mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             return false;
         }
     }
@@ -116,15 +116,15 @@ bool mycss_selectors_state_combinator_greater_than(mycss_result_t* result, mycss
         if(*token->data == '>') {
             mycss_selectors_parser_selector_combinator_greater_than(result, selectors, selector, token);
             MyCSS_DEBUG_MESSAGE("mycss_selectors_state_combinator_greater_than_greater_than")
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
         }
         else {
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             return false;
         }
     }
     else {
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     
@@ -149,7 +149,7 @@ bool mycss_selectors_state_simple_selector(mycss_result_t* result, mycss_selecto
             if(*token->data == '*') {
                 mycss_selectors_parser_selector_ident_type(result, selectors, selector, token);
                 MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_asterisk")
-                result->parser = result->switch_parser;
+                result->parser = result->parser_switch;
             }
             else if(*token->data == '.') {
                 result->state = mycss_selectors_state_simple_selector_full_stop;
@@ -165,7 +165,7 @@ bool mycss_selectors_state_simple_selector(mycss_result_t* result, mycss_selecto
                     result->parser = mycss_selectors_state_token_all;
             }
             else {
-                result->parser = result->switch_parser;
+                result->parser = result->parser_switch;
                 return false;
             }
             break;
@@ -196,11 +196,11 @@ bool mycss_selectors_state_simple_selector(mycss_result_t* result, mycss_selecto
             
             mycss_selectors_parser_selector_id(result, selectors, selector, token);
             MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_hash")
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             break;
         }
         default: {
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             return false;
         }
     }
@@ -228,13 +228,13 @@ bool mycss_selectors_state_simple_selector_left_bracket(mycss_result_t* result, 
         }
         else {
             mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             return false;
         }
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     
@@ -252,7 +252,7 @@ bool mycss_selectors_state_simple_selector_left_bracket_vertical_bar(mycss_resul
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     
@@ -344,7 +344,7 @@ bool mycss_selectors_state_simple_selector_left_bracket_ident(mycss_result_t* re
             }
             else {
                 mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-                result->parser = result->switch_parser;
+                result->parser = result->parser_switch;
                 return false;
             }
             break;
@@ -352,12 +352,12 @@ bool mycss_selectors_state_simple_selector_left_bracket_ident(mycss_result_t* re
         case MyCSS_TOKEN_TYPE_RIGHT_SQUARE_BRACKET: {
             mycss_selectors_parser_selector_end(result, selectors, selector, token);
             MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_left_bracket_ident_right_bracket")
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             break;
         }
         default: {
             mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             return false;
         }
     }
@@ -376,7 +376,7 @@ bool mycss_selectors_state_simple_selector_left_bracket_ident_vertical_bar(mycss
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     
@@ -390,7 +390,7 @@ bool mycss_selectors_state_simple_selector_colon(mycss_result_t* result, mycss_s
         case MyCSS_TOKEN_TYPE_IDENT: {
             mycss_selectors_parser_selector_pseudo_class(result, selectors, selector, token);
             MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_colon_ident")
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             break;
         }
         case MyCSS_TOKEN_TYPE_COLON: {
@@ -406,7 +406,7 @@ bool mycss_selectors_state_simple_selector_colon(mycss_result_t* result, mycss_s
         }
         default: {
             mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             return false;
         }
     }
@@ -419,14 +419,14 @@ bool mycss_selectors_state_simple_selector_colon_colon(mycss_result_t* result, m
     if(token->type == MyCSS_TOKEN_TYPE_IDENT) {
         mycss_selectors_parser_selector_pseudo_element(result, selectors, selector, token);
         MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_colon_colon_ident")
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
     }
     else if(token->type == MyCSS_TOKEN_TYPE_FUNCTION) {
         mycss_selectors_parser_selector_pseudo_element_function(result, selectors, selector, token);
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     
@@ -438,11 +438,11 @@ bool mycss_selectors_state_simple_selector_colon_colon_function(mycss_result_t* 
     if(token->type == MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS) {
         mycss_selectors_parser_selector_pseudo_element_function_end(result, selectors, selector, token);
         MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_colon_colon_function_right_parenthesis")
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     
@@ -454,11 +454,11 @@ bool mycss_selectors_state_simple_selector_colon_function(mycss_result_t* result
     if(token->type == MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS) {
         mycss_selectors_parser_selector_pseudo_class_function_end(result, selectors, selector, token);
         MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_colon_function_right_parenthesis")
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     
@@ -471,11 +471,11 @@ bool mycss_selectors_state_simple_selector_full_stop(mycss_result_t* result, myc
     if(token->type == MyCSS_TOKEN_TYPE_IDENT) {
         mycss_selectors_parser_selector_class(result, selectors, selector, token);
         MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_full_stop_ident")
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     
@@ -488,24 +488,24 @@ bool mycss_selectors_state_simple_selector_vertical_bar(mycss_result_t* result, 
         mycss_selectors_parser_selector_after_namespace(result, selectors, selector, token);
         mycss_selectors_parser_selector_end(result, selectors, selector, token);
         MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_vertical_bar_ident")
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
     }
     else if(token->type == MyCSS_TOKEN_TYPE_DELIM) {
         if(*token->data == '*') {
             mycss_selectors_parser_selector_after_namespace(result, selectors, selector, token);
             mycss_selectors_parser_selector_end(result, selectors, selector, token);
             MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_vertical_bar_asterisk")
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
         }
         else {
             mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             return false;
         }
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     
@@ -524,13 +524,13 @@ bool mycss_selectors_state_simple_selector_ident(mycss_result_t* result, mycss_s
         }
         else {
             mycss_selectors_parser_selector_end(result, selectors, selector, token);
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             return false;
         }
     }
     else {
         mycss_selectors_parser_selector_end(result, selectors, selector, token);
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     
@@ -543,24 +543,24 @@ bool mycss_selectors_state_simple_selector_ident_vertical_bar(mycss_result_t* re
         mycss_selectors_parser_selector_after_namespace(result, selectors, selector, token);
         mycss_selectors_parser_selector_end(result, selectors, selector, token);
         MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_ident_vertical_bar_ident")
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
     }
     else if(token->type == MyCSS_TOKEN_TYPE_DELIM) {
         if(*token->data == '*') {
             mycss_selectors_parser_selector_after_namespace(result, selectors, selector, token);
             mycss_selectors_parser_selector_end(result, selectors, selector, token);
             MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_ident_vertical_bar_asterisk")
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
         }
         else {
             mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             return false;
         }
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     
@@ -638,7 +638,7 @@ bool mycss_selectors_state_shared_after_wq_name_attr(mycss_result_t* result, myc
             }
             else {
                 mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-                result->parser = result->switch_parser;
+                result->parser = result->parser_switch;
                 return false;
             }
             break;
@@ -646,12 +646,12 @@ bool mycss_selectors_state_shared_after_wq_name_attr(mycss_result_t* result, myc
         case MyCSS_TOKEN_TYPE_RIGHT_SQUARE_BRACKET: {
             mycss_selectors_parser_selector_end(result, selectors, selector, token);
             MyCSS_DEBUG_MESSAGE("mycss_selectors_state_shared_after_wq_name_attr_right_bracket")
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             break;
         }
         default: {
             mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             return false;
         }
     }
@@ -664,11 +664,11 @@ bool mycss_selectors_state_shared_after_attr_modifier(mycss_result_t* result, my
     if(token->type == MyCSS_TOKEN_TYPE_RIGHT_SQUARE_BRACKET) {
         mycss_selectors_parser_selector_end(result, selectors, selector, token);
         MyCSS_DEBUG_MESSAGE("mycss_selectors_state_shared_after_attr_modifier_right_bracket")
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     
@@ -687,18 +687,18 @@ bool mycss_selectors_state_shared_after_attribute_value(mycss_result_t* result, 
         }
         else {
             mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-            result->parser = result->switch_parser;
+            result->parser = result->parser_switch;
             return false;
         }
     }
     else if(token->type == MyCSS_TOKEN_TYPE_RIGHT_SQUARE_BRACKET) {
         mycss_selectors_parser_selector_end(result, selectors, selector, token);
         MyCSS_DEBUG_MESSAGE("mycss_selectors_state_shared_after_attribute_value_right_bracket")
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     
@@ -723,7 +723,7 @@ bool mycss_selectors_state_shared_after_attr_matcher(mycss_result_t* result, myc
     }
     else {
         mycss_selectors_parser_expectations_error(result, selectors, selector, token);
-        result->parser = result->switch_parser;
+        result->parser = result->parser_switch;
         return false;
     }
     

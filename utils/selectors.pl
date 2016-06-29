@@ -309,7 +309,7 @@ sub function_else {
 	if($fname eq "mycss_selectors_state_simple_selector_ident") {
 		return [
 			"mycss_selectors_parser_selector_end(result, selectors, selector, token);",
-			"result->parser = result->switch_parser;",
+			"result->parser = result->parser_switch;",
 			"return false;"
 		];
 	}
@@ -318,14 +318,14 @@ sub function_else {
 		  $fname eq "mycss_selectors_state_combinator_greater_than")
 	{
 		return [
-			"result->parser = result->switch_parser;",
+			"result->parser = result->parser_switch;",
 			"return false;"
 		];
 	}
 	
 	[
 		"mycss_selectors_parser_expectations_error(result, selectors, selector, token);",
-		"result->parser = result->switch_parser;",
+		"result->parser = result->parser_switch;",
 		"return false;"
 	];
 }
@@ -341,7 +341,7 @@ sub function_last {
 	
 	[
 		"MyCSS_DEBUG_MESSAGE(\"$fname\")",
-		"result->parser = result->switch_parser;"
+		"result->parser = result->parser_switch;"
 	];
 }
 

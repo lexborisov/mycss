@@ -1,0 +1,691 @@
+<!-- :not -->
+<entry>
+    <data>:not()</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(   
+             )</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="not">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not( div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="not">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not( div )</data>
+    <result>
+        <selector type="pseudo_class_function" key="not">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not( div#hash )</data>
+    <result>
+        <selector type="pseudo_class_function" key="not">
+            <selector type="element" key="div"></selector>
+            <selector type="id" key="hash"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not( div #hash )</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not( div, .class, #hash, [ key ], [key = value i] )</data>
+    <result>
+        <selector type="pseudo_class_function" key="not">
+            <selector type="element" key="div"></selector>,
+            <selector type="class" key="class"></selector>,
+            <selector type="id" key="hash"></selector>,
+            <selector type="attribute" key="key"></selector>,
+            <selector type="attribute" key="key" value="value" mod="i"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(div,.class,#hash,[ key ],[key = value i])</data>
+    <result>
+        <selector type="pseudo_class_function" key="not">
+            <selector type="element" key="div"></selector>,
+            <selector type="class" key="class"></selector>,
+            <selector type="id" key="hash"></selector>,
+            <selector type="attribute" key="key"></selector>,
+            <selector type="attribute" key="key" value="value" mod="i"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(div.class#hash[ key ][key = value i])</data>
+    <result>
+        <selector type="pseudo_class_function" key="not">
+            <selector type="element" key="div"></selector>
+            <selector type="class" key="class"></selector>
+            <selector type="id" key="hash"></selector>
+            <selector type="attribute" key="key"></selector>
+            <selector type="attribute" key="key" value="value" mod="i"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(svg|div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="not">
+            <selector type="element" key="div" ns="SVG"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not([svg|div])</data>
+    <result>
+        <selector type="pseudo_class_function" key="not">
+            <selector type="attribute" key="div" ns="SVG"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(svg|div[html|a=b])</data>
+    <result>
+        <selector type="pseudo_class_function" key="not">
+            <selector type="element" key="div" ns="SVG"></selector>
+            <selector type="attribute" key="a" value="b" ns="HTML"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(svg |div[html|a=b])</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="element" key="svg"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(:not())</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="pseudo_class_function" key="not" flags="^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(:matches())</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="pseudo_class_function" key="matches" flags="^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(:matches(div))</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="pseudo_class_function" key="matches">
+                <selector type="element" key="div">
+            </selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(div,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(,div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(+ div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(div +)</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(div >>)</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(:blahblahblah())</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="pseudo_class_function" key="blahblahblah" flags="^B^UST"></selector>
+        </selector>
+    </result>
+</entry>
+
+<!-- :matches -->
+<entry>
+    <data>:matches()</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(   
+             )</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches( div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches( div )</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches( div#hash )</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches">
+            <selector type="element" key="div"></selector>
+            <selector type="id" key="hash"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches( div #hash )</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches( div, .class, #hash, [ key ], [key = value i] )</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches">
+            <selector type="element" key="div"></selector>,
+            <selector type="class" key="class"></selector>,
+            <selector type="id" key="hash"></selector>,
+            <selector type="attribute" key="key"></selector>,
+            <selector type="attribute" key="key" value="value" mod="i"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(div.class#hash[ key ][key = value i])</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches">
+            <selector type="element" key="div"></selector>
+            <selector type="class" key="class"></selector>
+            <selector type="id" key="hash"></selector>
+            <selector type="attribute" key="key"></selector>
+            <selector type="attribute" key="key" value="value" mod="i"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(svg|div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches">
+            <selector type="element" key="div" ns="SVG"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches([svg|div])</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches">
+            <selector type="attribute" key="div" ns="SVG"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(svg|div[html|a=b])</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches">
+            <selector type="element" key="div" ns="SVG"></selector>
+            <selector type="attribute" key="a" value="b" ns="HTML"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(svg |div[html|a=b])</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="element" key="svg"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(:matches())</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="pseudo_class_function" key="matches" flags="^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(:not())</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="pseudo_class_function" key="not" flags="^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(:not(div))</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="pseudo_class_function" key="not">
+                <selector type="element" key="div"></selector>
+            </selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(:not(:matches(:not(:matches()))))</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="pseudo_class_function" key="not" flags="^B">
+                <selector type="pseudo_class_function" key="matches" flags="^B">
+                    <selector type="pseudo_class_function" key="not" flags="^B">
+                        <selector type="pseudo_class_function" key="matches" flags="^B"></selector>
+                    </selector>
+                </selector>
+            </selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(div,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(,div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(+ div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(div +)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(div >>)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(:blahblahblah())</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="pseudo_class_function" key="blahblahblah" flags="^B^UST"></selector>
+        </selector>
+    </result>
+</entry>
+
+<!-- :matches -->
+<entry>
+    <data>:has()</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(   
+             )</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has( div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has( div )</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has( div#hash )</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="element" key="div"></selector>
+            <selector type="id" key="hash"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has( div #hash )</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has( div, .class, #hash, [ key ], [key = value i] )</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="element" key="div"></selector>,
+            <selector type="class" key="class"></selector>,
+            <selector type="id" key="hash"></selector>,
+            <selector type="attribute" key="key"></selector>,
+            <selector type="attribute" key="key" value="value" mod="i"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(div.class#hash[ key ][key = value i])</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="element" key="div"></selector>
+            <selector type="class" key="class"></selector>
+            <selector type="id" key="hash"></selector>
+            <selector type="attribute" key="key"></selector>
+            <selector type="attribute" key="key" value="value" mod="i"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(svg|div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="element" key="div" ns="SVG"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has([svg|div])</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="attribute" key="div" ns="SVG"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(svg|div[html|a=b])</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="element" key="div" ns="SVG"></selector>
+            <selector type="attribute" key="a" value="b" ns="HTML"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(svg |div[html|a=b])</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="element" key="svg"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(:has())</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="pseudo_class_function" key="has" flags="^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(:not())</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="pseudo_class_function" key="not" flags="^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(:not(div))</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="pseudo_class_function" key="not">
+                <selector type="element" key="div"></selector>
+            </selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(:not(:has(:not(:has(:not(div))))))</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="pseudo_class_function" key="not">
+                <selector type="pseudo_class_function" key="has">
+                    <selector type="pseudo_class_function" key="not">
+                        <selector type="pseudo_class_function" key="has">
+                            <selector type="pseudo_class_function" key="not">
+                                <selector type="element" key="div"></selector>
+                            </selector>
+                        </selector>
+                    </selector>
+                </selector>
+            </selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(:not(:has(:not(:has(:not())))))</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="pseudo_class_function" key="not" flags="^B">
+                <selector type="pseudo_class_function" key="has" flags="^B">
+                    <selector type="pseudo_class_function" key="not" flags="^B">
+                        <selector type="pseudo_class_function" key="has" flags="^B">
+                            <selector type="pseudo_class_function" key="not" flags="^B"></selector>
+                        </selector>
+                    </selector>
+                </selector>
+            </selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(div,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(,div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(+ div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="element" key="div" comb="+"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(div +)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(div >>)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(:blahblahblah())</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="pseudo_class_function" key="blahblahblah" flags="^B^UST"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(+ div, >> svg|span, > [key], || #col, ~ .img)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="element" key="div" comb="+"></selector>,
+            <selector type="element" key="span" ns="SVG" comb=" "></selector>,
+            <selector type="attribute" key="key" comb=">"></selector>,
+            <selector type="id" key="col" comb="||"></selector>,
+            <selector type="class" key="img" comb="~"></selector>
+        </selector>
+    </result>
+</entry>
+

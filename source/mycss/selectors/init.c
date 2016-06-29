@@ -170,7 +170,13 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
             }
             
             fprintf(fh, " %s ", mycss_selectors_resource_matcher_names_map[ mycss_selector_value_attribute(selector->value)->match ]);
-            fprintf(fh, "%s]", mycss_selector_value_attribute(selector->value)->value->data);
+            
+            if(mycss_selector_value_attribute(selector->value)->value) {
+                fprintf(fh, "%s]", mycss_selector_value_attribute(selector->value)->value->data);
+            }
+            else {
+                fprintf(fh, "]");
+            }
             
             break;
         }

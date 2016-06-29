@@ -123,7 +123,7 @@ sub function_last {
 	
 	[
 		"printf(\"$fname\\n\");  /* End of selector */",
-		"result->parser = mycss_parser_token;"
+		"result->parser = result->parser_switch;"
 	];
 }
 
@@ -135,7 +135,7 @@ sub function_default {
 
 sub function_else {
 	["mycss_namespace_parser_expectations_error(result, ns, ns_entry, token);",
-	 "result->parser = mycss_parser_token;"];
+	 "result->parser = result->parser_switch;"];
 }
 
 

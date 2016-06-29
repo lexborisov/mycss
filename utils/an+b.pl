@@ -121,7 +121,7 @@ sub function_else {
 	
 	[
 		"mycss_an_plus_b_parser_expectations_error(result, anb, anb_entry, token);",
-		"result->parser = result->switch_parser;",
+		"result->parser = result->parser_switch;",
 		"return false;"
 	];
 }
@@ -137,7 +137,7 @@ sub function_last {
 	
 	[
 		"MyCSS_DEBUG_MESSAGE(\"$fname\")",
-		"result->parser = result->switch_parser;"
+		"result->parser = result->parser_switch;"
 	];
 }
 
