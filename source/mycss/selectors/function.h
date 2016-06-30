@@ -79,8 +79,10 @@ bool mycss_selectors_function_nth_of_selectors_parser(mycss_result_t* result, my
 bool mycss_selectors_function_nth_of_whitespace_selectors_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_drop_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_drop_column_parser(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_function_drop_skip_all_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_dir_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_lang_parser(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_function_lang_after_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_lang_comma_parser(mycss_result_t* result, mycss_token_t* token);
 
 #ifdef __cplusplus

@@ -186,6 +186,7 @@ void test_print_pseudo_class_function(mycss_selectors_t* selectors, mycss_select
         case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_HAS:
         case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NOT:
         case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_MATCHES:
+        case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_CURRENT:
             if(selector->value)
                 test_result_entry_print(selectors->result, selector->value, str);
             break;
@@ -307,6 +308,18 @@ void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* 
             myhtml_string_append(str, "pseudo_class_function", strlen("pseudo_class_function"));
             break;
         }
+        case MyCSS_SELECTORS_TYPE_PSEUDO_CLASS: {
+            myhtml_string_append(str, "pseudo_class", strlen("pseudo_class"));
+            break;
+        }
+        case MyCSS_SELECTORS_TYPE_PSEUDO_ELEMENT_FUNCTION: {
+            myhtml_string_append(str, "pseudo_element_function", strlen("pseudo_element_function"));
+            break;
+        }
+        case MyCSS_SELECTORS_TYPE_PSEUDO_ELEMENT: {
+            myhtml_string_append(str, "pseudo_element", strlen("pseudo_element"));
+            break;
+        }
         default: {
             myhtml_string_append(str, "undef", strlen("undef"));
             break;
@@ -319,8 +332,6 @@ void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* 
         myhtml_string_append(str, selector->key->data, selector->key->length);
         myhtml_string_append(str, "\"", strlen("\""));
     }
-    else
-        myhtml_string_append(str, " key=\"\"", strlen(" key=\"\""));
     
     if(selector->combinator > MyCSS_SELECTORS_COMBINATOR_UNDEF) {
         myhtml_string_append(str, " comb=\"", strlen(" comb=\""));
@@ -360,8 +371,6 @@ void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* 
             myhtml_string_append(str, ">", 1);
             break;
     }
-    
-    
 }
 
 void test_result_entry_print(mycss_result_t* result, mycss_result_entry_t* res_entry, myhtml_string_t* str)
@@ -447,6 +456,34 @@ bool test_node_text_is_comma(myhtml_tree_node_t *node)
     return true;
 }
 
+size_t test_node_text_pos_without_ws(myhtml_tree_node_t *node, size_t* begin)
+{
+    const char *data = node->token->str.data;
+    size_t data_length = node->token->str.length;
+    
+    size_t i;
+    
+    for(i = 0; i < data_length; i++) {
+        if(myhtml_whithspace(data[i], !=, &&)) {
+            *begin = i;
+            break;
+        }
+    }
+    
+    i = data_length;
+    while(i) {
+        i--;
+        
+        if(myhtml_whithspace(data[i], !=, &&)) {
+            return (i - *begin) + 1;
+            break;
+        }
+    }
+    
+    return 0;
+}
+
+
 void test_html_result(myhtml_tree_t* tree, myhtml_tree_node_t *node, myhtml_string_t* res_res)
 {
     while(node) {
@@ -458,6 +495,12 @@ void test_html_result(myhtml_tree_t* tree, myhtml_tree_node_t *node, myhtml_stri
             if(test_node_text_is_comma(node)) {
                 myhtml_string_append(res_res, ",\n", 2);
             }
+            else {
+                size_t begin = 0;
+                size_t len = test_node_text_pos_without_ws(node, &begin);
+                
+                myhtml_string_append(res_res, &node->token->str.data[begin], len);
+            }
             
             node = node->next;
             continue;
@@ -466,15 +509,9 @@ void test_html_result(myhtml_tree_t* tree, myhtml_tree_node_t *node, myhtml_stri
         test_print_tag_selector(node, res_res);
         
         if(node->child) {
-            myhtml_collection_t *selectors = myhtml_get_nodes_by_name_in_scope(tree, NULL, node, "selector", 8, NULL);
-            
-            if(selectors->length) {
-                myhtml_string_append(res_res, "\n", 1);
-                test_html_result(tree, node->child, res_res);
-                myhtml_string_append(res_res, "\n", 1);
-            }
-            
-            myhtml_collection_destroy(selectors);
+            myhtml_string_append(res_res, "\n", 1);
+            test_html_result(tree, node->child, res_res);
+            myhtml_string_append(res_res, "\n", 1);
         }
         
         myhtml_string_append(res_res, "</selector>", strlen("</selector>"));

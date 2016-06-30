@@ -215,6 +215,51 @@
     </result>
 </entry>
 
+<entry>
+    <data>:not(::after)</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="pseudo_element" key="after"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(::)</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="undef" flags="^U^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(::blahblahblah div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="pseudo_element" key="blahblahblah" flags="^B^UST">
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(:blahblahblah div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="pseudo_class" key="blahblahblah" flags="^B^UST">
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:not(:)</data>
+    <result>
+        <selector type="pseudo_class_function" key="not" flags="^B">
+            <selector type="undef" flags="^U^B"></selector>
+        </selector>
+    </result>
+</entry>
+
 <!-- :matches -->
 <entry>
     <data>:matches()</data>
@@ -434,7 +479,59 @@
     </result>
 </entry>
 
-<!-- :matches -->
+<entry>
+    <data>:matches(@fdf)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(::after)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="pseudo_element" key="after"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(::)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="undef" flags="^U^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(::blahblahblah div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="pseudo_element" key="blahblahblah" flags="^B^UST">
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(:blahblahblah div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="pseudo_class" key="blahblahblah" flags="^B^UST">
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(:)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="undef" flags="^U^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<!-- :has -->
 <entry>
     <data>:has()</data>
     <result>
@@ -686,6 +783,622 @@
             <selector type="id" key="col" comb="||"></selector>,
             <selector type="class" key="img" comb="~"></selector>
         </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(,+ div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(+, div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(+ div,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="element" key="div" comb="+"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(:target)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has">
+            <selector type="pseudo_class" key="target"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(@fdf)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(::after)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="pseudo_element" key="after"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(::)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="undef" flags="^U^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(::blahblahblah div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="pseudo_element" key="blahblahblah" flags="^B^UST">
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(:blahblahblah div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="pseudo_class" key="blahblahblah" flags="^B^UST">
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:has(:)</data>
+    <result>
+        <selector type="pseudo_class_function" key="has" flags="^B">
+            <selector type="undef" flags="^U^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<!-- :lang -->
+<entry>
+    <data>:lang()</data>
+    <result>
+        <selector type="pseudo_class_function" key="lang" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:lang(fr-be)</data>
+    <result>
+        <selector type="pseudo_class_function" key="lang">
+            fr-be
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:lang(fr-be, "*-CH")</data>
+    <result>
+        <selector type="pseudo_class_function" key="lang">
+            fr-be, *-CH
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:lang(fr-be,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="lang" flags="^B">
+            fr-be
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:lang(,fr-be)</data>
+    <result>
+        <selector type="pseudo_class_function" key="lang" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:lang(fr -be)</data>
+    <result>
+        <selector type="pseudo_class_function" key="lang" flags="^B">
+            fr
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:lang(.class)</data>
+    <result>
+        <selector type="pseudo_class_function" key="lang" flags="^B"></selector>
+    </result>
+</entry>
+
+<!-- :dir -->
+
+<entry>
+    <data>:dir()</data>
+    <result>
+        <selector type="pseudo_class_function" key="dir" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:dir(ltr)</data>
+    <result>
+        <selector type="pseudo_class_function" key="dir">
+            ltr
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:dir( ltr)</data>
+    <result>
+        <selector type="pseudo_class_function" key="dir">
+            ltr
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:dir( ltr )</data>
+    <result>
+        <selector type="pseudo_class_function" key="dir">
+            ltr
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:dir( 
+        ltr 
+        )</data>
+    <result>
+        <selector type="pseudo_class_function" key="dir">
+            ltr
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:dir(my-data)</data>
+    <result>
+        <selector type="pseudo_class_function" key="dir">
+            my-data
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:dir(rtl fdfdf)</data>
+    <result>
+        <selector type="pseudo_class_function" key="dir" flags="^B">
+            rtl
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:dir(rtl, fdfdf)</data>
+    <result>
+        <selector type="pseudo_class_function" key="dir" flags="^B">
+            rtl
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:dir(,rtl, fdfdf)</data>
+    <result>
+        <selector type="pseudo_class_function" key="dir" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:dir(:has(div))</data>
+    <result>
+        <selector type="pseudo_class_function" key="dir" flags="^B"></selector>
+    </result>
+</entry>
+
+<!-- :current -->
+<entry>
+    <data>:current()</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(   
+             )</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="current">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current( div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="current">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current( div )</data>
+    <result>
+        <selector type="pseudo_class_function" key="current">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current( div#hash )</data>
+    <result>
+        <selector type="pseudo_class_function" key="current">
+            <selector type="element" key="div"></selector>
+            <selector type="id" key="hash"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current( div #hash )</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current( div, .class, #hash, [ key ], [key = value i] )</data>
+    <result>
+        <selector type="pseudo_class_function" key="current">
+            <selector type="element" key="div"></selector>,
+            <selector type="class" key="class"></selector>,
+            <selector type="id" key="hash"></selector>,
+            <selector type="attribute" key="key"></selector>,
+            <selector type="attribute" key="key" value="value" mod="i"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(div.class#hash[ key ][key = value i])</data>
+    <result>
+        <selector type="pseudo_class_function" key="current">
+            <selector type="element" key="div"></selector>
+            <selector type="class" key="class"></selector>
+            <selector type="id" key="hash"></selector>
+            <selector type="attribute" key="key"></selector>
+            <selector type="attribute" key="key" value="value" mod="i"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(svg|div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="current">
+            <selector type="element" key="div" ns="SVG"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current([svg|div])</data>
+    <result>
+        <selector type="pseudo_class_function" key="current">
+            <selector type="attribute" key="div" ns="SVG"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(svg|div[html|a=b])</data>
+    <result>
+        <selector type="pseudo_class_function" key="current">
+            <selector type="element" key="div" ns="SVG"></selector>
+            <selector type="attribute" key="a" value="b" ns="HTML"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(svg |div[html|a=b])</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="element" key="svg"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(:current())</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="pseudo_class_function" key="current" flags="^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(:not())</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="pseudo_class_function" key="not" flags="^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(:not(div))</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="pseudo_class_function" key="not">
+                <selector type="element" key="div"></selector>
+            </selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(:matches(div))</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="pseudo_class_function" key="matches">
+                <selector type="element" key="div"></selector>
+            </selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(:not(:current(:not(:current()))))</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="pseudo_class_function" key="not" flags="^B">
+                <selector type="pseudo_class_function" key="current" flags="^B">
+                    <selector type="pseudo_class_function" key="not" flags="^B">
+                        <selector type="pseudo_class_function" key="current" flags="^B"></selector>
+                    </selector>
+                </selector>
+            </selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:matches(div,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="matches" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(,div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(+ div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(div +)</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(div >>)</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(:blahblahblah())</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="pseudo_class_function" key="blahblahblah" flags="^B^UST"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(@fdf)</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(::after)</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="pseudo_element" key="after"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(::)</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="undef" flags="^U^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(::blahblahblah div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="pseudo_element" key="blahblahblah" flags="^B^UST">
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(:blahblahblah div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="pseudo_class" key="blahblahblah" flags="^B^UST">
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:current(:)</data>
+    <result>
+        <selector type="pseudo_class_function" key="current" flags="^B">
+            <selector type="undef" flags="^U^B"></selector>
+        </selector>
+    </result>
+</entry>
+
+
+<!-- :drop -->
+<entry>
+    <data>:drop()</data>
+    <result>
+        <selector type="pseudo_class_function" key="drop" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:drop( 
+          )</data>
+    <result>
+        <selector type="pseudo_class_function" key="drop" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:drop(active)</data>
+    <result>
+        <selector type="pseudo_class_function" key="drop">
+            active
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:drop(   active 
+         )</data>
+    <result>
+        <selector type="pseudo_class_function" key="drop">
+            active
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:drop(aCtIvE)</data>
+    <result>
+        <selector type="pseudo_class_function" key="drop">
+            active
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:drop(valid)</data>
+    <result>
+        <selector type="pseudo_class_function" key="drop">
+            valid
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:drop(invalid)</data>
+    <result>
+        <selector type="pseudo_class_function" key="drop">
+            invalid
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:drop(active || valid || invalid)</data>
+    <result>
+        <selector type="pseudo_class_function" key="drop">
+            active || valid || invalid
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:drop(valid || invalid)</data>
+    <result>
+        <selector type="pseudo_class_function" key="drop">
+            valid || invalid
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:drop(active ||)</data>
+    <result>
+        <selector type="pseudo_class_function" key="drop" flags="^B">
+            active
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:drop(|| active)</data>
+    <result>
+        <selector type="pseudo_class_function" key="drop" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:drop(some)</data>
+    <result>
+        <selector type="pseudo_class_function" key="drop" flags="^B"></selector>
     </result>
 </entry>
 

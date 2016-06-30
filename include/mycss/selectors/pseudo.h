@@ -43,7 +43,8 @@ typedef mycss_selectots_pseudo_begin_entry_t;
 
 
 mycss_selectors_sub_type_t mycss_pseudo_class_by_name(const char *name, size_t length);
-const mycss_selectots_pseudo_begin_entry_t * mycss_pseudo_begin_entry_by_name(const char* name, size_t length, const mycss_selectots_pseudo_begin_entry_t* pseudo);
+mycss_selectors_sub_type_t mycss_pseudo_element_by_name(const char *name, size_t length);
+const mycss_selectots_pseudo_begin_entry_t * mycss_pseudo_begin_entry_by_name(const char* name, size_t length, size_t static_size, const mycss_selectots_pseudo_begin_entry_t* pseudo);
 
 #ifdef __cplusplus
 } /* extern "C" */

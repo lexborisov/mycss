@@ -200,6 +200,7 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
                 case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_HAS:
                 case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NOT:
                 case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_MATCHES:
+                case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_CURRENT:
                     if(selector->value)
                         mycss_result_entry_print(selectors->result, selector->value, fh);
                     break;
@@ -278,6 +279,15 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
         }
             
         case MyCSS_SELECTORS_TYPE_PSEUDO_CLASS: {
+            fprintf(fh, ":");
+            
+            if(selector->key)
+                fprintf(fh, "%s", selector->key->data);
+            
+            break;
+        }
+        
+        case MyCSS_SELECTORS_TYPE_PSEUDO_ELEMENT: {
             fprintf(fh, "::");
             
             if(selector->key)
@@ -285,7 +295,7 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
             
             break;
         }
-            
+        
         default: {
             if(selector->key)
                 fprintf(fh, "%s", selector->key->data);

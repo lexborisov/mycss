@@ -209,6 +209,7 @@ void mycss_selectors_parser_selector_pseudo_class(mycss_result_t* result, mycss_
     if(selector->sub_type == MyCSS_SELECTORS_SUB_TYPE_UNKNOWN)
         selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
     
+    mycss_selectors_parser_check_and_set_bad_parent_selector(result->result_entry);
     mycss_selectors_parser_selector_end(result, selectors, selector, token);
 }
 
@@ -244,16 +245,36 @@ void mycss_selectors_parser_selector_pseudo_class_function_end(mycss_result_t* r
 /////////////////////////////////////////////////////////
 void mycss_selectors_parser_selector_pseudo_element(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
+    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    mycss_token_data_to_string(result->entry, token, str, true);
     
+    selector->key  = str;
+    selector->type = MyCSS_SELECTORS_TYPE_PSEUDO_ELEMENT;
+    
+    selector->sub_type = mycss_pseudo_element_by_name(str->data, str->length);
+    
+    if(selector->sub_type == MyCSS_SELECTORS_SUB_TYPE_UNKNOWN)
+        selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+    
+    mycss_selectors_parser_check_and_set_bad_parent_selector(result->result_entry);
+    mycss_selectors_parser_selector_end(result, selectors, selector, token);
 }
 
 void mycss_selectors_parser_selector_pseudo_element_function(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
+    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    mycss_token_data_to_string(result->entry, token, str, true);
     
+    selector->key   = str;
+    selector->type  = MyCSS_SELECTORS_TYPE_PSEUDO_ELEMENT_FUNCTION;
+    
+    selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+    mycss_selectors_begin_unknown(result, selector);
 }
 
 void mycss_selectors_parser_selector_pseudo_element_function_end(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
+    mycss_selectors_parser_check_and_set_bad_parent_selector(result->result_entry);
     mycss_selectors_parser_selector_end(result, selectors, selector, token);
 }
 

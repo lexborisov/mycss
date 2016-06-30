@@ -26,12 +26,12 @@
 //// Functions for a find Begin Function
 ////
 /////////////////////////////////////////////////////////
-const mycss_selectots_pseudo_begin_entry_t * mycss_pseudo_begin_entry_by_name(const char* name, size_t length, const mycss_selectots_pseudo_begin_entry_t* pseudo)
+const mycss_selectots_pseudo_begin_entry_t * mycss_pseudo_begin_entry_by_name(const char* name, size_t length, size_t static_size, const mycss_selectots_pseudo_begin_entry_t* pseudo)
 {
     size_t idx = ((myhtml_string_chars_lowercase_map[ (const unsigned char)name[0] ] *
                    myhtml_string_chars_lowercase_map[ (const unsigned char)name[(length - 1)] ] *
                    length)
-                  % MyCSS_SELECTORS_PSEUDO_NAME_STATIC_SIZE) + 1;
+                  % static_size) + 1;
     
     while (pseudo[idx].name)
     {
@@ -57,7 +57,17 @@ const mycss_selectots_pseudo_begin_entry_t * mycss_pseudo_begin_entry_by_name(co
 
 mycss_selectors_sub_type_t mycss_pseudo_class_by_name(const char *name, size_t length)
 {
-    const mycss_selectots_pseudo_begin_entry_t *entry = mycss_pseudo_begin_entry_by_name(name, length, mycss_selectors_pseudo_class_begin_map_index);
+    const mycss_selectots_pseudo_begin_entry_t *entry = mycss_pseudo_begin_entry_by_name(name, length, MyCSS_SELECTORS_PSEUDO_CLASS_NAME_STATIC_SIZE, mycss_selectors_pseudo_class_begin_map_index);
+    
+    if(entry)
+        return entry->sub_type;
+    
+    return MyCSS_SELECTORS_SUB_TYPE_UNKNOWN;
+}
+
+mycss_selectors_sub_type_t mycss_pseudo_element_by_name(const char *name, size_t length)
+{
+    const mycss_selectots_pseudo_begin_entry_t *entry = mycss_pseudo_begin_entry_by_name(name, length, MyCSS_SELECTORS_PSEUDO_ELEMENT_NAME_STATIC_SIZE, mycss_selectors_pseudo_element_begin_map_index);
     
     if(entry)
         return entry->sub_type;
