@@ -48,6 +48,7 @@ struct mycss_string_res {
     
     myhtml_encoding_t encoding;
     myhtml_encoding_result_t encoding_res;
+    bool case_insensitive;
 };
 
 size_t mycss_string_data_process(myhtml_string_t* str, const char* data, size_t length, size_t size, mycss_string_res_t *out_res);

@@ -265,6 +265,15 @@ void * mycss_selectors_value_pseudo_class_function_not_destroy(mycss_result_t* r
 
 void * mycss_selectors_value_pseudo_class_function_nth_child_destroy(mycss_result_t* result, void* value, bool self_destroy)
 {
+    if(value == NULL)
+        return NULL;
+    
+    mycss_an_plus_b_entry_t *anb = value;
+    
+    if(anb->of) {
+        // destroy this
+    }
+    
     if(self_destroy) {
         mchar_async_free(result->entry->mchar, result->mchar_value_node_id, value);
         return NULL;

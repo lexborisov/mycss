@@ -156,16 +156,16 @@ bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token)
     /* Namespace and Media */
         case MyCSS_TOKEN_TYPE_AT_KEYWORD: {
             myhtml_string_t str;
-            mycss_token_data_to_string(result->entry, token, &str, true);
+            mycss_token_data_to_string(result->entry, token, &str, true, true);
             
-            if(myhtml_strncasecmp(str.data, "namespace", 9) == 0) {
+            if(myhtml_strcmp(str.data, "namespace") == 0) {
                 mycss_namespace_parser_begin(result, result->ns, result->ns->ns_entry, token);
                 result->state = mycss_namespace_state_namespace_namespace;
                 
                 if(result->parser != mycss_namespace_state_token_skip_whitespace)
                     result->parser = mycss_namespace_state_token_skip_whitespace;
             }
-            else if(myhtml_strncasecmp(str.data, "media", 5) == 0) {
+            else if(myhtml_strcmp(str.data, "media") == 0) {
                 result->state = mycss_namespace_state_namespace_namespace;
                 
                 if(result->parser != mycss_namespace_state_token_skip_whitespace)

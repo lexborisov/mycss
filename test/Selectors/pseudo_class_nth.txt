@@ -1,0 +1,329 @@
+<!-- :nth-child -->
+<entry>
+    <data>:nth-child()</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(   
+             )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(even)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(odd)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nTh-cHilD(EvEN)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(oDd)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            1n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(-n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            -1n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(-2n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            -2n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2-n)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n-)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n+)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(-2n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            -2n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(-n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            -1n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(-s-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(+n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            1n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(+n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            1n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(
+        2n+2 
+        
+        )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n+2
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(,2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n+1,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n+1+)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(++2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<!-- of -->
+<entry>
+    <data>:nth-child(2n+1 of)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n+1 of div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n+1
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n+1 of div,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n+1 of div:not([class|="dogs"]))</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n+1
+            <selector type="element" key="div"></selector>
+            <selector type="pseudo_class_function" key="not">
+                <selector type="attribute" key="class" value="dogs"></selector>
+            </selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n+1 of div:not([class **** "dogs"]))</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(blahblahblah)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n+1 of div:not([class|="dogs"]), .class)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(
+        2N+1 
+        Of 
+        div
+        )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n+1
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n +1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n + 1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-child(2n+ 1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+

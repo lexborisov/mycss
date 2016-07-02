@@ -147,36 +147,21 @@ void test_print_number(myhtml_string_t* str, long num)
     myhtml_string_append(str, str_num, strlen(str_num));
 }
 
+
+
 void test_print_an_plus_b(mycss_an_plus_b_entry_t* anb_entry, myhtml_string_t* str)
 {
-    if(anb_entry->a != 0)
-    {
+    if(anb_entry->a != 0) {
         test_print_number(str, anb_entry->a);
-        
-        if(anb_entry->b != 0) {
-            if(anb_entry->n < 0)
-                myhtml_string_append(str, "-n", 2);
-            else
-                myhtml_string_append(str, "n", 1);
-            
-            if(anb_entry->b > 0)
-                myhtml_string_append(str, "+", 1);
-            
-            test_print_number(str, anb_entry->b);
-        }
     }
-    else {
-        if(anb_entry->n < 0)
-            myhtml_string_append(str, "-n", 2);
-        else
-            myhtml_string_append(str, "n", 1);
+    
+    myhtml_string_append(str, "n", 1);
+    
+    if(anb_entry->b != 0) {
+        if(anb_entry->b >= 0)
+            myhtml_string_append(str, "+", 1);
         
-        if(anb_entry->b) {
-            if(anb_entry->b > 0)
-                myhtml_string_append(str, "+", 1);
-            
-            test_print_number(str, anb_entry->b);
-        }
+        test_print_number(str, anb_entry->b);
     }
 }
 
@@ -200,7 +185,7 @@ void test_print_pseudo_class_function(mycss_selectors_t* selectors, mycss_select
             test_print_an_plus_b(selector->value, str);
             
             if(mycss_selector_value_an_plus_b(selector->value)->of) {
-                myhtml_string_append(str, " of ", 4);
+                myhtml_string_append(str, "\n", 1);
                 test_result_entry_print(selectors->result, mycss_selector_value_an_plus_b(selector->value)->of, str);
             }
             
@@ -500,6 +485,9 @@ void test_html_result(myhtml_tree_t* tree, myhtml_tree_node_t *node, myhtml_stri
                 size_t len = test_node_text_pos_without_ws(node, &begin);
                 
                 myhtml_string_append(res_res, &node->token->str.data[begin], len);
+                
+                if(node->next)
+                    myhtml_string_append(res_res, "\n", 1);
             }
             
             node = node->next;

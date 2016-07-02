@@ -147,7 +147,7 @@ const char * mycss_token_name_by_type(mycss_token_type_t type)
     return mycss_token_type_description[type];
 }
 
-size_t mycss_token_data_to_string(mycss_entry_t* entry, mycss_token_t* token, myhtml_string_t* str, bool init_string)
+size_t mycss_token_data_to_string(mycss_entry_t* entry, mycss_token_t* token, myhtml_string_t* str, bool init_string, bool case_insensitive)
 {
     if(init_string)
         myhtml_string_init(entry->mchar, entry->mchar_node_id, str, (token->length + 4));
@@ -156,6 +156,7 @@ size_t mycss_token_data_to_string(mycss_entry_t* entry, mycss_token_t* token, my
     mycss_string_res_clean(&out_res);
     
     out_res.encoding = entry->encoding;
+    out_res.case_insensitive = case_insensitive;
     
     myhtml_incoming_buffer_t *buffer = myhtml_incoming_buffer_find_by_position(entry->current_buffer, token->begin);
     size_t relative_begin = token->begin - buffer->offset;

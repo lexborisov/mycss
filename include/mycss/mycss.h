@@ -63,7 +63,7 @@ size_t mycss_token_length(mycss_token_t* token);
 size_t mycss_token_position(mycss_token_t* token, size_t *return_length);
 mycss_token_type_t mycss_token_type(mycss_token_t* token);
 const char * mycss_token_name_by_type(mycss_token_type_t type);
-size_t mycss_token_data_to_string(mycss_entry_t* entry, mycss_token_t* token, myhtml_string_t* str, bool init_string);
+size_t mycss_token_data_to_string(mycss_entry_t* entry, mycss_token_t* token, myhtml_string_t* str, bool init_string, bool case_insensitive);
 
 myhtml_incoming_buffer_t * mycss_token_buffer_first(mycss_entry_t* entry, mycss_token_t* token);
 

@@ -74,6 +74,7 @@ bool mycss_selectors_unknown_parser(mycss_result_t* result, mycss_token_t* token
 bool mycss_selectors_function_not_or_matches_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_has_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_nth_with_selectors_parser(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_function_nth_with_selectors_before_of_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_nth_without_selectors_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_nth_of_selectors_parser(mycss_result_t* result, mycss_token_t* token);
 bool mycss_selectors_function_nth_of_whitespace_selectors_parser(mycss_result_t* result, mycss_token_t* token);

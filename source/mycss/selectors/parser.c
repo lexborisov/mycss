@@ -101,7 +101,7 @@ void mycss_selectors_parser_selector_combinator_whitespace(mycss_result_t* resul
 void mycss_selectors_parser_selector_ident_type(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
-    mycss_token_data_to_string(result->entry, token, str, true);
+    mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->type = MyCSS_SELECTORS_TYPE_ELEMENT;
     selector->key  = str;
@@ -110,7 +110,7 @@ void mycss_selectors_parser_selector_ident_type(mycss_result_t* result, mycss_se
 void mycss_selectors_parser_selector_ident_attr(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
-    mycss_token_data_to_string(result->entry, token, str, true);
+    mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->type = MyCSS_SELECTORS_TYPE_ATTRIBUTE;
     selector->key  = str;
@@ -119,7 +119,7 @@ void mycss_selectors_parser_selector_ident_attr(mycss_result_t* result, mycss_se
 void mycss_selectors_parser_selector_id(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
-    mycss_token_data_to_string(result->entry, token, str, true);
+    mycss_token_data_to_string(result->entry, token, str, true, false);
     
     selector->type = MyCSS_SELECTORS_TYPE_ID;
     selector->key  = str;
@@ -130,7 +130,7 @@ void mycss_selectors_parser_selector_id(mycss_result_t* result, mycss_selectors_
 void mycss_selectors_parser_selector_class(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
-    mycss_token_data_to_string(result->entry, token, str, true);
+    mycss_token_data_to_string(result->entry, token, str, true, false);
     
     selector->type = MyCSS_SELECTORS_TYPE_CLASS;
     selector->key  = str;
@@ -167,7 +167,7 @@ void mycss_selectors_parser_selector_namespace(mycss_result_t* result, mycss_sel
 void mycss_selectors_parser_selector_after_namespace(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
-    mycss_token_data_to_string(result->entry, token, str, true);
+    mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->key = str;
 }
@@ -181,7 +181,7 @@ void mycss_selectors_parser_selector_value(mycss_result_t* result, mycss_selecto
     mycss_selectors_object_attribute_t *attr = mycss_selectors_value_attribute_create(result, 1);
     
     myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
-    mycss_token_data_to_string(result->entry, token, str, true);
+    mycss_token_data_to_string(result->entry, token, str, true, false);
     
     attr->value = str;
     selector->value = attr;
@@ -199,7 +199,7 @@ void mycss_selectors_parser_selector_modifier(mycss_result_t* result, mycss_sele
 void mycss_selectors_parser_selector_pseudo_class(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
-    mycss_token_data_to_string(result->entry, token, str, true);
+    mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->key  = str;
     selector->type = MyCSS_SELECTORS_TYPE_PSEUDO_CLASS;
@@ -216,7 +216,7 @@ void mycss_selectors_parser_selector_pseudo_class(mycss_result_t* result, mycss_
 void mycss_selectors_parser_selector_pseudo_class_function(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
-    mycss_token_data_to_string(result->entry, token, str, true);
+    mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->key   = str;
     selector->type  = MyCSS_SELECTORS_TYPE_PSEUDO_CLASS_FUNCTION;
@@ -246,7 +246,7 @@ void mycss_selectors_parser_selector_pseudo_class_function_end(mycss_result_t* r
 void mycss_selectors_parser_selector_pseudo_element(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
-    mycss_token_data_to_string(result->entry, token, str, true);
+    mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->key  = str;
     selector->type = MyCSS_SELECTORS_TYPE_PSEUDO_ELEMENT;
@@ -263,7 +263,7 @@ void mycss_selectors_parser_selector_pseudo_element(mycss_result_t* result, mycs
 void mycss_selectors_parser_selector_pseudo_element_function(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
     myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
-    mycss_token_data_to_string(result->entry, token, str, true);
+    mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->key   = str;
     selector->type  = MyCSS_SELECTORS_TYPE_PSEUDO_ELEMENT_FUNCTION;
@@ -316,11 +316,11 @@ void mycss_selectors_parser_bad_token(mycss_result_t* result, mycss_selectors_t*
         myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
         selector->key = str;
         
-        mycss_token_data_to_string(result->entry, token, selector->key, true);
+        mycss_token_data_to_string(result->entry, token, selector->key, true, false);
         return;
     }
     
-    mycss_token_data_to_string(result->entry, token, selector->key, false);
+    mycss_token_data_to_string(result->entry, token, selector->key, false, false);
 }
 
 /////////////////////////////////////////////////////////

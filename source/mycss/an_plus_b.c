@@ -77,34 +77,17 @@ void mycss_an_plus_b_parser_expectations_error(mycss_result_t* result, mycss_an_
 /////////////////////////////////////////////////////////
 void mycss_an_plus_b_print(mycss_an_plus_b_entry_t* anb_entry, FILE* fh)
 {
-    if(anb_entry->a != 0)
-    {
+    if(anb_entry->a != 0) {
         fprintf(fh, "%ld", anb_entry->a);
-        
-        if(anb_entry->b != 0) {
-            if(anb_entry->n < 0)
-                fprintf(fh, "-n");
-            else
-                fprintf(fh, "n");
-            
-            if(anb_entry->b > 0)
-                fprintf(fh, "+");
-            
-            fprintf(fh, "%ld", anb_entry->b);
-        }
     }
-    else {
-        if(anb_entry->n < 0)
-            fprintf(fh, "-n");
+    
+    fprintf(fh, "n");
+    
+    if(anb_entry->b != 0) {
+        if(anb_entry->b >= 0)
+            fprintf(fh, "+%ld", anb_entry->b);
         else
-            fprintf(fh, "n");
-        
-        if(anb_entry->b) {
-            if(anb_entry->b > 0)
-                fprintf(fh, "+");
-            
             fprintf(fh, "%ld", anb_entry->b);
-        }
     }
 }
 
@@ -127,11 +110,11 @@ bool mycss_an_plus_b_state_anb(mycss_result_t* result, mycss_an_plus_b_t* anb, m
     switch (token->type) {
         case MyCSS_TOKEN_TYPE_IDENT: {
             myhtml_string_t str;
-            mycss_token_data_to_string(result->entry, token, &str, true);
+            mycss_token_data_to_string(result->entry, token, &str, true, false);
             
             if(myhtml_strncasecmp(str.data, "-n-", 3) == 0)
             {
-                anb_entry->n = -1;
+                anb_entry->a = -1;
                 
                 if(str.length == 3) {
                     anb_entry->b = -1;
@@ -157,7 +140,7 @@ bool mycss_an_plus_b_state_anb(mycss_result_t* result, mycss_an_plus_b_t* anb, m
             else if(myhtml_strncasecmp(str.data, "-n", 2) == 0) {
                 MyCSS_DEBUG_MESSAGE("mycss_an_plus_b_state_anb_hyphen_n_end")
                 
-                anb_entry->n = -1;
+                anb_entry->a = -1;
                 
                 if(str.length == 2) {
                     result->state = mycss_an_plus_b_state_anb_plus_n;
@@ -179,6 +162,8 @@ bool mycss_an_plus_b_state_anb(mycss_result_t* result, mycss_an_plus_b_t* anb, m
             }
             else if(myhtml_strncasecmp(str.data, "n-", 2) == 0)
             {
+                anb_entry->a = 1;
+                
                 if(str.length == 2) {
                     result->state = mycss_an_plus_b_state_anb_plus_n_hyphen;
                     
@@ -198,7 +183,9 @@ bool mycss_an_plus_b_state_anb(mycss_result_t* result, mycss_an_plus_b_t* anb, m
                 MyCSS_DEBUG_MESSAGE("mycss_an_plus_b_state_anb_n");
                 result->parser = result->parser_switch;
             }
-            else if(myhtml_strncasecmp(str.data, "n", 1) == 0) {
+            else if(myhtml_strncasecmp(str.data, "n", 1) == 0)
+            {
+                anb_entry->a = 1;
                 
                 if(str.length == 1) {
                     result->state = mycss_an_plus_b_state_anb_plus_n;
@@ -221,14 +208,14 @@ bool mycss_an_plus_b_state_anb(mycss_result_t* result, mycss_an_plus_b_t* anb, m
             }
             else if(myhtml_strcasecmp(str.data, "even") == 0) {
                 anb_entry->a = 2;
-                anb_entry->b = 1;
+                anb_entry->b = 0;
                 
                 MyCSS_DEBUG_MESSAGE("mycss_an_plus_b_state_anb_e_v_e_n")
                 result->parser = result->parser_switch;
             }
             else if(myhtml_strcasecmp(str.data, "odd") == 0) {
                 anb_entry->a = 2;
-                anb_entry->b = 0;
+                anb_entry->b = 1;
                 
                 MyCSS_DEBUG_MESSAGE("mycss_an_plus_b_state_anb_o_d_d")
                 result->parser = result->parser_switch;
@@ -246,6 +233,8 @@ bool mycss_an_plus_b_state_anb(mycss_result_t* result, mycss_an_plus_b_t* anb, m
         }
         case MyCSS_TOKEN_TYPE_DELIM: {
             if(*token->data == '+') {
+                anb_entry->a = 1;
+                
                 result->state = mycss_an_plus_b_state_anb_plus;
                 
                 if(result->parser != mycss_an_plus_b_state_token_all)
@@ -260,9 +249,9 @@ bool mycss_an_plus_b_state_anb(mycss_result_t* result, mycss_an_plus_b_t* anb, m
         }
         case MyCSS_TOKEN_TYPE_NUMBER: {
             myhtml_string_t str;
-            mycss_token_data_to_string(result->entry, token, &str, true);
+            mycss_token_data_to_string(result->entry, token, &str, true, false);
             
-            mycss_convert_data_to_integer(str.data, str.length, &anb_entry->a);
+            mycss_convert_data_to_integer(str.data, str.length, &anb_entry->b);
             
             myhtml_string_destroy(&str, false);
             
@@ -272,7 +261,7 @@ bool mycss_an_plus_b_state_anb(mycss_result_t* result, mycss_an_plus_b_t* anb, m
         }
         case MyCSS_TOKEN_TYPE_DIMENSION: {
             myhtml_string_t str;
-            mycss_token_data_to_string(result->entry, token, &str, true);
+            mycss_token_data_to_string(result->entry, token, &str, true, false);
             
             size_t consumed_len = mycss_convert_data_to_integer(str.data, str.length, &anb_entry->a);
             
@@ -347,7 +336,7 @@ bool mycss_an_plus_b_state_anb_plus(mycss_result_t* result, mycss_an_plus_b_t* a
     switch (token->type) {
         case MyCSS_TOKEN_TYPE_IDENT: {
             myhtml_string_t str;
-            mycss_token_data_to_string(result->entry, token, &str, true);
+            mycss_token_data_to_string(result->entry, token, &str, true, false);
             
             if(myhtml_strncasecmp(str.data, "n-", 2) == 0)
             {
@@ -405,7 +394,7 @@ bool mycss_an_plus_b_state_anb_plus_n_hyphen(mycss_result_t* result, mycss_an_pl
         if(myhtml_string_chars_num_map[ (const unsigned char)(*token->data) ] != 0xff)
         {
             myhtml_string_t str;
-            mycss_token_data_to_string(result->entry, token, &str, true);
+            mycss_token_data_to_string(result->entry, token, &str, true, false);
             
             long res;
             mycss_convert_data_to_integer(str.data, str.length, &res);
@@ -459,7 +448,7 @@ bool mycss_an_plus_b_state_anb_plus_n(mycss_result_t* result, mycss_an_plus_b_t*
             if(*token->data == '+' || *token->data == '-')
             {
                 myhtml_string_t str;
-                mycss_token_data_to_string(result->entry, token, &str, true);
+                mycss_token_data_to_string(result->entry, token, &str, true, false);
                 
                 mycss_convert_data_to_integer(str.data, str.length, &anb_entry->b);
                 
@@ -491,7 +480,7 @@ bool mycss_an_plus_b_state_anb_plus_n_plus(mycss_result_t* result, mycss_an_plus
         if(myhtml_string_chars_num_map[ (const unsigned char)(*token->data) ] != 0xff)
         {
             myhtml_string_t str;
-            mycss_token_data_to_string(result->entry, token, &str, true);
+            mycss_token_data_to_string(result->entry, token, &str, true, false);
             
             mycss_convert_data_to_integer(str.data, str.length, &anb_entry->b);
             

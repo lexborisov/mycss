@@ -267,6 +267,13 @@ void mycss_string_data_process_end(myhtml_string_t* str, mycss_string_res_t *out
         myhtml_string_realloc(str, (str->size + 2));
     
     str->data[str->length] = '\0';
+    
+    if(out_res->case_insensitive) {
+        unsigned char *u_data = (unsigned char*)str->data;
+        
+        for(size_t i = 0; i < str->length; i++)
+            u_data[i] = myhtml_string_chars_lowercase_map[u_data[i]];
+    }
 }
 
 

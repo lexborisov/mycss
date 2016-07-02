@@ -211,11 +211,13 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
                 case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_LAST_COLUMN:
                 case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_OF_TYPE:
                 case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_LAST_OF_TYPE:
-                    mycss_an_plus_b_print(selector->value, fh);
+                    if(selector->value) {
+                        mycss_an_plus_b_print(selector->value, fh);
                     
-                    if(mycss_selector_value_an_plus_b(selector->value)->of) {
-                        fprintf(fh, " of ");
-                        mycss_result_entry_print(selectors->result, mycss_selector_value_an_plus_b(selector->value)->of, fh);
+                        if(mycss_selector_value_an_plus_b(selector->value)->of) {
+                            fprintf(fh, " of ");
+                            mycss_result_entry_print(selectors->result, mycss_selector_value_an_plus_b(selector->value)->of, fh);
+                        }
                     }
                     
                     break;
