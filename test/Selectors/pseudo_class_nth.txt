@@ -252,6 +252,13 @@
 </entry>
 
 <entry>
+    <data>:nth-child(2n+1 o f div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
     <data>:nth-child(2n+1 of div:not([class|="dogs"]))</data>
     <result>
         <selector type="pseudo_class_function" key="nth-child">
@@ -326,4 +333,1632 @@
     </result>
 </entry>
 
+<!-- :nth-last-child -->
+<entry>
+    <data>:nth-last-child()</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
 
+<entry>
+    <data>:nth-last-child(   
+             )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(even)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(odd)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nTh-LaST-cHilD(EvEN)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(oDd)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            1n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(-n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            -1n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(-2n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            -2n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2-n)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n-)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n+)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(-2n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            -2n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(-n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            -1n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(-s-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(+n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            1n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(+n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            1n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(
+        2n+2 
+        
+        )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n+2
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(,2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n+1,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n+1+)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(++2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<!-- of -->
+<entry>
+    <data>:nth-last-child(2n+1 of)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n+1 of div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n+1
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n+1 of div,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n+1 o f div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n+1 of div:not([class|="dogs"]))</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n+1
+            <selector type="element" key="div"></selector>
+            <selector type="pseudo_class_function" key="not">
+                <selector type="attribute" key="class" value="dogs"></selector>
+            </selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n+1 of div:not([class **** "dogs"]))</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(blahblahblah)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n+1 of div:not([class|="dogs"]), .class)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(
+        2N+1 
+        Of 
+        div
+        )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n+1
+            <selector type="element" key="div"></selector>
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n +1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n + 1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-child(2n+ 1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-child">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+
+<!-- :nth-of-type -->
+<entry>
+    <data>:nth-of-type()</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(   
+             )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(even)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(odd)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nTh-OF-tYPe(EvEN)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(oDd)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            2n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            1n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(-n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            -1n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(-2n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            -2n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2-n)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n-)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n+)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            2n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(-2n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            -2n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(-n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            -1n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(-s-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(+n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            1n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(+n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            1n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(
+        2n+2 
+        
+        )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            2n+2
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(,2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n+1,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n+1+)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(++2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n+1 of)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n+1 of div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n+1 of div,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n+1 o f div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n+1 of div:not([class|="dogs"]))</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n+1 of div:not([class **** "dogs"]))</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(blahblahblah)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n+1 of div:not([class|="dogs"]), .class)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>,
+        <selector type="class" key="class"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(
+        2N+1 
+        Of 
+        div
+        )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n +1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n + 1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-of-type(2n+ 1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-of-type">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+
+<!-- :nth-last-of-type -->
+<entry>
+    <data>:nth-last-of-type()</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(   
+             )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(even)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(odd)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nTh-lAST-OF-tYPe(EvEN)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(oDd)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            2n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            1n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(-n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            -1n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(-2n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            -2n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2-n)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n-)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n+)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            2n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(-2n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            -2n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(-n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            -1n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(-s-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(+n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            1n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(+n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            1n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(
+        2n+2 
+        
+        )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            2n+2
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(,2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n+1,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n+1+)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(++2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n+1 of)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n+1 of div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n+1 of div,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n+1 o f div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n+1 of div:not([class|="dogs"]))</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n+1 of div:not([class **** "dogs"]))</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(blahblahblah)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n+1 of div:not([class|="dogs"]), .class)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>,
+        <selector type="class" key="class"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(
+        2N+1 
+        Of 
+        div
+        )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n +1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n + 1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-of-type(2n+ 1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-of-type">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<!-- :nth-column -->
+<entry>
+    <data>:nth-column()</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(   
+             )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(even)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(odd)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:NTh-cOlUMn(EvEN)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(oDd)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            2n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            1n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(-n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            -1n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(-2n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            -2n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2-n)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n-)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n+)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            2n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(-2n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            -2n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(-n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            -1n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(-s-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(+n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            1n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(+n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            1n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(
+        2n+2 
+        
+        )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            2n+2
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(,2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n+1,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n+1+)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(++2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n+1 of)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n+1 of div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n+1 of div,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n+1 o f div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n+1 of div:not([class|="dogs"]))</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n+1 of div:not([class **** "dogs"]))</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(blahblahblah)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n+1 of div:not([class|="dogs"]), .class)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>,
+        <selector type="class" key="class"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(
+        2N+1 
+        Of 
+        div
+        )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n +1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n + 1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-column(2n+ 1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-column">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+
+<!-- :nth-last-column -->
+<entry>
+    <data>:nth-last-column()</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(   
+             )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(even)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(odd)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:NtH-LASt-CoLuMN(EvEN)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(oDd)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            2n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            1n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(-n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            -1n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(-2n+3)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            -2n+3
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            2n
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2-n)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n-)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n+)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            2n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(-2n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            -2n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(-n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            -1n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(-s-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(+n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            1n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(+n-1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            1n-1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(
+        2n+2 
+        
+        )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            2n+2
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(,2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n+1,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n+1+)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(++2n+1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n+1 of)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n+1 of div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n+1 of div,)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n+1 o f div)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n+1 of div:not([class|="dogs"]))</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n+1 of div:not([class **** "dogs"]))</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(blahblahblah)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n+1 of div:not([class|="dogs"]), .class)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>,
+        <selector type="class" key="class"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(
+        2N+1 
+        Of 
+        div
+        )</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column" flags="^B"></selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n +1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n + 1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            2n+1
+        </selector>
+    </result>
+</entry>
+
+<entry>
+    <data>:nth-last-column(2n+ 1)</data>
+    <result>
+        <selector type="pseudo_class_function" key="nth-last-column">
+            2n+1
+        </selector>
+    </result>
+</entry>

@@ -644,16 +644,18 @@ size_t test_dir(const char* dir_path, const char* test_name, size_t *bad_count)
             myhtml_parse(tree, MyHTML_ENCODING_UTF_8, res.html, res.size);
             
             size_t bad = 0;
-            count_test += test_data(tree, count_files, &bad);
+            size_t good = test_data(tree, count_files, &bad);
+            
+            count_test += good;
             count_test_bad += bad;
+            
+            printf("\tTests count: %zu; Good: %zu; Bad: %zu\n", good, (good - bad), bad);
             
             free(res.html);
         }
         
         closedir (dir);
     }
-    
-    printf("\tTests count: %zu; Good: %zu; Bad: %zu\n", count_test, (count_test - count_test_bad), count_test_bad);
     
     myhtml_tree_destroy(tree);
     myhtml_destroy(myhtml);
@@ -664,24 +666,23 @@ size_t test_dir(const char* dir_path, const char* test_name, size_t *bad_count)
 
 int main(int argc, const char * argv[])
 {
-//    if (argc < 3) {
-//        printf("Bad ARGV!\nUse: test <path_to_dir_test> <test_name> [ <test_name>]*\n");
-//        exit(EXIT_FAILURE);
-//    }
-//    
-//    printf("\nDirectory: %s\n", argv[1]);
-//    
-//    size_t bad_count = 0;
-//    size_t all_count = 0;
-//    
-//    for(size_t i = 2; i < argc; i++) {
-//        all_count += test_dir(argv[1], argv[i], &bad_count);
-//    }
+    if (argc < 3) {
+        printf("Bad ARGV!\nUse: test <path_to_dir_test> <test_name> [ <test_name>]*\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    printf("\nDirectory: %s\n", argv[1]);
     
     size_t bad_count = 0;
     size_t all_count = 0;
     
-    all_count += test_dir("/new/C-git/mycss/test", "Selectors", &bad_count);
+    for(size_t i = 2; i < argc; i++) {
+        all_count += test_dir(argv[1], argv[i], &bad_count);
+    }
+    
+//    size_t bad_count = 0;
+//    size_t all_count = 0;
+//    all_count += test_dir("/new/C-git/mycss/test", "Selectors", &bad_count);
     
     printf("\nTotal count: %zu; Good: %zu; Bad: %zu\n", all_count, (all_count - bad_count), bad_count);
     

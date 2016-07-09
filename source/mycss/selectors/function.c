@@ -455,9 +455,13 @@ bool mycss_selectors_function_nth_with_selectors_before_of_parser(mycss_result_t
         if(selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD ||
            mycss_selector_value_an_plus_b(selector->value)->is_broken)
         {
+            if((selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+                selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+            
             result->state = mycss_an_plus_b_state_skip_all;
             result->parser = mycss_an_plus_b_state_token_skip_whitespace;
             
+            selector->value = mycss_selectors_value_pseudo_class_function_nth_child_destroy(result, selector->value, true);
             return true;
         }
         
@@ -470,6 +474,8 @@ bool mycss_selectors_function_nth_with_selectors_before_of_parser(mycss_result_t
             
             result->state = mycss_an_plus_b_state_skip_all;
             result->parser = mycss_an_plus_b_state_token_skip_whitespace;
+            
+            selector->value = mycss_selectors_value_pseudo_class_function_nth_child_destroy(result, selector->value, true);
             
             myhtml_string_destroy(&str, false);
             return true;
@@ -613,6 +619,16 @@ bool mycss_selectors_function_nth_without_selectors_parser(mycss_result_t* resul
         mycss_selectors_t *selectors = result->selectors;
         mycss_selectors_end(result->result_entry, selectors);
         
+        mycss_selectors_entry_t *selector = result->result_entry->selector;
+        if(selector->value) {
+            mycss_an_plus_b_entry_t *anb = mycss_selector_value_an_plus_b(selector->value);
+            
+            if(anb->is_broken) {
+                selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+                selector->value = mycss_selectors_value_pseudo_class_function_nth_last_column_destroy(result, selector->value, true);
+            }
+        }
+        
         result->result_entry = mycss_result_get_parent_set_parser(result, result->result_entry);
         mycss_selectors_parser_selector_pseudo_class_function_end(result, selectors, result->result_entry->selector, token);
     }
@@ -620,8 +636,11 @@ bool mycss_selectors_function_nth_without_selectors_parser(mycss_result_t* resul
         /* parse error */
         mycss_selectors_entry_t *selector = result->result_entry->selector;
         
-        if((selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0)
+        if((selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0) {
             selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+            
+            selector->value = mycss_selectors_value_pseudo_class_function_nth_last_column_destroy(result, selector->value, true);
+        }
     }
     
     return true;
