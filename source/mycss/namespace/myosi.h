@@ -29,7 +29,8 @@ extern "C" {
 #include "mycss/myosi.h"
 #include "myhtml/mystring.h"
 #include "myhtml/utils/mctree.h"
-    
+#include "myhtml/utils/mcobject.h"
+
 typedef struct mycss_namespace mycss_namespace_t;
 typedef struct mycss_namespace_entry mycss_namespace_entry_t;
 
@@ -39,6 +40,8 @@ typedef bool (*mycss_namespace_state_f)(mycss_result_t* result, mycss_namespace_
 struct mycss_namespace {
     mycss_namespace_entry_t* ns_entry; /* current namespace entry */
     mctree_t* name_tree; // tree for namespace names
+    
+    mcobject_t* mcobject_entries;
     
     size_t ns_id_counter;
 };

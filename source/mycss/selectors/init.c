@@ -29,15 +29,23 @@ mycss_selectors_t * mycss_selectors_create(void)
 
 mycss_status_t mycss_selectors_init(mycss_entry_t* entry, mycss_selectors_t* selectors)
 {
-    selectors->entry  = entry;
-    selectors->result = entry->result;
+    selectors->entry = entry;
+    
+    /* Objects Selector */
+    selectors->mcobject_entries = mcobject_create();
+    if(selectors->mcobject_entries == NULL)
+        return MyCSS_STATUS_ERROR_SELECTORS_ENTRIES_CREATE;
+    
+    myhtml_status_t myhtml_status = mcobject_init(selectors->mcobject_entries, 256, sizeof(mycss_selectors_entry_t));
+    if(myhtml_status)
+        return MyCSS_STATUS_ERROR_NAMESPACE_ENTRIES_INIT;
     
     return MyCSS_STATUS_OK;
 }
 
 mycss_status_t mycss_selectors_clean_all(mycss_selectors_t* selectors)
 {
-    selectors->result = NULL;
+    mcobject_clean(selectors->mcobject_entries);
     
     return MyCSS_STATUS_OK;
 }
@@ -47,6 +55,8 @@ mycss_selectors_t * mycss_selectors_destroy(mycss_selectors_t* selectors, bool s
     if(selectors == NULL)
         return NULL;
     
+    selectors->mcobject_entries = mcobject_destroy(selectors->mcobject_entries, true);
+    
     if(self_destroy) {
         myhtml_free(selectors);
         return NULL;
@@ -55,7 +65,7 @@ mycss_selectors_t * mycss_selectors_destroy(mycss_selectors_t* selectors, bool s
     return selectors;
 }
 
-void mycss_selectors_end(mycss_result_entry_t* res_entry, mycss_selectors_t* selectors)
+void mycss_selectors_end(mycss_result_entry_t* res_entry, mycss_selectors_t* selectors, bool self_destroy)
 {
     if(res_entry->selector->type == MyCSS_SELECTORS_TYPE_UNDEF) {
         if(res_entry->selector->prev) {
@@ -69,7 +79,7 @@ void mycss_selectors_end(mycss_result_entry_t* res_entry, mycss_selectors_t* sel
             }
         }
         
-        mycss_selectors_entry_destroy(selectors, res_entry->selector, false);
+        res_entry->selector = mycss_selectors_entry_destroy(selectors, res_entry->selector, self_destroy);
     }
 }
 
@@ -88,9 +98,7 @@ mycss_selectors_entry_t * mycss_selectors_entry_find_first(mycss_selectors_entry
 
 mycss_selectors_entry_t * mycss_selectors_entry_create(mycss_selectors_t* selectors)
 {
-    mycss_result_t* result = selectors->result;
-    
-    mycss_selectors_entry_t* selector = mcobject_async_malloc(result->entry->mcasync_selectors_entries, result->selectors_entries_id, NULL);
+    mycss_selectors_entry_t* selector = mcobject_malloc(selectors->mcobject_entries, NULL);
     mycss_selectors_entry_clean(selector);
     
     return selector;
@@ -98,48 +106,53 @@ mycss_selectors_entry_t * mycss_selectors_entry_create(mycss_selectors_t* select
 
 mycss_selectors_entry_t * mycss_selectors_entry_destroy(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, bool self_destroy)
 {
-    mycss_result_t* result = selectors->result;
+    mycss_result_t* result = selectors->entry->result;
     
     if(selector->key) {
-        myhtml_string_destroy(selector->key, 0);
-        mcobject_async_free(result->entry->mcasync_string, selector->key);
+        myhtml_string_destroy(selector->key, false);
+        mcobject_free(result->mcobject_string_entries, selector->key);
     }
     
     if(selector->value) {
-        mycss_selector_value_destroy(result, selector->type, selector->sub_type, selector->value, true);
+        selector->value = mycss_selector_value_destroy(result, selector->type, selector->sub_type, selector->value, true);
     }
     
     if(self_destroy) {
-        mcobject_async_free(result->entry->mcasync_selectors_entries, selector);
+        mcobject_free(selectors->mcobject_entries, selector);
         return NULL;
     }
     
     return selector;
 }
 
+void * mycss_selectors_entry_value_destroy(mycss_result_t* result, mycss_selectors_entry_t* entry, bool destroy_self)
+{
+    return mycss_selector_value_destroy(result, entry->type, entry->sub_type, entry->value, destroy_self);
+}
+
 mycss_selectors_entry_t ** mycss_selectors_entry_list_create(mycss_selectors_t* selectors)
 {
-    mycss_result_t* result = selectors->result;
+    mycss_result_t* result = selectors->entry->result;
     
     return (mycss_selectors_entry_t**) mchar_async_malloc(result->entry->mchar,
-                                                          result->mchar_selector_list_node_id,
+                                                          result->entry->mchar_value_node_id,
                                                           sizeof(mycss_selectors_entry_t*));
 }
 
 mycss_selectors_entry_t ** mycss_selectors_entry_list_add_one(mycss_selectors_t* selectors, mycss_selectors_entry_t** list, size_t current_size)
 {
-    mycss_result_t* result = selectors->result;
+    mycss_result_t* result = selectors->entry->result;
     size_t current_size_char = current_size * sizeof(mycss_selectors_entry_t *);
     
     return (mycss_selectors_entry_t**)
-    mchar_async_realloc(result->entry->mchar, result->mchar_selector_list_node_id,
+    mchar_async_realloc(result->entry->mchar, result->entry->mchar_value_node_id,
                         (char*)list, current_size_char, (current_size_char + sizeof(mycss_selectors_entry_t*)));
 }
 
 mycss_selectors_entry_t ** mycss_selectors_entry_list_destroy(mycss_selectors_t* selectors, mycss_selectors_entry_t** list)
 {
-    mycss_result_t* result = selectors->result;
-    mchar_async_free(result->entry->mchar, result->mchar_selector_list_node_id, (char*)list);
+    mycss_result_t* result = selectors->entry->result;
+    mchar_async_free(result->entry->mchar, result->entry->mchar_value_node_id, (char*)list);
     
     return NULL;
 }
@@ -149,7 +162,7 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
     switch(selector->type) {
         case MyCSS_SELECTORS_TYPE_ELEMENT: {
             if(selector->ns)
-                mycss_namespace_print(selectors->result->ns, selector->ns, fh, true);
+                mycss_namespace_print(selectors->entry->ns, selector->ns, fh, true);
             
             if(selector->key)
                 fprintf(fh, "%s", selector->key->data);
@@ -159,7 +172,7 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
             fprintf(fh, "[");
             
             if(selector->ns)
-                mycss_namespace_print(selectors->result->ns, selector->ns, fh, true);
+                mycss_namespace_print(selectors->entry->ns, selector->ns, fh, true);
             
             if(selector->key)
                 fprintf(fh, "%s", selector->key->data);
@@ -202,7 +215,7 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
                 case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_MATCHES:
                 case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_CURRENT:
                     if(selector->value)
-                        mycss_result_entry_print(selectors->result, selector->value, fh);
+                        mycss_result_entry_print(selectors->entry->result, selector->value, fh);
                     break;
                 
                 case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_CHILD:
@@ -216,7 +229,7 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
                     
                         if(mycss_selector_value_an_plus_b(selector->value)->of) {
                             fprintf(fh, " of ");
-                            mycss_result_entry_print(selectors->result, mycss_selector_value_an_plus_b(selector->value)->of, fh);
+                            mycss_result_entry_print(selectors->entry->result, mycss_selector_value_an_plus_b(selector->value)->of, fh);
                         }
                     }
                     

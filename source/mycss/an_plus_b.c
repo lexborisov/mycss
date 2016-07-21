@@ -51,13 +51,13 @@ mycss_an_plus_b_t * mycss_an_plus_b_destroy(mycss_an_plus_b_t* anb, bool self_de
 
 bool mycss_an_plus_b_state_token_all(mycss_result_t* result, mycss_token_t* token)
 {
-    return ((mycss_an_plus_b_state_f)result->state)(result, result->anb, result->anb->anb_entry, token);
+    return ((mycss_an_plus_b_state_f)result->state)(result, result->entry->anb, result->entry->anb->anb_entry, token);
 }
 
 bool mycss_an_plus_b_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token)
 {
     if(token->type != MyCSS_TOKEN_TYPE_WHITESPACE)
-        return ((mycss_an_plus_b_state_f)result->state)(result, result->anb, result->anb->anb_entry, token);
+        return ((mycss_an_plus_b_state_f)result->state)(result, result->entry->anb, result->entry->anb->anb_entry, token);
     
     return true;
 }

@@ -31,33 +31,42 @@ extern "C" {
 #include "mycss/parser.h"
 #include "mycss/result.h"
 #include "myhtml/utils/mcobject.h"
-#include "myhtml/utils/mcobject_async.h"
 #include "myhtml/utils/mchar_async.h"
 
 struct mycss_entry {
+    /* refs */
     mycss_t* mycss;
     mycss_token_t* token;
-    mycss_result_t* result; // corrent result
     
+    /* objects and memory for css modules */
     mchar_async_t* mchar;
     size_t mchar_node_id;
+    size_t mchar_value_node_id;
     
+    /* css modules */
+    mycss_namespace_t* ns;
+    mycss_selectors_t* selectors;
+    mycss_rules_t*     rules;
+    mycss_media_t*     media;
+    mycss_an_plus_b_t* anb;
+    mycss_result_t*    result;
+    
+    /* incoming buffer */
+    mcobject_t* mcobject_incoming_buffer;
+    myhtml_incoming_buffer_t* first_buffer;
+    myhtml_incoming_buffer_t* current_buffer;
+    
+    /* options */
     mycss_entry_type_t type;
     myhtml_encoding_t encoding;
     
     mycss_tokenizer_state_t state;
     mycss_tokenizer_state_t state_back;
+    
+    /* callbacks */
     mycss_token_ready_callback_f token_ready_callback;
     
-    mcobject_async_t* mcasync_selectors_entries;
-    mcobject_async_t* mcasync_string;
-    mcobject_async_t* mcasync_namespace_entries;
-    mcobject_async_t* mcasync_result_entries;
-    
-    mcobject_t*               mcobject_incoming_buffer;
-    myhtml_incoming_buffer_t* first_buffer;
-    myhtml_incoming_buffer_t* current_buffer;
-    
+    /* helpers */
     size_t token_counter;
     size_t help_counter;
 };

@@ -22,13 +22,13 @@
 
 bool mycss_selectors_state_token_all(mycss_result_t* result, mycss_token_t* token)
 {
-    return ((mycss_selectors_state_f)result->state)(result, result->selectors, result->result_entry->selector, token);
+    return ((mycss_selectors_state_f)result->state)(result, result->entry->selectors, result->result_entry->selector, token);
 }
 
 bool mycss_selectors_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token)
 {
     if(token->type != MyCSS_TOKEN_TYPE_WHITESPACE) {
-        return ((mycss_selectors_state_f)result->state)(result, result->selectors, result->result_entry->selector, token);
+        return ((mycss_selectors_state_f)result->state)(result, result->entry->selectors, result->result_entry->selector, token);
     }
     
     return true;
@@ -36,7 +36,7 @@ bool mycss_selectors_state_token_skip_whitespace(mycss_result_t* result, mycss_t
 
 void mycss_selectors_state_end(mycss_result_t* result)
 {
-    mycss_selectors_t* selectors = result->selectors;
+    mycss_selectors_t* selectors = result->entry->selectors;
     mycss_selectors_entry_t* selector = result->result_entry->selector;
     
     if(selector == NULL)

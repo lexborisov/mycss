@@ -23,6 +23,8 @@
 #pragma once
 
 #include "mycss/myosi.h"
+#include "mycss/media/myosi.h"
+#include "mycss/media/init.h"
 #include "mycss/an_plus_b.h"
 #include "mycss/namespace/myosi.h"
 #include "mycss/namespace/init.h"
@@ -30,8 +32,6 @@
 #include "mycss/selectors/init.h"
 #include "mycss/rules/myosi.h"
 #include "mycss/rules/init.h"
-#include "mycss/media/myosi.h"
-#include "mycss/media/init.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -40,28 +40,22 @@ extern "C" {
 struct mycss_result {
     /* refs */
     mycss_entry_t* entry;
-    size_t mchar_value_node_id;
-    size_t mchar_selector_list_node_id;
-    size_t mcobject_result_entries_node_id;
     
+    /* memory and objects */
+    mcobject_t* mcobject_entries;
+    mcobject_t* mcobject_string_entries;
+    
+    /* current parsing tmp */
     mycss_result_entry_t* result_entry_first; /* first */
     mycss_result_entry_t* result_entry;       /* current */
-    mycss_namespace_t* ns;
-    mycss_selectors_t* selectors;
-    mycss_rules_t* rules;
-    mycss_media_t* media;
-    mycss_an_plus_b_t* anb;
     
     mycss_parser_token_f parser;
     mycss_parser_token_f parser_switch;
     mycss_parser_token_f parser_original;
     void* state;
     
+    /* callbacks */
     mycss_callback_selector_done_f callback_selector_done;
-    
-    size_t selectors_entries_id;
-    size_t string_node_id;
-    size_t namespace_entries_id;
 };
 
 struct mycss_result_entry {

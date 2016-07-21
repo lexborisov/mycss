@@ -23,14 +23,14 @@
 
 bool mycss_rules_state_token_all(mycss_result_t* result, mycss_token_t* token)
 {
-    mycss_rules_t *rules = result->rules;
+    mycss_rules_t *rules = result->entry->rules;
     return ((mycss_rules_state_f)result->state)(result, rules, token);
 }
 
 bool mycss_rules_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token)
 {
     if(token->type != MyCSS_TOKEN_TYPE_WHITESPACE) {
-        mycss_rules_t *rules = result->rules;
+        mycss_rules_t *rules = result->entry->rules;
         return ((mycss_rules_state_f)result->state)(result, rules, token);
     }
     
@@ -43,6 +43,9 @@ bool mycss_rules_state_body(mycss_result_t* result, mycss_rules_t* rules, mycss_
         //printf("mycss_rules_state_body_closing_brace\n");  /* End of rules */
         
         mycss_result_entry_create_and_push(result);
+        result->result_entry->selector = mycss_selectors_entry_create(result->entry->selectors);
+        mycss_result_entry_append_selector(result, result->result_entry, result->result_entry->selector);
+        
         result->parser = mycss_parser_token;
     }
     

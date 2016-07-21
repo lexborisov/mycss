@@ -32,6 +32,7 @@ extern "C" {
 bool mycss_media_state_token_all(mycss_result_t* result, mycss_token_t* token);
 bool mycss_media_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token);
 
+bool mycss_media_state_skep_all(mycss_result_t* result, mycss_media_t* media, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

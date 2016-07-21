@@ -30,12 +30,22 @@ mycss_status_t mycss_namespace_init(mycss_entry_t* entry, mycss_namespace_t* ns)
     ns->name_tree = mctree_create(14);
     ns->ns_id_counter = 0;
     
+    /* Objects Namespace */
+    ns->mcobject_entries = mcobject_create();
+    if(ns->mcobject_entries == NULL)
+        return MyCSS_STATUS_ERROR_NAMESPACE_ENTRIES_CREATE;
+    
+    myhtml_status_t myhtml_status = mcobject_init(ns->mcobject_entries, 256, sizeof(mycss_namespace_entry_t));
+    if(myhtml_status)
+        return MyCSS_STATUS_ERROR_NAMESPACE_ENTRIES_INIT;
+    
     return MyCSS_STATUS_OK;
 }
 
 mycss_status_t mycss_namespace_clean_all(mycss_namespace_t* ns)
 {
     mctree_clean(ns->name_tree);
+    mcobject_clean(ns->mcobject_entries);
     
     ns->ns_id_counter = 0;
     
@@ -47,7 +57,8 @@ mycss_namespace_t * mycss_namespace_destroy(mycss_namespace_t* ns, bool self_des
     if(ns == NULL)
         return NULL;
     
-    mctree_destroy(ns->name_tree);
+    ns->name_tree = mctree_destroy(ns->name_tree);
+    ns->mcobject_entries = mcobject_destroy(ns->mcobject_entries, true);
     
     if(self_destroy) {
         myhtml_free(ns);

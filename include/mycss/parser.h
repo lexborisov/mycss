@@ -34,6 +34,7 @@ extern "C" {
 #include <mycss/selectors/state.h>
 #include <mycss/namespace/state.h>
 #include <mycss/rules/state.h>
+#include <mycss/media/state.h>
 #include <mycss/selectors/parser.h>
 #include <myhtml/incoming.h>
 

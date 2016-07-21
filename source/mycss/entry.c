@@ -30,6 +30,57 @@ mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
 {
     entry->mycss = mycss;
     
+    // Other init
+    entry->mchar = mchar_async_create(128, (4096 * 5));
+    entry->mchar_node_id = mchar_async_node_add(entry->mchar);
+    entry->mchar_value_node_id = mchar_async_node_add(entry->mchar);
+    
+    /* Selectors */
+    entry->selectors = mycss_selectors_create();
+    if(entry->selectors == NULL)
+        return MyCSS_STATUS_ERROR_SELECTORS_CREATE;
+    
+    mycss_status_t status = mycss_selectors_init(entry, entry->selectors);
+    if(status != MyCSS_STATUS_OK)
+        return status;
+    
+    /* Namespace */
+    entry->ns = mycss_namespace_create();
+    if(entry->ns == NULL)
+        return MyCSS_STATUS_ERROR_NAMESPACE_CREATE;
+    
+    status = mycss_namespace_init(entry, entry->ns);
+    if(status != MyCSS_STATUS_OK)
+        return status;
+    
+    /* Rules */
+    entry->rules = mycss_rules_create();
+    if(entry->rules == NULL)
+        return MyCSS_STATUS_ERROR_RULES_CREATE;
+    
+    status = mycss_rules_init(entry, entry->rules);
+    if(status != MyCSS_STATUS_OK)
+        return status;
+    
+    /* Media */
+    entry->media = mycss_media_create();
+    if(entry->media == NULL)
+        return MyCSS_STATUS_ERROR_RULES_CREATE;
+    
+    status = mycss_media_init(entry, entry->media);
+    if(status != MyCSS_STATUS_OK)
+        return status;
+    
+    /* An+B */
+    entry->anb = mycss_an_plus_b_create();
+    if(entry->ns == NULL)
+        return MyCSS_STATUS_ERROR_AN_PLUS_B_CREATE;
+    
+    status = mycss_an_plus_b_init(entry, entry->anb);
+    if(status != MyCSS_STATUS_OK)
+        return status;
+        
+    /* Incoming Buffer */
     entry->mcobject_incoming_buffer = mcobject_create();
     if(entry->mcobject_incoming_buffer == NULL)
         return MyCSS_STATUS_ERROR_ENTRY_INCOMING_BUFFER_CREATE;
@@ -37,47 +88,8 @@ mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
     myhtml_status_t myhtml_status = mcobject_init(entry->mcobject_incoming_buffer, 256, sizeof(myhtml_incoming_buffer_t));
     if(myhtml_status)
         return MyCSS_STATUS_ERROR_ENTRY_INCOMING_BUFFER_INIT;
-     
-    // init for selectors entry objects
-    entry->mcasync_selectors_entries = mcobject_async_create();
-    if(entry->mcasync_selectors_entries == NULL)
-        return MyCSS_STATUS_ERROR_SELECTORS_ENTRIES_CREATE;
     
-    mcobject_async_status_t mcstatus = mcobject_async_init(entry->mcasync_selectors_entries, 32, 1024, sizeof(mycss_selectors_entry_t));
-    if(mcstatus != MCOBJECT_ASYNC_STATUS_OK)
-        return MyCSS_STATUS_ERROR_SELECTORS_ENTRIES_INIT;
-    
-    // for strings
-    entry->mcasync_string = mcobject_async_create();
-    if(entry->mcasync_string == NULL)
-        return MyCSS_STATUS_ERROR_STRING_CREATE;
-    
-    mcstatus = mcobject_async_init(entry->mcasync_string, 32, 1024, sizeof(myhtml_string_t));
-    if(mcstatus != MCOBJECT_ASYNC_STATUS_OK)
-        return MyCSS_STATUS_ERROR_STRING_INIT;
-    
-    // init for namespace entries objects
-    entry->mcasync_namespace_entries = mcobject_async_create();
-    if(entry->mcasync_namespace_entries == NULL)
-        return MyCSS_STATUS_ERROR_NAMESPACE_ENTRIES_CREATE;
-    
-    mcstatus = mcobject_async_init(entry->mcasync_namespace_entries, 32, 1024, sizeof(mycss_namespace_entry_t));
-    if(mcstatus != MCOBJECT_ASYNC_STATUS_OK)
-        return MyCSS_STATUS_ERROR_NAMESPACE_ENTRIES_INIT;
-    
-    // result entries
-    entry->mcasync_result_entries = mcobject_async_create();
-    if(entry->mcasync_result_entries == NULL)
-        return MyCSS_STATUS_ERROR_RESULT_ENTRIES_CREATE;
-    
-    mcstatus = mcobject_async_init(entry->mcasync_result_entries, 32, 1024, sizeof(mycss_result_entry_t));
-    if(mcstatus != MCOBJECT_ASYNC_STATUS_OK)
-        return MyCSS_STATUS_ERROR_RESULT_ENTRIES_INIT;
-    
-    // other init
-    entry->mchar = mchar_async_create(128, (4096 * 5));
-    entry->mchar_node_id = mchar_async_node_add(entry->mchar);
-    
+    /* callbacks */
     entry->token_ready_callback = mycss_parser_token_ready_callback_function;
     
     return MyCSS_STATUS_OK;
@@ -87,12 +99,19 @@ mycss_status_t mycss_entry_clean_all(mycss_entry_t* entry)
 {
     mcobject_clean(entry->mcobject_incoming_buffer);
     mchar_async_node_clean(entry->mchar, entry->mchar_node_id);
+    mchar_async_node_clean(entry->mchar, entry->mchar_value_node_id);
+    
+    /* CSS Modules */
+    mycss_selectors_clean_all(entry->selectors);
+    mycss_namespace_clean_all(entry->ns);
+    mycss_rules_clean_all(entry->rules);
+    mycss_media_clean_all(entry->media);
+    mycss_an_plus_b_clean_all(entry->anb);
     
     entry->token                = NULL;
     entry->result               = NULL;
     entry->state                = MyCSS_TOKENIZER_STATE_DATA;
     entry->state_back           = MyCSS_TOKENIZER_STATE_DATA;
-    //entry->token_ready_callback = mycss_parser_token_ready_callback_function;
     entry->first_buffer         = NULL;
     entry->current_buffer       = NULL;
     entry->token_counter        = 0;
@@ -112,12 +131,16 @@ mycss_entry_t * mycss_entry_destroy(mycss_entry_t* entry, bool self_destroy)
     if(entry == NULL)
         return NULL;
     
-    mcobject_destroy(entry->mcobject_incoming_buffer, true);
+    entry->mchar = mchar_async_destroy(entry->mchar, 1);
     
-    entry->mchar                     = mchar_async_destroy(entry->mchar, 1);
-    entry->mcasync_selectors_entries = mcobject_async_destroy(entry->mcasync_selectors_entries, 1);
-    entry->mcasync_namespace_entries = mcobject_async_destroy(entry->mcasync_namespace_entries, 1);
-    entry->mcasync_result_entries    = mcobject_async_destroy(entry->mcasync_result_entries, 1);
+    /* CSS Modules */
+    entry->selectors = mycss_selectors_destroy(entry->selectors, true);
+    entry->ns        = mycss_namespace_destroy(entry->ns, true);
+    entry->rules     = mycss_rules_destroy(entry->rules, true);
+    entry->media     = mycss_media_destroy(entry->media, true);
+    entry->anb       = mycss_an_plus_b_destroy(entry->anb, true);
+    
+    entry->mcobject_incoming_buffer = mcobject_destroy(entry->mcobject_incoming_buffer, true);
     
     if(entry->token) {
         myhtml_free(entry->token);

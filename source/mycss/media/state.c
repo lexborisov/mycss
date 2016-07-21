@@ -23,17 +23,22 @@
 
 bool mycss_media_state_token_all(mycss_result_t* result, mycss_token_t* token)
 {
-    mycss_media_t *media = result->media;
+    mycss_media_t *media = result->entry->media;
     return ((mycss_media_state_f)result->state)(result, media, token);
 }
 
 bool mycss_media_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token)
 {
     if(token->type != MyCSS_TOKEN_TYPE_WHITESPACE) {
-        mycss_media_t *media = result->media;
+        mycss_media_t *media = result->entry->media;
         return ((mycss_media_state_f)result->state)(result, media, token);
     }
     
     return true;
 }
 
+
+bool mycss_media_state_skep_all(mycss_result_t* result, mycss_media_t* media, mycss_token_t* token)
+{
+    return true;
+}

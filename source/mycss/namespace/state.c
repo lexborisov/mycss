@@ -22,14 +22,14 @@
 
 bool mycss_namespace_state_token_all(mycss_result_t* result, mycss_token_t* token)
 {
-    mycss_namespace_t *ns = result->ns;
+    mycss_namespace_t *ns = result->entry->ns;
     return ((mycss_namespace_state_f)result->state)(result, ns, ns->ns_entry, token);
 }
 
 bool mycss_namespace_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token)
 {
     if(token->type != MyCSS_TOKEN_TYPE_WHITESPACE) {
-        mycss_namespace_t *ns = result->ns;
+        mycss_namespace_t *ns = result->entry->ns;
         return ((mycss_namespace_state_f)result->state)(result, ns, ns->ns_entry, token);
     }
     

@@ -23,7 +23,7 @@
 
 void mycss_namespace_parser_begin(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token)
 {
-    mycss_namespace_entry_t* new_ns_entry = mcobject_async_malloc(result->entry->mcasync_namespace_entries, result->namespace_entries_id, NULL);
+    mycss_namespace_entry_t* new_ns_entry = mcobject_malloc(ns->mcobject_entries, NULL);
     mycss_namespace_entry_clean(new_ns_entry);
     
     if(ns_entry) {
@@ -36,7 +36,7 @@ void mycss_namespace_parser_begin(mycss_result_t* result, mycss_namespace_t* ns,
 
 void mycss_namespace_parser_name(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token)
 {
-    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    myhtml_string_t *str = mcobject_malloc(result->mcobject_string_entries, NULL);
     mycss_token_data_to_string(result->entry, token, str, true, true);
     
     ns_entry->name = str;
@@ -44,7 +44,7 @@ void mycss_namespace_parser_name(mycss_result_t* result, mycss_namespace_t* ns, 
 
 void mycss_namespace_parser_url(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token)
 {
-    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    myhtml_string_t *str = mcobject_malloc(result->mcobject_string_entries, NULL);
     mycss_token_data_to_string(result->entry, token, str, true, true);
     
     ns_entry->url = str;
@@ -79,16 +79,16 @@ void mycss_namespace_parser_expectations_error(mycss_result_t* result, mycss_nam
 {
     if(ns_entry->name) {
         myhtml_string_destroy(ns_entry->name, 0);
-        mcobject_async_free(result->entry->mcasync_string, ns_entry->name);
+        mcobject_free(result->mcobject_string_entries, ns_entry->name);
     }
     
     if(ns_entry->url) {
         myhtml_string_destroy(ns_entry->url, 0);
-        mcobject_async_free(result->entry->mcasync_string, ns_entry->url);
+        mcobject_free(result->mcobject_string_entries, ns_entry->url);
     }
     
     if(ns_entry)
-        mcobject_async_free(result->entry->mcasync_namespace_entries, ns_entry);
+        mcobject_free(ns->mcobject_entries, ns_entry);
     
     if(ns_entry->prev) {
         ns->ns_entry = ns_entry->prev;

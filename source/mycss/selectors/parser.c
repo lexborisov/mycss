@@ -23,7 +23,7 @@
 
 mycss_selectors_entry_t * mycss_selectors_parser_selector_create_new_entry(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector)
 {
-    mycss_selectors_entry_t* new_selector = mcobject_async_malloc(result->entry->mcasync_selectors_entries, result->selectors_entries_id, NULL);
+    mycss_selectors_entry_t* new_selector = mcobject_malloc(selectors->mcobject_entries, NULL);
     mycss_selectors_entry_clean(new_selector);
     
     if(selector) {
@@ -100,7 +100,7 @@ void mycss_selectors_parser_selector_combinator_whitespace(mycss_result_t* resul
 /////////////////////////////////////////////////////////
 void mycss_selectors_parser_selector_ident_type(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
-    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    myhtml_string_t *str = mcobject_malloc(result->mcobject_string_entries, NULL);
     mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->type = MyCSS_SELECTORS_TYPE_ELEMENT;
@@ -109,7 +109,7 @@ void mycss_selectors_parser_selector_ident_type(mycss_result_t* result, mycss_se
 
 void mycss_selectors_parser_selector_ident_attr(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
-    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    myhtml_string_t *str = mcobject_malloc(result->mcobject_string_entries, NULL);
     mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->type = MyCSS_SELECTORS_TYPE_ATTRIBUTE;
@@ -118,7 +118,7 @@ void mycss_selectors_parser_selector_ident_attr(mycss_result_t* result, mycss_se
 
 void mycss_selectors_parser_selector_id(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
-    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    myhtml_string_t *str = mcobject_malloc(result->mcobject_string_entries, NULL);
     mycss_token_data_to_string(result->entry, token, str, true, false);
     
     selector->type = MyCSS_SELECTORS_TYPE_ID;
@@ -129,7 +129,7 @@ void mycss_selectors_parser_selector_id(mycss_result_t* result, mycss_selectors_
 
 void mycss_selectors_parser_selector_class(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
-    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    myhtml_string_t *str = mcobject_malloc(result->mcobject_string_entries, NULL);
     mycss_token_data_to_string(result->entry, token, str, true, false);
     
     selector->type = MyCSS_SELECTORS_TYPE_CLASS;
@@ -166,7 +166,7 @@ void mycss_selectors_parser_selector_namespace(mycss_result_t* result, mycss_sel
 
 void mycss_selectors_parser_selector_after_namespace(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
-    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    myhtml_string_t *str = mcobject_malloc(result->mcobject_string_entries, NULL);
     mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->key = str;
@@ -180,7 +180,7 @@ void mycss_selectors_parser_selector_value(mycss_result_t* result, mycss_selecto
 {
     mycss_selectors_object_attribute_t *attr = mycss_selectors_value_attribute_create(result, 1);
     
-    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    myhtml_string_t *str = mcobject_malloc(result->mcobject_string_entries, NULL);
     mycss_token_data_to_string(result->entry, token, str, true, false);
     
     attr->value = str;
@@ -198,7 +198,7 @@ void mycss_selectors_parser_selector_modifier(mycss_result_t* result, mycss_sele
 /////////////////////////////////////////////////////////
 void mycss_selectors_parser_selector_pseudo_class(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
-    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    myhtml_string_t *str = mcobject_malloc(result->mcobject_string_entries, NULL);
     mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->key  = str;
@@ -215,7 +215,7 @@ void mycss_selectors_parser_selector_pseudo_class(mycss_result_t* result, mycss_
 
 void mycss_selectors_parser_selector_pseudo_class_function(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
-    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    myhtml_string_t *str = mcobject_malloc(result->mcobject_string_entries, NULL);
     mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->key   = str;
@@ -245,7 +245,7 @@ void mycss_selectors_parser_selector_pseudo_class_function_end(mycss_result_t* r
 /////////////////////////////////////////////////////////
 void mycss_selectors_parser_selector_pseudo_element(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
-    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    myhtml_string_t *str = mcobject_malloc(result->mcobject_string_entries, NULL);
     mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->key  = str;
@@ -262,7 +262,7 @@ void mycss_selectors_parser_selector_pseudo_element(mycss_result_t* result, mycs
 
 void mycss_selectors_parser_selector_pseudo_element_function(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token)
 {
-    myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+    myhtml_string_t *str = mcobject_malloc(result->mcobject_string_entries, NULL);
     mycss_token_data_to_string(result->entry, token, str, true, true);
     
     selector->key   = str;
@@ -313,7 +313,7 @@ void mycss_selectors_parser_bad_token(mycss_result_t* result, mycss_selectors_t*
     if((selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) == 0) {
         selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
         
-        myhtml_string_t *str = mcobject_async_malloc(result->entry->mcasync_string, result->string_node_id, NULL);
+        myhtml_string_t *str = mcobject_malloc(result->mcobject_string_entries, NULL);
         selector->key = str;
         
         mycss_token_data_to_string(result->entry, token, selector->key, true, false);
@@ -388,7 +388,7 @@ bool mycss_selectors_parser_selectors_list_process(mycss_result_t* result, mycss
                 break;
             }
             
-            mycss_selectors_parser_selector_comma(result, result->selectors, result->result_entry->selector, token);
+            mycss_selectors_parser_selector_comma(result, result->entry->selectors, result->result_entry->selector, token);
             
             result->parser = mycss_selectors_parser_selectors_list_comma;
             break;
@@ -463,7 +463,7 @@ bool mycss_selectors_parser_selectors_list_whitespace(mycss_result_t* result, my
 {
     switch (token->type) {
         case MyCSS_TOKEN_TYPE_COMMA: {
-            mycss_selectors_parser_selector_comma(result, result->selectors, result->result_entry->selector, token);
+            mycss_selectors_parser_selector_comma(result, result->entry->selectors, result->result_entry->selector, token);
             
             result->parser = mycss_selectors_parser_selectors_list_comma;
             break;
@@ -511,7 +511,7 @@ bool mycss_selectors_parser_selectors_list_with_combinator_first_process(mycss_r
     switch (token->type) {
             /* combinator */
         case MyCSS_TOKEN_TYPE_COLUMN: {
-            mycss_selectors_parser_selector_combinator_column(result, result->selectors, result->result_entry->selector, token);
+            mycss_selectors_parser_selector_combinator_column(result, result->entry->selectors, result->result_entry->selector, token);
             
             result->state = mycss_selectors_state_simple_selector;
             result->parser_switch = mycss_selectors_parser_selectors_list_with_combinator_first_after_combinator;
@@ -525,17 +525,17 @@ bool mycss_selectors_parser_selectors_list_with_combinator_first_process(mycss_r
             switch(*token->data) {
                     /* combinator */
                 case '+': {
-                    mycss_selectors_parser_selector_combinator_plus(result, result->selectors, result->result_entry->selector, token);
+                    mycss_selectors_parser_selector_combinator_plus(result, result->entry->selectors, result->result_entry->selector, token);
                     break;
                 }
                 case '>': {
-                    mycss_selectors_parser_selector_combinator_greater_than(result, result->selectors, result->result_entry->selector, token);
+                    mycss_selectors_parser_selector_combinator_greater_than(result, result->entry->selectors, result->result_entry->selector, token);
                     
                     result->parser = mycss_selectors_parser_selectors_list_with_combinator_first_greater_than;
                     return true;
                 }
                 case '~': {
-                    mycss_selectors_parser_selector_combinator_tilde(result, result->selectors, result->result_entry->selector, token);
+                    mycss_selectors_parser_selector_combinator_tilde(result, result->entry->selectors, result->result_entry->selector, token);
                     break;
                 }
                 default: {
@@ -582,7 +582,7 @@ bool mycss_selectors_parser_selectors_list_with_combinator_first_process(mycss_r
                 break;
             }
             
-            mycss_selectors_parser_selector_comma(result, result->selectors, result->result_entry->selector, token);
+            mycss_selectors_parser_selector_comma(result, result->entry->selectors, result->result_entry->selector, token);
             
             result->parser = mycss_selectors_parser_selectors_list_with_combinator_first_comma;
             break;
@@ -628,7 +628,7 @@ bool mycss_selectors_parser_selectors_list_with_combinator_first_greater_than(my
     if(token->type == MyCSS_TOKEN_TYPE_DELIM && *token->data == '>') {
         MyCSS_DEBUG_MESSAGE("mycss_selectors_parser_selectors_list_with_combinator_first_greater_than")
         
-        mycss_selectors_parser_selector_combinator_greater_than(result, result->selectors, result->result_entry->selector, token);
+        mycss_selectors_parser_selector_combinator_greater_than(result, result->entry->selectors, result->result_entry->selector, token);
     }
     
     result->state = mycss_selectors_state_simple_selector;
@@ -649,7 +649,7 @@ bool mycss_selectors_parser_selectors_list_with_combinator_first_comma(mycss_res
             
         /* combinator */
         case MyCSS_TOKEN_TYPE_COLUMN: {
-            mycss_selectors_parser_selector_combinator_column(result, result->selectors, result->result_entry->selector, token);
+            mycss_selectors_parser_selector_combinator_column(result, result->entry->selectors, result->result_entry->selector, token);
             
             result->state = mycss_selectors_state_simple_selector;
             result->parser_switch = mycss_selectors_parser_selectors_list_with_combinator_first_after_combinator;
@@ -663,17 +663,17 @@ bool mycss_selectors_parser_selectors_list_with_combinator_first_comma(mycss_res
         case MyCSS_TOKEN_TYPE_DELIM: {
             switch(*token->data) {
                 case '+': {
-                    mycss_selectors_parser_selector_combinator_plus(result, result->selectors, result->result_entry->selector, token);
+                    mycss_selectors_parser_selector_combinator_plus(result, result->entry->selectors, result->result_entry->selector, token);
                     break;
                 }
                 case '>': {
-                    mycss_selectors_parser_selector_combinator_greater_than(result, result->selectors, result->result_entry->selector, token);
+                    mycss_selectors_parser_selector_combinator_greater_than(result, result->entry->selectors, result->result_entry->selector, token);
                     
                     result->parser = mycss_selectors_parser_selectors_list_with_combinator_first_greater_than;
                     return true;
                 }
                 case '~': {
-                    mycss_selectors_parser_selector_combinator_tilde(result, result->selectors, result->result_entry->selector, token);
+                    mycss_selectors_parser_selector_combinator_tilde(result, result->entry->selectors, result->result_entry->selector, token);
                     break;
                 }
                 default: {
@@ -722,7 +722,7 @@ bool mycss_selectors_parser_selectors_list_with_combinator_first_whitespace(mycs
 {
     switch (token->type) {
         case MyCSS_TOKEN_TYPE_COMMA: {
-            mycss_selectors_parser_selector_comma(result, result->selectors, result->result_entry->selector, token);
+            mycss_selectors_parser_selector_comma(result, result->entry->selectors, result->result_entry->selector, token);
             
             result->parser = mycss_selectors_parser_selectors_list_comma;
             break;
@@ -734,7 +734,7 @@ bool mycss_selectors_parser_selectors_list_with_combinator_first_whitespace(mycs
             
         /* combinator */
         case MyCSS_TOKEN_TYPE_COLUMN: {
-            mycss_selectors_parser_selector_combinator_column(result, result->selectors, result->result_entry->selector, token);
+            mycss_selectors_parser_selector_combinator_column(result, result->entry->selectors, result->result_entry->selector, token);
             
             result->state = mycss_selectors_state_simple_selector;
             result->parser_switch = mycss_selectors_parser_selectors_list_with_combinator_first_after_combinator;
@@ -747,17 +747,17 @@ bool mycss_selectors_parser_selectors_list_with_combinator_first_whitespace(mycs
         case MyCSS_TOKEN_TYPE_DELIM: {
             switch(*token->data) {
                 case '+': {
-                    mycss_selectors_parser_selector_combinator_plus(result, result->selectors, result->result_entry->selector, token);
+                    mycss_selectors_parser_selector_combinator_plus(result, result->entry->selectors, result->result_entry->selector, token);
                     break;
                 }
                 case '>': {
-                    mycss_selectors_parser_selector_combinator_greater_than(result, result->selectors, result->result_entry->selector, token);
+                    mycss_selectors_parser_selector_combinator_greater_than(result, result->entry->selectors, result->result_entry->selector, token);
                     
                     result->parser = mycss_selectors_parser_selectors_list_with_combinator_first_greater_than;
                     return true;
                 }
                 case '~': {
-                    mycss_selectors_parser_selector_combinator_tilde(result, result->selectors, result->result_entry->selector, token);
+                    mycss_selectors_parser_selector_combinator_tilde(result, result->entry->selectors, result->result_entry->selector, token);
                     break;
                 }
                 default: {

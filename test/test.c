@@ -90,7 +90,7 @@ void test_print_selector_value_attribute(mycss_selectors_t* selectors, mycss_sel
         myhtml_string_append(str, " ns=\"", strlen(" ns=\""));
         
         size_t length;
-        const char *name = mycss_namespace_name_by_id(selectors->result->ns, selector->ns, &length);
+        const char *name = mycss_namespace_name_by_id(selectors->entry->ns, selector->ns, &length);
         
         if(length)
             myhtml_string_append(str, name, length);
@@ -128,7 +128,7 @@ void test_print_selector_value_element(mycss_selectors_t* selectors, mycss_selec
         myhtml_string_append(str, " ns=\"", strlen(" ns=\""));
         
         size_t length;
-        const char *name = mycss_namespace_name_by_id(selectors->result->ns, selector->ns, &length);
+        const char *name = mycss_namespace_name_by_id(selectors->entry->ns, selector->ns, &length);
         
         if(length)
             myhtml_string_append(str, name, length);
@@ -173,7 +173,7 @@ void test_print_pseudo_class_function(mycss_selectors_t* selectors, mycss_select
         case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_MATCHES:
         case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_CURRENT:
             if(selector->value)
-                test_result_entry_print(selectors->result, selector->value, str);
+                test_result_entry_print(selectors->entry->result, selector->value, str);
             break;
         
         case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_CHILD:
@@ -186,7 +186,7 @@ void test_print_pseudo_class_function(mycss_selectors_t* selectors, mycss_select
             
             if(mycss_selector_value_an_plus_b(selector->value)->of) {
                 myhtml_string_append(str, "\n", 1);
-                test_result_entry_print(selectors->result, mycss_selector_value_an_plus_b(selector->value)->of, str);
+                test_result_entry_print(selectors->entry->result, mycss_selector_value_an_plus_b(selector->value)->of, str);
             }
             
             break;
@@ -366,7 +366,7 @@ void test_result_entry_print(mycss_result_t* result, mycss_result_entry_t* res_e
             mycss_selectors_entry_t* selector = res_entry->selector_list[i];
             
             while(selector) {
-                test_print_selector(result->selectors, selector, str);
+                test_print_selector(result->entry->selectors, selector, str);
                 
                 myhtml_string_append(str, "</selector>", strlen("</selector>"));
                 
