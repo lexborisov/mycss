@@ -30,7 +30,7 @@ extern "C" {
 
 typedef struct mycss_media mycss_media_t;
 
-typedef bool (*mycss_media_state_f)(mycss_result_t* result, mycss_media_t* media, mycss_token_t* token);
+typedef bool (*mycss_media_state_f)(mycss_entry_t* entry, mycss_media_t* media, mycss_token_t* token);
 
 
 struct mycss_media {

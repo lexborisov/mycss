@@ -23,16 +23,16 @@
 #pragma once
 
 #include <mycss/media/myosi.h>
-#include <mycss/result.h>
+#include <mycss/entry.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-bool mycss_media_state_token_all(mycss_result_t* result, mycss_token_t* token);
-bool mycss_media_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token);
+bool mycss_media_state_token_all(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_media_state_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token);
 
-bool mycss_media_state_skep_all(mycss_result_t* result, mycss_media_t* media, mycss_token_t* token);
+bool mycss_media_state_skep_all(mycss_entry_t* entry, mycss_media_t* media, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

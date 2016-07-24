@@ -26,15 +26,16 @@
 extern "C" {
 #endif
 
+#include "mycss/entry.h"
 #include "mycss/namespace/myosi.h"
-#include "mycss/result.h"
 #include "myhtml/mynamespace.h"
+#include "myhtml/utils/mctree.h"
 
-void mycss_namespace_parser_begin(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-void mycss_namespace_parser_name(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-void mycss_namespace_parser_url(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-void mycss_namespace_parser_end(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-void mycss_namespace_parser_expectations_error(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+void mycss_namespace_parser_begin(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+void mycss_namespace_parser_name(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+void mycss_namespace_parser_url(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+void mycss_namespace_parser_end(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+void mycss_namespace_parser_expectations_error(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
 
 
 #ifdef __cplusplus

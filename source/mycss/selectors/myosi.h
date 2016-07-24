@@ -28,12 +28,14 @@ extern "C" {
 
 typedef struct mycss_selectors mycss_selectors_t;
 typedef struct mycss_selectors_entry mycss_selectors_entry_t;
-
+typedef struct mycss_selectors_list mycss_selectors_list_t;
+    
 #include "mycss/myosi.h"
 #include "mycss/mystring.h"
+#include "mycss/namespace/myosi.h"
 #include "myhtml/utils/mcobject.h"
 
-typedef bool (*mycss_selectors_state_f)(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+typedef bool (*mycss_selectors_state_f)(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 typedef void (*mycss_callback_selector_done_f)(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector);
 
 enum mycss_selectors_match {
@@ -49,7 +51,7 @@ typedef mycss_selectors_match_t;
 
 enum mycss_selectors_combinator {
     MyCSS_SELECTORS_COMBINATOR_UNDEF             = 0x00, // two compound selectors [key=val].foo
-    MyCSS_SELECTORS_COMBINATOR_DESCENDANT        = 0x01, // '*' or '>>' or WHITESPACE
+    MyCSS_SELECTORS_COMBINATOR_DESCENDANT        = 0x01, // '>>' or WHITESPACE
     MyCSS_SELECTORS_COMBINATOR_CHILD             = 0x02, // '>'
     MyCSS_SELECTORS_COMBINATOR_NEXT_SIBLING      = 0x03, // '+'
     MyCSS_SELECTORS_COMBINATOR_FOLLOWING_SIBLING = 0x04, // '~'
@@ -171,6 +173,7 @@ struct mycss_selectors {
     mycss_entry_t* entry;
     
     mcobject_t* mcobject_entries;
+    mcobject_t* mcobject_list_entries;
 };
 
 struct mycss_selectors_entry {
@@ -178,7 +181,7 @@ struct mycss_selectors_entry {
     mycss_selectors_sub_type_t sub_type;
     mycss_selectors_flags_t flags;
     
-    size_t ns; /* namespace */
+    mycss_namespace_entry_t* ns_entry;
     
     myhtml_string_t* key;
     void* value;

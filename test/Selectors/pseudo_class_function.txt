@@ -100,7 +100,7 @@
 </entry>
 
 <entry>
-    <data>:not(svg|div)</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; :not(SVG|div)</data>
     <result>
         <selector type="pseudo_class_function" key="not">
             <selector type="element" key="div" ns="SVG"></selector>
@@ -109,7 +109,7 @@
 </entry>
 
 <entry>
-    <data>:not([svg|div])</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; :not([SVG|div])</data>
     <result>
         <selector type="pseudo_class_function" key="not">
             <selector type="attribute" key="div" ns="SVG"></selector>
@@ -118,20 +118,20 @@
 </entry>
 
 <entry>
-    <data>:not(svg|div[html|a=b])</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; @namespace html "http://www.w3.org/1999/xhtml"; :not(SVG|div[html|a=b])</data>
     <result>
         <selector type="pseudo_class_function" key="not">
             <selector type="element" key="div" ns="SVG"></selector>
-            <selector type="attribute" key="a" value="b" ns="HTML"></selector>
+            <selector type="attribute" key="a" value="b" ns="html"></selector>
         </selector>
     </result>
 </entry>
 
 <entry>
-    <data>:not(svg |div[html|a=b])</data>
+    <data>:not(SVG |div[html|a=b])</data>
     <result>
         <selector type="pseudo_class_function" key="not" flags="^B">
-            <selector type="element" key="svg"></selector>
+            <selector type="element" key="SVG"></selector>
         </selector>
     </result>
 </entry>
@@ -349,7 +349,7 @@
 </entry>
 
 <entry>
-    <data>:matches(svg|div)</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; :matches(SVG|div)</data>
     <result>
         <selector type="pseudo_class_function" key="matches">
             <selector type="element" key="div" ns="SVG"></selector>
@@ -358,7 +358,7 @@
 </entry>
 
 <entry>
-    <data>:matches([svg|div])</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; :matches([SVG|div])</data>
     <result>
         <selector type="pseudo_class_function" key="matches">
             <selector type="attribute" key="div" ns="SVG"></selector>
@@ -367,20 +367,20 @@
 </entry>
 
 <entry>
-    <data>:matches(svg|div[html|a=b])</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; @namespace html "http://www.w3.org/1999/xhtml"; :matches(SVG|div[html|a=b])</data>
     <result>
         <selector type="pseudo_class_function" key="matches">
             <selector type="element" key="div" ns="SVG"></selector>
-            <selector type="attribute" key="a" value="b" ns="HTML"></selector>
+            <selector type="attribute" key="a" value="b" ns="html"></selector>
         </selector>
     </result>
 </entry>
 
 <entry>
-    <data>:matches(svg |div[html|a=b])</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; :matches(SVG |div[html|a=b])</data>
     <result>
         <selector type="pseudo_class_function" key="matches" flags="^B">
-            <selector type="element" key="svg"></selector>
+            <selector type="element" key="SVG"></selector>
         </selector>
     </result>
 </entry>
@@ -620,7 +620,7 @@
 </entry>
 
 <entry>
-    <data>:has(svg|div)</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; :has(SVG|div)</data>
     <result>
         <selector type="pseudo_class_function" key="has">
             <selector type="element" key="div" ns="SVG"></selector>
@@ -629,7 +629,7 @@
 </entry>
 
 <entry>
-    <data>:has([svg|div])</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; :has([SVG|div])</data>
     <result>
         <selector type="pseudo_class_function" key="has">
             <selector type="attribute" key="div" ns="SVG"></selector>
@@ -638,20 +638,20 @@
 </entry>
 
 <entry>
-    <data>:has(svg|div[html|a=b])</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; @namespace html "http://www.w3.org/1999/xhtml"; :has(SVG|div[html|a=b])</data>
     <result>
         <selector type="pseudo_class_function" key="has">
             <selector type="element" key="div" ns="SVG"></selector>
-            <selector type="attribute" key="a" value="b" ns="HTML"></selector>
+            <selector type="attribute" key="a" value="b" ns="html"></selector>
         </selector>
     </result>
 </entry>
 
 <entry>
-    <data>:has(svg |div[html|a=b])</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; :has(SVG |div[html|a=b])</data>
     <result>
         <selector type="pseudo_class_function" key="has" flags="^B">
-            <selector type="element" key="svg"></selector>
+            <selector type="element" key="SVG"></selector>
         </selector>
     </result>
 </entry>
@@ -774,7 +774,7 @@
 </entry>
 
 <entry>
-    <data>:has(+ div, >> svg|span, > [key], || #col, ~ .img)</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; :has(+ div, >> SVG|span, > [key], || #col, ~ .img)</data>
     <result>
         <selector type="pseudo_class_function" key="has">
             <selector type="element" key="div" comb="+"></selector>,
@@ -1105,7 +1105,7 @@
 </entry>
 
 <entry>
-    <data>:current(svg|div)</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; :current(SVG|div)</data>
     <result>
         <selector type="pseudo_class_function" key="current">
             <selector type="element" key="div" ns="SVG"></selector>
@@ -1114,7 +1114,7 @@
 </entry>
 
 <entry>
-    <data>:current([svg|div])</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; :current([SVG|div])</data>
     <result>
         <selector type="pseudo_class_function" key="current">
             <selector type="attribute" key="div" ns="SVG"></selector>
@@ -1123,20 +1123,20 @@
 </entry>
 
 <entry>
-    <data>:current(svg|div[html|a=b])</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; @namespace html "http://www.w3.org/1999/xhtml"; :current(SVG|div[html|a=b])</data>
     <result>
         <selector type="pseudo_class_function" key="current">
             <selector type="element" key="div" ns="SVG"></selector>
-            <selector type="attribute" key="a" value="b" ns="HTML"></selector>
+            <selector type="attribute" key="a" value="b" ns="html"></selector>
         </selector>
     </result>
 </entry>
 
 <entry>
-    <data>:current(svg |div[html|a=b])</data>
+    <data>@namespace SVG "http://www.w3.org/2000/svg"; :current(SVG |div[html|a=b])</data>
     <result>
         <selector type="pseudo_class_function" key="current" flags="^B">
-            <selector type="element" key="svg"></selector>
+            <selector type="element" key="SVG"></selector>
         </selector>
     </result>
 </entry>

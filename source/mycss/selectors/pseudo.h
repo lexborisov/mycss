@@ -25,8 +25,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
-#include "mycss/result.h"
+
 #include "mycss/entry.h"
 #include "mycss/selectors/myosi.h"
 

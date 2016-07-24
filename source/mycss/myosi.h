@@ -56,15 +56,14 @@ enum mycss_status {
     MyCSS_STATUS_ERROR_SELECTORS_ENTRIES_CREATE         = 0x010101,
     MyCSS_STATUS_ERROR_SELECTORS_ENTRIES_INIT           = 0x010102,
     MyCSS_STATUS_ERROR_SELECTORS_ENTRIES_NODE_ADD       = 0x010103,
+    MyCSS_STATUS_ERROR_SELECTORS_LIST_CREATE            = 0x010104,
+    MyCSS_STATUS_ERROR_SELECTORS_LIST_INIT              = 0x010105,
+    MyCSS_STATUS_ERROR_SELECTORS_LIST_ADD_NODE          = 0x010106,
     MyCSS_STATUS_ERROR_NAMESPACE_CREATE                 = 0x010200,
     MyCSS_STATUS_ERROR_NAMESPACE_INIT                   = 0x010201,
     MyCSS_STATUS_ERROR_NAMESPACE_ENTRIES_CREATE         = 0x010202,
     MyCSS_STATUS_ERROR_NAMESPACE_ENTRIES_INIT           = 0x010203,
     MyCSS_STATUS_ERROR_NAMESPACE_NODE_ADD               = 0x010204,
-    MyCSS_STATUS_ERROR_RESULT_CREATE                    = 0x010300,
-    MyCSS_STATUS_ERROR_RESULT_ENTRIES_CREATE            = 0x010301,
-    MyCSS_STATUS_ERROR_RESULT_ENTRIES_INIT              = 0x010302,
-    MyCSS_STATUS_ERROR_RESULT_ENTRIES_ADD_NODE          = 0x010303,
     MyCSS_STATUS_ERROR_RULES_CREATE                     = 0x010400,
     MyCSS_STATUS_ERROR_STRING_CREATE                    = 0x010501,
     MyCSS_STATUS_ERROR_STRING_INIT                      = 0x010502,
@@ -247,17 +246,15 @@ typedef struct mycss_an_plus_b mycss_an_plus_b_t;
 typedef struct mycss_an_plus_b_entry mycss_an_plus_b_entry_t;
 
 // result
-typedef struct mycss_result_list_parser mycss_result_list_parser_t;
-typedef struct mycss_result_list mycss_result_list_t;
-typedef struct mycss_result_entry mycss_result_entry_t;
-typedef struct mycss_result mycss_result_t;
-
-enum mycss_result_entry_type {
+enum mycss_stylesheet_entry_type {
     MyCSS_RESULT_ENTRY_TYPE_UNDEF = 0x00,
     MyCSS_RESULT_ENTRY_TYPE_GOOD  = 0x01,
     MyCSS_RESULT_ENTRY_TYPE_BAD   = 0x02
 }
-typedef mycss_result_entry_type_t;
+typedef mycss_stylesheet_entry_type_t;
+
+// stylesheet
+typedef struct mycss_stylesheet mycss_stylesheet_t;
 
 // mystring
 typedef struct mycss_string_escaped_res mycss_string_escaped_res_t;
@@ -266,8 +263,8 @@ typedef struct mycss_string_res mycss_string_res_t;
 typedef size_t (*mycss_tokenizer_state_f)(mycss_entry_t* entry, mycss_token_t* token, const char* css, size_t css_offset, size_t css_size);
 typedef mycss_token_t * (*mycss_token_ready_callback_f)(mycss_entry_t* entry, mycss_token_t* token);
 typedef size_t (*mycss_string_process_state_f)(myhtml_string_t* str, const char* data, size_t length, size_t size, mycss_string_res_t *out_res);
-typedef bool (*mycss_parser_token_f)(mycss_result_t* result, mycss_token_t* token);
-typedef bool (*mycss_an_plus_b_state_f)(mycss_result_t* result, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
+typedef bool (*mycss_parser_token_f)(mycss_entry_t* entry, mycss_token_t* token);
+typedef bool (*mycss_an_plus_b_state_f)(mycss_entry_t* entry, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

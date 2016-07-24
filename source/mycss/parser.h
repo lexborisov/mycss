@@ -40,7 +40,7 @@ extern "C" {
 
 mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry, mycss_token_t* token);
 
-bool mycss_parser_token(mycss_result_t* result, mycss_token_t* token);
+bool mycss_parser_token(mycss_entry_t* entry, mycss_token_t* token);
 
 
 #ifdef __cplusplus

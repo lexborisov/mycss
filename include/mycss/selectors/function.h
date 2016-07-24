@@ -27,12 +27,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
-#include <mycss/result.h>
+
 #include <mycss/entry.h>
 #include <mycss/selectors/myosi.h>
 
-typedef void (*mycss_selectors_function_begin_f)(mycss_result_t* result, mycss_selectors_entry_t* selector);
+typedef void (*mycss_selectors_function_begin_f)(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
 
 struct mycss_selectors_function_index {
     mycss_parser_token_f parser;
@@ -54,37 +53,37 @@ typedef mycss_selectots_function_begin_entry_t;
 mycss_selectors_function_begin_f mycss_function_begin_by_name(const char *name, size_t length);
 const mycss_selectots_function_begin_entry_t * mycss_function_begin_entry_by_name(const char* name, size_t length);
 
-void mycss_selectors_function_begin_nth_child(mycss_result_t* result, mycss_selectors_entry_t* selector);
-void mycss_selectors_function_begin_not(mycss_result_t* result, mycss_selectors_entry_t* selector);
-void mycss_selectors_function_begin_dir(mycss_result_t* result, mycss_selectors_entry_t* selector);
-void mycss_selectors_function_begin_matches(mycss_result_t* result, mycss_selectors_entry_t* selector);
-void mycss_selectors_function_begin_lang(mycss_result_t* result, mycss_selectors_entry_t* selector);
-void mycss_selectors_function_begin_drop(mycss_result_t* result, mycss_selectors_entry_t* selector);
-void mycss_selectors_function_begin_nth_of_type(mycss_result_t* result, mycss_selectors_entry_t* selector);
-void mycss_selectors_function_begin_nth_last_column(mycss_result_t* result, mycss_selectors_entry_t* selector);
-void mycss_selectors_function_begin_current(mycss_result_t* result, mycss_selectors_entry_t* selector);
-void mycss_selectors_function_begin_nth_last_child(mycss_result_t* result, mycss_selectors_entry_t* selector);
-void mycss_selectors_function_begin_nth_last_of_type(mycss_result_t* result, mycss_selectors_entry_t* selector);
-void mycss_selectors_function_begin_has(mycss_result_t* result, mycss_selectors_entry_t* selector);
-void mycss_selectors_function_begin_nth_column(mycss_result_t* result, mycss_selectors_entry_t* selector);
+void mycss_selectors_function_begin_nth_child(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
+void mycss_selectors_function_begin_not(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
+void mycss_selectors_function_begin_dir(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
+void mycss_selectors_function_begin_matches(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
+void mycss_selectors_function_begin_lang(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
+void mycss_selectors_function_begin_drop(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
+void mycss_selectors_function_begin_nth_of_type(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
+void mycss_selectors_function_begin_nth_last_column(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
+void mycss_selectors_function_begin_current(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
+void mycss_selectors_function_begin_nth_last_child(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
+void mycss_selectors_function_begin_nth_last_of_type(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
+void mycss_selectors_function_begin_has(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
+void mycss_selectors_function_begin_nth_column(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
 
-void mycss_selectors_begin_unknown(mycss_result_t* result, mycss_selectors_entry_t* selector);
-bool mycss_selectors_unknown_parser(mycss_result_t* result, mycss_token_t* token);
+void mycss_selectors_begin_unknown(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
+bool mycss_selectors_unknown_parser(mycss_entry_t* entry, mycss_token_t* token);
 
-bool mycss_selectors_function_not_or_matches_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_has_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_nth_with_selectors_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_nth_with_selectors_before_of_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_nth_without_selectors_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_nth_of_selectors_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_nth_of_whitespace_selectors_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_drop_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_drop_column_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_drop_skip_all_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_dir_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_lang_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_lang_after_parser(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_function_lang_comma_parser(mycss_result_t* result, mycss_token_t* token);
+bool mycss_selectors_function_not_or_matches_parser(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_function_has_parser(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_function_nth_with_selectors_parser(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_function_nth_with_selectors_before_of_parser(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_function_nth_without_selectors_parser(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_function_nth_of_selectors_parser(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_function_nth_of_whitespace_selectors_parser(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_function_drop_parser(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_function_drop_column_parser(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_function_drop_skip_all_parser(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_function_dir_parser(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_function_lang_parser(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_function_lang_after_parser(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_function_lang_comma_parser(mycss_entry_t* entry, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

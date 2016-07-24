@@ -30,16 +30,16 @@
 #include <myhtml/myosi.h>
 #include <myhtml/mystring.h>
 
-#include <mycss/mycss.h>
 #include <mycss/myosi.h>
+#include <mycss/mycss.h>
 #include <mycss/selectors/myosi_resource.h>
 #include <mycss/selectors/init.h>
 #include <mycss/namespace/init.h>
-#include <mycss/result.h>
+#include <mycss/stylesheet.h>
 #include <mycss/selectors/value.h>
 
 void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str);
-void test_result_entry_print(mycss_result_t* result, mycss_result_entry_t* res_entry, myhtml_string_t* str);
+void test_result_entry_print(mycss_entry_t* entry, mycss_selectors_list_t* selectors_list, myhtml_string_t* str);
 
 struct res_html {
     char  *html;
@@ -83,20 +83,36 @@ struct res_html load_html_file(const char* filename)
 //// CSS Parsing
 ////
 /////////////////////////////////////////////////////////
-
-void test_print_selector_value_attribute(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str)
+void test_print_selector_namespace(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str)
 {
-    if(selector->ns) {
+    if(selector->ns_entry && selector->ns_entry->ns_id != MyHTML_NAMESPACE_ANY) {
         myhtml_string_append(str, " ns=\"", strlen(" ns=\""));
         
         size_t length;
-        const char *name = mycss_namespace_name_by_id(selectors->entry->ns, selector->ns, &length);
+        bool is_default;
+        const char *ns_name = mycss_namespace_name_by_entry(selector->ns_entry, selectors->entry->stylesheet->ns_stylesheet.name_tree, &length, &is_default);
         
-        if(length)
-            myhtml_string_append(str, name, length);
+        if(is_default) {
+            myhtml_string_append(str, "<default", strlen("<default"));
+            
+            if(ns_name) {
+                myhtml_string_append(str, "=", 1);
+                myhtml_string_append(str, ns_name, length);
+            }
+            
+            myhtml_string_append(str, ">", 1);
+        }
+        else {
+            myhtml_string_append(str, ns_name, length);
+        }
         
         myhtml_string_append(str, "\"", strlen("\""));
     }
+}
+
+void test_print_selector_value_attribute(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str)
+{
+    test_print_selector_namespace(selectors, selector, str);
     
     if(selector->value == NULL) {
         myhtml_string_append(str, ">", 1);
@@ -124,18 +140,7 @@ void test_print_selector_value_attribute(mycss_selectors_t* selectors, mycss_sel
 
 void test_print_selector_value_element(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, myhtml_string_t* str)
 {
-    if(selector->ns) {
-        myhtml_string_append(str, " ns=\"", strlen(" ns=\""));
-        
-        size_t length;
-        const char *name = mycss_namespace_name_by_id(selectors->entry->ns, selector->ns, &length);
-        
-        if(length)
-            myhtml_string_append(str, name, length);
-        
-        myhtml_string_append(str, "\"", strlen("\""));
-    }
-    
+    test_print_selector_namespace(selectors, selector, str);
     myhtml_string_append(str, ">", 1);
 }
 
@@ -146,8 +151,6 @@ void test_print_number(myhtml_string_t* str, long num)
     
     myhtml_string_append(str, str_num, strlen(str_num));
 }
-
-
 
 void test_print_an_plus_b(mycss_an_plus_b_entry_t* anb_entry, myhtml_string_t* str)
 {
@@ -173,7 +176,7 @@ void test_print_pseudo_class_function(mycss_selectors_t* selectors, mycss_select
         case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_MATCHES:
         case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_CURRENT:
             if(selector->value)
-                test_result_entry_print(selectors->entry->result, selector->value, str);
+                test_result_entry_print(selectors->entry, selector->value, str);
             break;
         
         case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_CHILD:
@@ -186,7 +189,7 @@ void test_print_pseudo_class_function(mycss_selectors_t* selectors, mycss_select
             
             if(mycss_selector_value_an_plus_b(selector->value)->of) {
                 myhtml_string_append(str, "\n", 1);
-                test_result_entry_print(selectors->entry->result, mycss_selector_value_an_plus_b(selector->value)->of, str);
+                test_result_entry_print(selectors->entry, mycss_selector_value_an_plus_b(selector->value)->of, str);
             }
             
             break;
@@ -358,15 +361,15 @@ void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* 
     }
 }
 
-void test_result_entry_print(mycss_result_t* result, mycss_result_entry_t* res_entry, myhtml_string_t* str)
+void test_result_entry_print(mycss_entry_t* entry, mycss_selectors_list_t* selectors_list, myhtml_string_t* str)
 {
-    while(res_entry) {
-        for(size_t i = 0; i < res_entry->selector_list_length; i++) {
+    while(selectors_list) {
+        for(size_t i = 0; i < selectors_list->selector_list_length; i++) {
             
-            mycss_selectors_entry_t* selector = res_entry->selector_list[i];
+            mycss_selectors_entry_t* selector = selectors_list->selector_list[i];
             
             while(selector) {
-                test_print_selector(result->entry->selectors, selector, str);
+                test_print_selector(entry->selectors, selector, str);
                 
                 myhtml_string_append(str, "</selector>", strlen("</selector>"));
                 
@@ -376,11 +379,11 @@ void test_result_entry_print(mycss_result_t* result, mycss_result_entry_t* res_e
                 selector = selector->next;
             }
             
-            if((i + 1) != res_entry->selector_list_length)
+            if((i + 1) != selectors_list->selector_list_length)
                 myhtml_string_append(str, ",\n", 2);
         }
         
-        res_entry = res_entry->next;
+        selectors_list = selectors_list->next;
     }
 }
 
@@ -420,9 +423,9 @@ void test_print_tag_selector(myhtml_tree_node_t* node, myhtml_string_t* str)
     test_node_attr_value(node, "key", str);
     test_node_attr_value(node, "comb", str);
     test_node_attr_value(node, "ns", str);
+    test_node_attr_value(node, "flags", str);
     test_node_attr_value(node, "value", str);
     test_node_attr_value(node, "mod", str);
-    test_node_attr_value(node, "flags", str);
     
     myhtml_string_append(str, ">", 1);
 }
@@ -515,9 +518,9 @@ void test_html_result(myhtml_tree_t* tree, myhtml_tree_node_t *node, myhtml_stri
 //// Process
 ////
 /////////////////////////////////////////////////////////
-bool test_process(mycss_result_t *css_result, myhtml_tree_t* tree, myhtml_tree_node_t *node, myhtml_string_t* css_res, myhtml_string_t* res_res)
+bool test_process(mycss_entry_t *css_entry, myhtml_tree_t* tree, myhtml_tree_node_t *node, myhtml_string_t* css_res, myhtml_string_t* res_res)
 {
-    test_result_entry_print(css_result, css_result->result_entry_first, css_res);
+    test_result_entry_print(css_entry, css_entry->stylesheet->sel_list_first, css_res);
     
     myhtml_collection_t *collection = myhtml_get_nodes_by_name_in_scope(tree, NULL, node, "result", 6, NULL);
     
@@ -558,9 +561,9 @@ size_t test_data(myhtml_tree_t* tree, size_t count_of_files, size_t* bad_res)
         
         mycss_parse(entry, MyHTML_ENCODING_UTF_8, data_str->data, data_str->length);
         
-        test_process(entry->result, tree, collection->list[i], &css_res, &res_res);
+        test_process(entry, tree, collection->list[i], &css_res, &res_res);
         
-        mycss_result_destroy(entry->result, true);
+        entry->stylesheet = mycss_stylesheet_destroy(entry->stylesheet, true);
         
         count++;
         printf("\t%zu: ", count);
@@ -666,23 +669,23 @@ size_t test_dir(const char* dir_path, const char* test_name, size_t *bad_count)
 
 int main(int argc, const char * argv[])
 {
-    if (argc < 3) {
-        printf("Bad ARGV!\nUse: test <path_to_dir_test> <test_name> [ <test_name>]*\n");
-        exit(EXIT_FAILURE);
-    }
-    
-    printf("\nDirectory: %s\n", argv[1]);
+//    if (argc < 3) {
+//        printf("Bad ARGV!\nUse: test <path_to_dir_test> <test_name> [ <test_name>]*\n");
+//        exit(EXIT_FAILURE);
+//    }
+//    
+//    printf("\nDirectory: %s\n", argv[1]);
+//    
+//    size_t bad_count = 0;
+//    size_t all_count = 0;
+//    
+//    for(size_t i = 2; i < argc; i++) {
+//        all_count += test_dir(argv[1], argv[i], &bad_count);
+//    }
     
     size_t bad_count = 0;
     size_t all_count = 0;
-    
-    for(size_t i = 2; i < argc; i++) {
-        all_count += test_dir(argv[1], argv[i], &bad_count);
-    }
-    
-//    size_t bad_count = 0;
-//    size_t all_count = 0;
-//    all_count += test_dir("/new/C-git/mycss/test", "Selectors", &bad_count);
+    all_count += test_dir("/new/C-git/mycss/test", "Selectors", &bad_count);
     
     printf("\nTotal count: %zu; Good: %zu; Bad: %zu\n", all_count, (all_count - bad_count), bad_count);
     

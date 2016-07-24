@@ -18,24 +18,40 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#ifndef MyHTML_MyCSS_MEDIA_STATE_H
-#define MyHTML_MyCSS_MEDIA_STATE_H
+#ifndef MyHTML_MyCSS_STYLESHEET_H
+#define MyHTML_MyCSS_STYLESHEET_H
 #pragma once
 
-#include "mycss/media/myosi.h"
-#include "mycss/entry.h"
+#include <mycss/myosi.h>
+#include <mycss/entry.h>
+#include <mycss/namespace/myosi.h>
+#include <mycss/selectors/myosi.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-bool mycss_media_state_token_all(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_media_state_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token);
+struct mycss_stylesheet {
+    mycss_entry_t* entry; /* refs */
+    
+    mycss_namespace_stylesheet_t ns_stylesheet;
+    mycss_selectors_list_t* sel_list_first;
+    mycss_selectors_list_t* sel_list_last;
+    
+    mycss_stylesheet_t* child;
+    mycss_stylesheet_t* parent;
+    mycss_stylesheet_t* next;
+    mycss_stylesheet_t* prev;
+};
 
-bool mycss_media_state_skep_all(mycss_entry_t* entry, mycss_media_t* media, mycss_token_t* token);
+mycss_stylesheet_t * mycss_stylesheet_create(void);
+mycss_status_t mycss_stylesheet_init(mycss_stylesheet_t* stylesheet, mycss_entry_t* entry);
+mycss_status_t mycss_stylesheet_clean_all(mycss_stylesheet_t* stylesheet);
+mycss_stylesheet_t * mycss_stylesheet_destroy(mycss_stylesheet_t* stylesheet, bool self_destroy);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* MyHTML_MyCSS_MEDIA_STATE_H */
+
+#endif /* MyHTML_MyCSS_STYLESHEET_H */

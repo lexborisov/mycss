@@ -1,17 +1,16 @@
 <entry>
-    <data>div HtMl|span |svg |* * .class #hash [attr_key=attr_value i] [key] [svg|attr_key_ns=attr_value_ns i] [|key_ns]</data>
+    <data>div span |svg |* * .class #hash [attr_key=attr_value i] [key] [|key_ns]</data>
     <result>
         <selector type="element"   key="div"></selector>
-        <selector type="element"   key="span" comb=" " ns="HTML"></selector>
-        <selector type="element"   key="svg" comb=" "></selector>
-        <selector type="element"   key="*" comb=" "></selector>
+        <selector type="element"   key="span" comb=" "></selector>
+        <selector type="element"   key="svg" comb=" " ns=""></selector>
+        <selector type="element"   key="*" comb=" " ns=""></selector>
         <selector type="element"   key="*" comb=" "></selector>
         <selector type="class"     key="class" comb=" "></selector>
         <selector type="id"        key="hash" comb=" "></selector>
         <selector type="attribute" key="attr_key" comb=" " value="attr_value" mod="i"></selector>
         <selector type="attribute" key="key" comb=" "></selector>
-        <selector type="attribute" key="attr_key_ns" comb=" " ns="SVG" value="attr_value_ns" mod="i"></selector>
-        <selector type="attribute" key="key_ns" comb=" "></selector>
+        <selector type="attribute" key="key_ns" comb=" " ns=""></selector>
     </result>
 </entry>
 <entry><data>div</data><result><selector type="element" key="div"></selector></result></entry>
@@ -19,6 +18,6 @@
 <entry><data>#hash</data><result><selector type="id" key="hash"></selector></result></entry>
 <entry><data>[key]</data><result><selector type="attribute" key="key"></selector></result></entry>
 <entry><data>[key=value]</data><result><selector type="attribute" key="key" value="value"></selector></result></entry>
-<entry><data>[|key=value]</data><result><selector type="attribute" key="key"  value="value"></selector></result></entry>
-<entry><data>[svg|key=value]</data><result><selector type="attribute" key="key" ns="SVG" value="value"></selector></result></entry>
+<entry><data>[|key=value]</data><result><selector type="attribute" key="key" value="value" ns=""></selector></result></entry>
+<entry><data>[svg|key=value]</data><result><selector type="attribute" key="key" value="value" flags="^B"></selector></result></entry>
 <entry><data>[key=value i]</data><result><selector type="attribute" key="key" value="value" mod="i"></selector></result></entry>

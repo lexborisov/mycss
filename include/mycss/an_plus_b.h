@@ -25,9 +25,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
-#include <mycss/result.h>
+
 #include <mycss/entry.h>
+#include <mycss/selectors/list.h>
 
 struct mycss_an_plus_b {
     mycss_an_plus_b_entry_t* anb_entry;
@@ -39,7 +39,7 @@ struct mycss_an_plus_b_entry {
     long n;
     
     bool is_broken;
-    mycss_result_entry_t* of;
+    mycss_selectors_list_t* of;
 };
 
 mycss_an_plus_b_t * mycss_an_plus_b_create(void);
@@ -47,19 +47,19 @@ mycss_status_t mycss_an_plus_b_init(mycss_entry_t* entry, mycss_an_plus_b_t* anb
 mycss_status_t mycss_an_plus_b_clean_all(mycss_an_plus_b_t* anb);
 mycss_an_plus_b_t * mycss_an_plus_b_destroy(mycss_an_plus_b_t* anb, bool self_destroy);
 
-bool mycss_an_plus_b_state_token_all(mycss_result_t* result, mycss_token_t* token);
-bool mycss_an_plus_b_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token);
-bool mycss_an_plus_b_state_skip_all(mycss_result_t* result, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
+bool mycss_an_plus_b_state_token_all(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_an_plus_b_state_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_an_plus_b_state_skip_all(mycss_entry_t* entry, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
 
 void mycss_an_plus_b_print(mycss_an_plus_b_entry_t* anb_entry, FILE* fh);
 
-void mycss_an_plus_b_parser_expectations_error(mycss_result_t* result, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
+void mycss_an_plus_b_parser_expectations_error(mycss_entry_t* entry, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
 
-bool mycss_an_plus_b_state_anb(mycss_result_t* result, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
-bool mycss_an_plus_b_state_anb_plus(mycss_result_t* result, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
-bool mycss_an_plus_b_state_anb_plus_n_hyphen(mycss_result_t* result, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
-bool mycss_an_plus_b_state_anb_plus_n(mycss_result_t* result, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
-bool mycss_an_plus_b_state_anb_plus_n_plus(mycss_result_t* result, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
+bool mycss_an_plus_b_state_anb(mycss_entry_t* entry, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
+bool mycss_an_plus_b_state_anb_plus(mycss_entry_t* entry, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
+bool mycss_an_plus_b_state_anb_plus_n_hyphen(mycss_entry_t* entry, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
+bool mycss_an_plus_b_state_anb_plus_n(mycss_entry_t* entry, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
+bool mycss_an_plus_b_state_anb_plus_n_plus(mycss_entry_t* entry, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

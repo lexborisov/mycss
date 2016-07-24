@@ -19,7 +19,7 @@
 */
 
 #include "mycss/entry.h"
-
+#include "mycss/selectors/function_resource.h"
 
 mycss_entry_t * mycss_entry_create(void)
 {
@@ -28,12 +28,25 @@ mycss_entry_t * mycss_entry_create(void)
 
 mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
 {
-    entry->mycss = mycss;
+    entry->mycss           = mycss;
+    entry->parser          = mycss_parser_token;
+    entry->parser_switch   = mycss_parser_token;
+    entry->parser_original = NULL;
+    entry->parser_state    = NULL;
     
     // Other init
     entry->mchar = mchar_async_create(128, (4096 * 5));
     entry->mchar_node_id = mchar_async_node_add(entry->mchar);
     entry->mchar_value_node_id = mchar_async_node_add(entry->mchar);
+    
+    /* String Entries */
+    entry->mcobject_string_entries = mcobject_create();
+    if(entry->mcobject_string_entries == NULL)
+        return MyCSS_STATUS_ERROR_STRING_CREATE;
+    
+    myhtml_status_t myhtml_status = mcobject_init(entry->mcobject_string_entries, 256, sizeof(myhtml_string_t));
+    if(myhtml_status)
+        return MyCSS_STATUS_ERROR_STRING_INIT;
     
     /* Selectors */
     entry->selectors = mycss_selectors_create();
@@ -85,7 +98,7 @@ mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
     if(entry->mcobject_incoming_buffer == NULL)
         return MyCSS_STATUS_ERROR_ENTRY_INCOMING_BUFFER_CREATE;
     
-    myhtml_status_t myhtml_status = mcobject_init(entry->mcobject_incoming_buffer, 256, sizeof(myhtml_incoming_buffer_t));
+    myhtml_status = mcobject_init(entry->mcobject_incoming_buffer, 256, sizeof(myhtml_incoming_buffer_t));
     if(myhtml_status)
         return MyCSS_STATUS_ERROR_ENTRY_INCOMING_BUFFER_INIT;
     
@@ -101,6 +114,8 @@ mycss_status_t mycss_entry_clean_all(mycss_entry_t* entry)
     mchar_async_node_clean(entry->mchar, entry->mchar_node_id);
     mchar_async_node_clean(entry->mchar, entry->mchar_value_node_id);
     
+    mcobject_clean(entry->mcobject_string_entries);
+    
     /* CSS Modules */
     mycss_selectors_clean_all(entry->selectors);
     mycss_namespace_clean_all(entry->ns);
@@ -108,8 +123,11 @@ mycss_status_t mycss_entry_clean_all(mycss_entry_t* entry)
     mycss_media_clean_all(entry->media);
     mycss_an_plus_b_clean_all(entry->anb);
     
+    entry->parser               = mycss_parser_token;
+    entry->parser_switch        = mycss_parser_token;
+    entry->parser_original      = NULL;
+    entry->parser_state         = NULL;
     entry->token                = NULL;
-    entry->result               = NULL;
     entry->state                = MyCSS_TOKENIZER_STATE_DATA;
     entry->state_back           = MyCSS_TOKENIZER_STATE_DATA;
     entry->first_buffer         = NULL;
@@ -132,6 +150,7 @@ mycss_entry_t * mycss_entry_destroy(mycss_entry_t* entry, bool self_destroy)
         return NULL;
     
     entry->mchar = mchar_async_destroy(entry->mchar, 1);
+    entry->mcobject_string_entries = mcobject_destroy(entry->mcobject_string_entries, true);
     
     /* CSS Modules */
     entry->selectors = mycss_selectors_destroy(entry->selectors, true);
@@ -153,6 +172,81 @@ mycss_entry_t * mycss_entry_destroy(mycss_entry_t* entry, bool self_destroy)
     }
     
     return entry;
+}
+
+void mycss_entry_end(mycss_entry_t* entry)
+{
+    mycss_selectors_end(entry->stylesheet->sel_list_last, entry->selectors, false);
+}
+
+mycss_selectors_list_t * mycss_entry_get_parent_set_parser(mycss_entry_t* entry, mycss_selectors_list_t* selectors_list)
+{
+    if(selectors_list->parent == NULL) {
+        if(entry->parser != mycss_parser_token)
+            entry->parser = mycss_parser_token;
+        
+        if(entry->parser_switch != mycss_parser_token)
+            entry->parser_switch = mycss_parser_token;
+        
+        return selectors_list;
+    }
+    
+    selectors_list = selectors_list->parent;
+    
+    if(selectors_list->parent) {
+        mycss_selectors_entry_t* selector = selectors_list->parent->selector;
+        
+        if(selector->type == MyCSS_SELECTORS_TYPE_PSEUDO_CLASS_FUNCTION) {
+            const mycss_selectors_function_index_t *findex = &mycss_selectors_function_parser_map_by_sub_type[ selector->sub_type ];
+            
+            entry->parser = findex->parser;
+            entry->parser_switch = findex->switch_parser;
+        }
+        else {
+            entry->parser = mycss_parser_token;
+            entry->parser_switch = mycss_parser_token;
+        }
+    }
+    else {
+        if(entry->parser != mycss_parser_token)
+            entry->parser = mycss_parser_token;
+        
+        if(entry->parser_switch != mycss_parser_token)
+            entry->parser_switch = mycss_parser_token;
+    }
+    
+    return selectors_list;
+}
+
+myhtml_string_t * mycss_entry_string_create_and_init(mycss_entry_t* entry, size_t string_size)
+{
+    myhtml_string_t *str = mcobject_malloc(entry->mcobject_string_entries, NULL);
+    
+    if(str == NULL)
+        return NULL;
+    
+    myhtml_string_init(entry->mchar, entry->mchar_node_id, str, (string_size + 1));
+    
+    return str;
+}
+
+/* Print */
+
+void mycss_entry_print(mycss_entry_t* entry, mycss_selectors_list_t* selectors_list, FILE* fh)
+{
+    while(selectors_list) {
+        for(size_t i = 0; i < selectors_list->selector_list_length; i++) {
+            mycss_selectors_print_chain(entry->selectors, selectors_list->selector_list[i], fh);
+            
+            if((i + 1) != selectors_list->selector_list_length)
+                fprintf(fh, ", ");
+        }
+        
+        if(selectors_list->next)
+            fprintf(fh, " {}\n");
+        
+        selectors_list = selectors_list->next;
+    }
 }
 
 mycss_token_ready_callback_f mycss_entry_token_ready_callback(mycss_entry_t* entry, mycss_token_ready_callback_f callback_f)
@@ -178,9 +272,9 @@ myhtml_incoming_buffer_t * mycss_entry_incoming_buffer_first(mycss_entry_t* entr
     return entry->first_buffer;
 }
 
-mycss_result_t * mycss_entry_result(mycss_entry_t* entry)
+mycss_stylesheet_t * mycss_entry_stylesheet(mycss_entry_t* entry)
 {
-    return entry->result;
+    return entry->stylesheet;
 }
 
 

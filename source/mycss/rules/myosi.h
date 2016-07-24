@@ -30,7 +30,7 @@ extern "C" {
 
 typedef struct mycss_rules mycss_rules_t;
 
-typedef bool (*mycss_rules_state_f)(mycss_result_t* result, mycss_rules_t* rules, mycss_token_t* token);
+typedef bool (*mycss_rules_state_f)(mycss_entry_t* entry, mycss_rules_t* rules, mycss_token_t* token);
 
 
 struct mycss_rules {

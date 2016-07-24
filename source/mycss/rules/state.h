@@ -23,16 +23,16 @@
 #pragma once
 
 #include "mycss/rules/myosi.h"
-#include "mycss/result.h"
+#include "mycss/entry.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-bool mycss_rules_state_token_all(mycss_result_t* result, mycss_token_t* token);
-bool mycss_rules_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token);
+bool mycss_rules_state_token_all(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_rules_state_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token);
 
-bool mycss_rules_state_body(mycss_result_t* result, mycss_rules_t* rules, mycss_token_t* token);
+bool mycss_rules_state_body(mycss_entry_t* entry, mycss_rules_t* rules, mycss_token_t* token);
 
 
 #ifdef __cplusplus

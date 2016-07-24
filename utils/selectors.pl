@@ -74,8 +74,8 @@ foreach my $key (@$index_res) {
 	#$hash_full->{$key} = $grammar->make_combine_hash_from_decomposing_list($work_full->{$key}, sub{ $_[1]->entry->name });
 }
 
-my $key = "<combinator>";
-#my $key = "<simple-selector>";
+#my $key = "<combinator>";
+my $key = "<simple-selector>";
 #my $key = "<pseudo-element-selector>";
 #my $key = "<attribute-selector>";
 

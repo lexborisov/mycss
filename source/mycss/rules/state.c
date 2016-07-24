@@ -21,32 +21,34 @@
 #include "mycss/rules/state.h"
 
 
-bool mycss_rules_state_token_all(mycss_result_t* result, mycss_token_t* token)
+bool mycss_rules_state_token_all(mycss_entry_t* entry, mycss_token_t* token)
 {
-    mycss_rules_t *rules = result->entry->rules;
-    return ((mycss_rules_state_f)result->state)(result, rules, token);
+    mycss_rules_t *rules = entry->rules;
+    return ((mycss_rules_state_f)entry->parser_state)(entry, rules, token);
 }
 
-bool mycss_rules_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token)
+bool mycss_rules_state_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token)
 {
     if(token->type != MyCSS_TOKEN_TYPE_WHITESPACE) {
-        mycss_rules_t *rules = result->entry->rules;
-        return ((mycss_rules_state_f)result->state)(result, rules, token);
+        mycss_rules_t *rules = entry->rules;
+        return ((mycss_rules_state_f)entry->parser_state)(entry, rules, token);
     }
     
     return true;
 }
 
-bool mycss_rules_state_body(mycss_result_t* result, mycss_rules_t* rules, mycss_token_t* token)
+bool mycss_rules_state_body(mycss_entry_t* entry, mycss_rules_t* rules, mycss_token_t* token)
 {
     if(token->type == MyCSS_TOKEN_TYPE_RIGHT_CURLY_BRACKET) {
         //printf("mycss_rules_state_body_closing_brace\n");  /* End of rules */
         
-        mycss_result_entry_create_and_push(result);
-        result->result_entry->selector = mycss_selectors_entry_create(result->entry->selectors);
-        mycss_result_entry_append_selector(result, result->result_entry, result->result_entry->selector);
+        mycss_stylesheet_t *stylesheet = entry->stylesheet;
         
-        result->parser = mycss_parser_token;
+        stylesheet->sel_list_last = mycss_selectors_list_create_and_push(entry->selectors, stylesheet->sel_list_last);
+        stylesheet->sel_list_last->selector = mycss_selectors_entry_create(entry->selectors);
+        mycss_selectors_list_append_selector(entry->selectors, stylesheet->sel_list_last, stylesheet->sel_list_last->selector);
+        
+        entry->parser = mycss_parser_token;
     }
     
     return true;

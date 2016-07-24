@@ -57,24 +57,19 @@ mycss_status_t mycss_parse(mycss_entry_t* entry, myhtml_encoding_t encoding, con
         mycss_entry_clean_all(entry);
     }
     
-    /* create and init new Result */
-    entry->result = mycss_result_create();
-    if(entry->result == NULL)
-        return MyCSS_STATUS_ERROR_RESULT_CREATE;
-    
-    mycss_status_t status = mycss_result_init(entry, entry->result);
-    if(status != MyCSS_STATUS_OK)
-        return status;
+    /* stylesheet */
+    entry->stylesheet = mycss_stylesheet_create();
+    mycss_stylesheet_init(entry->stylesheet, entry);
     
     /* and parse css */
     mycss_encoding_set(entry, encoding);
     
-    status = mycss_tokenizer_chunk(entry, css, css_size);
+    mycss_status_t status = mycss_tokenizer_chunk(entry, css, css_size);
     if(status != MyCSS_STATUS_OK)
         return status;
     
     status = mycss_tokenizer_end(entry);
-    mycss_result_end(entry->result);
+    mycss_entry_end(entry);
     
     return status;
 }
@@ -86,18 +81,9 @@ mycss_status_t mycss_parse_chunk(mycss_entry_t* entry, const char* css, size_t c
     }
     
     /* create and init new Result */
-    if(entry->result == NULL) {
-        entry->result = mycss_result_create();
-        
-        if(entry->result == NULL)
-            return MyCSS_STATUS_ERROR_RESULT_CREATE;
-        
-        mycss_status_t status = mycss_result_init(entry, entry->result);
-        
-        if(status != MyCSS_STATUS_OK) {
-            entry->result = mycss_result_destroy(entry->result, true);
-            return status;
-        }
+    if(entry->stylesheet == NULL) {
+        entry->stylesheet = mycss_stylesheet_create();
+        mycss_stylesheet_init(entry->stylesheet, entry);
     }
     
     return mycss_tokenizer_chunk(entry, css, css_size);
@@ -106,7 +92,7 @@ mycss_status_t mycss_parse_chunk(mycss_entry_t* entry, const char* css, size_t c
 mycss_status_t mycss_parse_chunk_end(mycss_entry_t* entry)
 {
     mycss_status_t status = mycss_tokenizer_end(entry);
-    mycss_result_end(entry->result);
+    mycss_entry_end(entry);
     
     return status;
 }

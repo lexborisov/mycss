@@ -33,28 +33,35 @@ extern "C" {
 
 typedef struct mycss_namespace mycss_namespace_t;
 typedef struct mycss_namespace_entry mycss_namespace_entry_t;
+typedef struct mycss_namespace_stylesheet mycss_namespace_stylesheet_t;
 
-typedef bool (*mycss_namespace_state_f)(mycss_result_t* result, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-
-
-struct mycss_namespace {
-    mycss_namespace_entry_t* ns_entry; /* current namespace entry */
-    mctree_t* name_tree; // tree for namespace names
-    
-    mcobject_t* mcobject_entries;
-    
-    size_t ns_id_counter;
-};
+typedef bool (*mycss_namespace_state_f)(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
 
 struct mycss_namespace_entry {
     myhtml_string_t* name;
     myhtml_string_t* url;
-    size_t ns_id;
+    
+    myhtml_namespace_t ns_id;
+    size_t mctree_id;
     
     mycss_namespace_entry_t* next;
     mycss_namespace_entry_t* prev;
 };
 
+struct mycss_namespace_stylesheet {
+    mctree_t* name_tree; // tree for namespace names
+    
+    mycss_namespace_entry_t* entry_default;
+    mycss_namespace_entry_t entry_undef;
+    mycss_namespace_entry_t entry_any;
+    
+    size_t ns_id_counter;
+};
+
+struct mycss_namespace {
+    mycss_namespace_entry_t* ns_entry; /* current namespace entry */
+    mcobject_t* mcobject_entries;
+};
 
 #ifdef __cplusplus
 } /* extern "C" */

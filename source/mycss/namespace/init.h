@@ -27,7 +27,7 @@ extern "C" {
 #endif
 
 #include "mycss/namespace/myosi.h"
-#include "mycss/result.h"
+#include "mycss/entry.h"
 #include "myhtml/mynamespace.h"
 
 mycss_namespace_t * mycss_namespace_create(void);
@@ -35,11 +35,23 @@ mycss_status_t mycss_namespace_init(mycss_entry_t* entry, mycss_namespace_t* ns)
 mycss_status_t mycss_namespace_clean_all(mycss_namespace_t* ns);
 mycss_namespace_t * mycss_namespace_destroy(mycss_namespace_t* ns, bool self_destroy);
 
+mycss_status_t mycss_namespace_stylesheet_init(mycss_namespace_stylesheet_t* ns_stylesheet, mycss_entry_t* entry);
+mycss_status_t mycss_namespace_stylesheet_clean(mycss_namespace_stylesheet_t* ns_stylesheet, mycss_entry_t* entry);
+mycss_namespace_stylesheet_t * mycss_namespace_stylesheet_destroy(mycss_namespace_stylesheet_t* ns_stylesheet, mycss_entry_t* entry, bool self_destroy);
+
+mycss_status_t mycss_namespace_stylesheet_init_default(mycss_namespace_stylesheet_t* ns_stylesheet, mycss_entry_t* entry, const char* url, size_t url_length, myhtml_namespace_t def_ns);
+void mycss_namespace_stylesheet_append_default(mycss_namespace_stylesheet_t* ns_stylesheet, mycss_namespace_entry_t* ns_entry);
+void mycss_namespace_stylesheet_destroy_default(mycss_namespace_stylesheet_t* ns_stylesheet, mycss_entry_t* entry);
+
+mycss_namespace_entry_t * mycss_namespace_entry_create(mycss_namespace_t* ns);
 void mycss_namespace_entry_clean(mycss_namespace_entry_t* ns_entry);
+mycss_namespace_entry_t * mycss_namespace_entry_destroy(mycss_namespace_entry_t* ns_entry, mycss_entry_t* entry, bool self_destroy);
 
-const char * mycss_namespace_name_by_id(mycss_namespace_t* ns, size_t ns_id, size_t *length);
+const char * mycss_namespace_name_by_id(mycss_namespace_t* ns, mctree_t* name_tree, size_t ns_id, size_t* length);
+mycss_namespace_entry_t * mycss_namespace_entry_by_name(mycss_namespace_t *ns, mctree_t* name_tree, const char* ns_name, size_t length, bool case_insensitive);
+const char * mycss_namespace_name_by_entry(mycss_namespace_entry_t* ns_entry, mctree_t* name_tree, size_t* length, bool* is_default);
 
-void mycss_namespace_print(mycss_namespace_t* ns, size_t ns_id, FILE* fh, bool with_vbar);
+void mycss_namespace_print(mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, FILE* fh, bool with_vbar);
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -26,39 +26,38 @@
 extern "C" {
 #endif
 
-#include <mycss/result.h>
 #include <mycss/entry.h>
 #include <mycss/selectors/myosi.h>
 #include <mycss/selectors/parser.h>
 #include <myhtml/utils.h>
 
-bool mycss_selectors_state_token_all(mycss_result_t* result, mycss_token_t* token);
-bool mycss_selectors_state_token_skip_whitespace(mycss_result_t* result, mycss_token_t* token);
-void mycss_selectors_state_end(mycss_result_t* result);
-bool mycss_selectors_state_function_skip_all(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_token_all(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_selectors_state_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token);
+void mycss_selectors_state_end(mycss_entry_t* entry);
+bool mycss_selectors_state_function_skip_all(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 
 /* <combinator> */
-bool mycss_selectors_state_combinator(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_combinator_greater_than(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_combinator(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_combinator_greater_than(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 
 /* <simple-selector> */
-bool mycss_selectors_state_simple_selector(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_simple_selector_left_bracket(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_simple_selector_left_bracket_vertical_bar(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_simple_selector_left_bracket_ident(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_simple_selector_left_bracket_ident_vertical_bar(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_simple_selector_colon(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_simple_selector_colon_colon(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_simple_selector_colon_colon_function(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_simple_selector_colon_function(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_simple_selector_full_stop(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_simple_selector_vertical_bar(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_simple_selector_ident(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_simple_selector_ident_vertical_bar(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_shared_after_attr_modifier(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_shared_after_attribute_value(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_shared_after_wq_name_attr(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
-bool mycss_selectors_state_shared_after_attr_matcher(mycss_result_t* result, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_simple_selector(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_simple_selector_left_bracket(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_simple_selector_left_bracket_vertical_bar(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_simple_selector_left_bracket_ident(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_simple_selector_left_bracket_ident_vertical_bar(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_simple_selector_colon(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_simple_selector_colon_colon(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_simple_selector_colon_colon_function(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_simple_selector_colon_function(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_simple_selector_full_stop(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_simple_selector_vertical_bar(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_simple_selector_ident(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_simple_selector_ident_vertical_bar(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_shared_after_attr_modifier(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_shared_after_attribute_value(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_shared_after_wq_name_attr(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
+bool mycss_selectors_state_shared_after_attr_matcher(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */
