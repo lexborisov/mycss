@@ -18,23 +18,10 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#ifndef MyHTML_MyCSS_RULES_INIT_H
-#define MyHTML_MyCSS_RULES_INIT_H
+#ifndef MyHTML_MyCSS_VALUES_RESOURCES_H
+#define MyHTML_MyCSS_VALUES_RESOURCES_H
 #pragma once
 
-#include <mycss/rules/myosi.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
-mycss_rules_t * mycss_rules_create(void);
-mycss_status_t  mycss_rules_init(mycss_entry_t* entry, mycss_rules_t* rules);
-mycss_status_t  mycss_rules_clean_all(mycss_rules_t* rules);
-mycss_rules_t * mycss_rules_destroy(mycss_rules_t* rules, bool self_destroy);
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
-
-#endif /* MyHTML_MyCSS_RULES_INIT_H */
+#endif /* MyHTML_MyCSS_VALUES_RESOURCES_H */

@@ -18,27 +18,26 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#ifndef MyHTML_MyCSS_RULES_MYOSI_H
-#define MyHTML_MyCSS_RULES_MYOSI_H
+#ifndef MyHTML_MyCSS_VALUES_CONSUME_H
+#define MyHTML_MyCSS_VALUES_CONSUME_H
 #pragma once
 
-#include "mycss/myosi.h"
+#include <mycss/myosi.h>
+#include <mycss/entry.h>
+#include <mycss/values/values.h>
+#include <mycss/values/units.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct mycss_rules mycss_rules_t;
 
-typedef bool (*mycss_rules_state_f)(mycss_entry_t* entry, mycss_rules_t* rules, mycss_token_t* token);
-
-
-struct mycss_rules {
-};
+bool mycss_values_consume_length(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_values_consume_percentage(mycss_entry_t* entry, mycss_token_t* token);
 
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* MyHTML_MyCSS_RULES_MYOSI_H */
+#endif /* MyHTML_MyCSS_VALUES_CONSUME_H */

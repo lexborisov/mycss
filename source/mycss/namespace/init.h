@@ -47,6 +47,8 @@ mycss_namespace_entry_t * mycss_namespace_entry_create(mycss_namespace_t* ns);
 void mycss_namespace_entry_clean(mycss_namespace_entry_t* ns_entry);
 mycss_namespace_entry_t * mycss_namespace_entry_destroy(mycss_namespace_entry_t* ns_entry, mycss_entry_t* entry, bool self_destroy);
 
+void mycss_namespace_entry_append_to_current(mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry);
+
 const char * mycss_namespace_name_by_id(mycss_namespace_t* ns, mctree_t* name_tree, size_t ns_id, size_t* length);
 mycss_namespace_entry_t * mycss_namespace_entry_by_name(mycss_namespace_t *ns, mctree_t* name_tree, const char* ns_name, size_t length, bool case_insensitive);
 const char * mycss_namespace_name_by_entry(mycss_namespace_entry_t* ns_entry, mctree_t* name_tree, size_t* length, bool* is_default);

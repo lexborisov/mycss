@@ -90,7 +90,7 @@ void test_print_selector_namespace(mycss_selectors_t* selectors, mycss_selectors
         
         size_t length;
         bool is_default;
-        const char *ns_name = mycss_namespace_name_by_entry(selector->ns_entry, selectors->entry->stylesheet->ns_stylesheet.name_tree, &length, &is_default);
+        const char *ns_name = mycss_namespace_name_by_entry(selector->ns_entry, selectors->ref_entry->stylesheet->ns_stylesheet.name_tree, &length, &is_default);
         
         if(is_default) {
             myhtml_string_append(str, "<default", strlen("<default"));
@@ -176,7 +176,7 @@ void test_print_pseudo_class_function(mycss_selectors_t* selectors, mycss_select
         case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_MATCHES:
         case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_CURRENT:
             if(selector->value)
-                test_result_entry_print(selectors->entry, selector->value, str);
+                test_result_entry_print(selectors->ref_entry, selector->value, str);
             break;
         
         case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_CHILD:
@@ -189,7 +189,7 @@ void test_print_pseudo_class_function(mycss_selectors_t* selectors, mycss_select
             
             if(mycss_selector_value_an_plus_b(selector->value)->of) {
                 myhtml_string_append(str, "\n", 1);
-                test_result_entry_print(selectors->entry, mycss_selector_value_an_plus_b(selector->value)->of, str);
+                test_result_entry_print(selectors->ref_entry, mycss_selector_value_an_plus_b(selector->value)->of, str);
             }
             
             break;
@@ -669,23 +669,23 @@ size_t test_dir(const char* dir_path, const char* test_name, size_t *bad_count)
 
 int main(int argc, const char * argv[])
 {
-//    if (argc < 3) {
-//        printf("Bad ARGV!\nUse: test <path_to_dir_test> <test_name> [ <test_name>]*\n");
-//        exit(EXIT_FAILURE);
-//    }
-//    
-//    printf("\nDirectory: %s\n", argv[1]);
-//    
-//    size_t bad_count = 0;
-//    size_t all_count = 0;
-//    
-//    for(size_t i = 2; i < argc; i++) {
-//        all_count += test_dir(argv[1], argv[i], &bad_count);
-//    }
+    if (argc < 3) {
+        printf("Bad ARGV!\nUse: test <path_to_dir_test> <test_name> [ <test_name>]*\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    printf("\nDirectory: %s\n", argv[1]);
     
     size_t bad_count = 0;
     size_t all_count = 0;
-    all_count += test_dir("/new/C-git/mycss/test", "Selectors", &bad_count);
+    
+    for(size_t i = 2; i < argc; i++) {
+        all_count += test_dir(argv[1], argv[i], &bad_count);
+    }
+    
+//    size_t bad_count = 0;
+//    size_t all_count = 0;
+//    all_count += test_dir("/new/C-git/mycss/test", "Selectors", &bad_count);
     
     printf("\nTotal count: %zu; Good: %zu; Bad: %zu\n", all_count, (all_count - bad_count), bad_count);
     

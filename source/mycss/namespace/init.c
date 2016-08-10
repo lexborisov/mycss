@@ -42,7 +42,7 @@ mycss_status_t mycss_namespace_init(mycss_entry_t* entry, mycss_namespace_t* ns)
 mycss_status_t mycss_namespace_clean_all(mycss_namespace_t* ns)
 {
     mcobject_clean(ns->mcobject_entries);
-    ns->ns_entry = NULL;
+    ns->entry = NULL;
     
     return MyCSS_STATUS_OK;
 }
@@ -90,6 +90,19 @@ mycss_namespace_entry_t * mycss_namespace_entry_destroy(mycss_namespace_entry_t*
     }
     
     return ns_entry;
+}
+
+void mycss_namespace_entry_append_to_current(mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry)
+{
+    if(ns->entry_last) {
+        ns->entry_last->next = ns_entry;
+        ns_entry->prev = ns->entry_last;
+    }
+    else {
+        (*ns->entry) = ns_entry;
+    }
+    
+    ns->entry_last = ns_entry;
 }
 
 mycss_status_t mycss_namespace_stylesheet_init(mycss_namespace_stylesheet_t* ns_stylesheet, mycss_entry_t* entry)
@@ -254,6 +267,23 @@ const char * mycss_namespace_name_by_entry(mycss_namespace_entry_t* ns_entry, mc
     return ns_entry->name->data;
 }
 
+mycss_namespace_entry_t * mycss_namespace_entry_by_name(mycss_namespace_t *ns, mctree_t* name_tree, const char* ns_name, size_t length, bool case_insensitive)
+{
+    if(ns == NULL)
+        return NULL;
+    
+    mctree_index_t idx;
+    if(case_insensitive)
+        idx = mctree_search_lowercase(name_tree, ns_name, length);
+    else
+        idx = mctree_search(name_tree, ns_name, length);
+    
+    if(idx == 0)
+        return 0;
+    
+    return (mycss_namespace_entry_t*)(name_tree->nodes[ idx ].value);
+}
+
 void mycss_namespace_print(mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, FILE* fh, bool with_vbar)
 {
     if(ns_entry->name && ns_entry->name->length) {
@@ -277,23 +307,6 @@ void mycss_namespace_print(mycss_namespace_t* ns, mycss_namespace_entry_t* ns_en
     
     if(with_vbar)
         fprintf(fh, "|");
-}
-
-mycss_namespace_entry_t * mycss_namespace_entry_by_name(mycss_namespace_t *ns, mctree_t* name_tree, const char* ns_name, size_t length, bool case_insensitive)
-{
-    if(ns == NULL)
-        return NULL;
-    
-    mctree_index_t idx;
-    if(case_insensitive)
-        idx = mctree_search_lowercase(name_tree, ns_name, length);
-    else
-        idx = mctree_search(name_tree, ns_name, length);
-    
-    if(idx == 0)
-        return 0;
-    
-    return (mycss_namespace_entry_t*)(name_tree->nodes[ idx ].value);
 }
 
 

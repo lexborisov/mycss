@@ -31,16 +31,13 @@ extern "C" {
 #include "mycss/namespace/parser.h"
 #include "myhtml/utils.h"
 
-bool mycss_namespace_state_token_all(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_namespace_state_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token);
-
-bool mycss_namespace_state_namespace(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-bool mycss_namespace_state_namespace_namespace(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-bool mycss_namespace_state_namespace_namespace_ident(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-bool mycss_namespace_state_namespace_namespace_ident_string(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-bool mycss_namespace_state_namespace_namespace_ident_url(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-bool mycss_namespace_state_namespace_namespace_string(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-bool mycss_namespace_state_namespace_namespace_url(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+bool mycss_namespace_state_namespace(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
+bool mycss_namespace_state_namespace_namespace(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
+bool mycss_namespace_state_namespace_namespace_ident(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
+bool mycss_namespace_state_namespace_namespace_ident_string(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
+bool mycss_namespace_state_namespace_namespace_ident_url(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
+bool mycss_namespace_state_namespace_namespace_string(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
+bool mycss_namespace_state_namespace_namespace_url(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
 
 #ifdef __cplusplus
 } /* extern "C" */

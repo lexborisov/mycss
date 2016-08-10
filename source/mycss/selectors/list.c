@@ -38,7 +38,7 @@ mycss_selectors_list_t * mycss_selectors_list_destroy(mycss_selectors_t* selecto
     if(selectors_list == NULL)
         return NULL;
     
-    mycss_entry_t *entry = selectors->entry;
+    mycss_entry_t *entry = selectors->ref_entry;
     
     if(selectors_list->selector_list)
     {
@@ -51,18 +51,6 @@ mycss_selectors_list_t * mycss_selectors_list_destroy(mycss_selectors_t* selecto
     if(self_destroy) {
         mcobject_free(selectors->mcobject_list_entries, selectors_list);
         return NULL;
-    }
-    
-    return selectors_list;
-}
-
-mycss_selectors_list_t * mycss_selectors_list_create_and_push(mycss_selectors_t* selectors, mycss_selectors_list_t* current_list)
-{
-    mycss_selectors_list_t* selectors_list = mycss_selectors_list_create(selectors);
-    
-    if(current_list) {
-        selectors_list->prev = current_list;
-        current_list->next = selectors_list;
     }
     
     return selectors_list;
@@ -83,18 +71,85 @@ mycss_selectors_list_t * mycss_selectors_list_append_selector(mycss_selectors_t*
     return current_list;
 }
 
-mycss_selectors_list_t * mycss_selectors_list_create_next_level_of_selectors(mycss_selectors_t* selectors, mycss_stylesheet_t* stylesheet, mycss_selectors_list_t* current_list)
+mycss_selectors_entry_t * mycss_selectors_list_last_entry(mycss_selectors_list_t* list)
 {
-    mycss_selectors_list_t *list = mycss_selectors_list_create(selectors);
+    size_t i = list->selector_list_length;
     
-    list->parent = current_list;
+    while(i) {
+        i--;
+        
+        mycss_selectors_entry_t *entry = list->selector_list[i];
+        
+        while(entry) {
+            if(entry->next == NULL)
+                return entry;
+            
+            entry = entry->next;
+        }
+    }
     
-    list->selector = mycss_selectors_entry_create(selectors);
-    mycss_selectors_list_append_selector(selectors, list, list->selector);
-    
-    stylesheet->sel_list_last = list;
-    
-    return list;
+    return NULL;
 }
 
+void mycss_selectors_list_append_to_current(mycss_selectors_t* selectors, mycss_selectors_list_t* current_list)
+{
+    if(selectors->list_last) {
+        selectors->list_last->next = current_list;
+        current_list->prev = selectors->list_last;
+    }
+    else {
+        (*selectors->list) = current_list;
+    }
+    
+    selectors->list_last = current_list;
+}
+
+mycss_selectors_entry_t ** mycss_selectors_list_current_chain(mycss_selectors_list_t* list)
+{
+    if(list->selector_list_length)
+        return NULL;
+    
+    return &list->selector_list[ list->selector_list_length - 1 ];
+}
+
+bool mycss_selectors_list_destroy_last_empty_selector(mycss_selectors_t* selectors, mycss_selectors_list_t* list, bool destroy_found)
+{
+    if(list->selector_list_length == 0)
+        return false;
+    
+    size_t idx = list->selector_list_length - 1;
+    
+    mycss_selectors_entry_t *entry = list->selector_list[idx];
+    
+    if(entry == NULL) {
+        mycss_selectors_entry_destroy(selectors, entry, destroy_found);
+        list->selector_list_length--;
+        
+        return true;
+    }
+    
+    while(entry) {
+        if(entry->next == NULL) {
+            if(entry->key == NULL)
+            {
+                if(entry->prev)
+                    entry->prev->next = NULL;
+                else {
+                    list->selector_list[idx] = NULL;
+                    list->selector_list_length--;
+                }
+                
+                mycss_selectors_entry_destroy(selectors, entry, destroy_found);
+                
+                return true;
+            }
+            
+            return false;
+        }
+        
+        entry = entry->next;
+    }
+    
+    return false;
+}
 

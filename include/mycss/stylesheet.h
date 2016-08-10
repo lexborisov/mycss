@@ -36,7 +36,6 @@ struct mycss_stylesheet {
     
     mycss_namespace_stylesheet_t ns_stylesheet;
     mycss_selectors_list_t* sel_list_first;
-    mycss_selectors_list_t* sel_list_last;
     
     mycss_stylesheet_t* child;
     mycss_stylesheet_t* parent;

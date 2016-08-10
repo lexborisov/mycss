@@ -21,23 +21,9 @@
 #include "mycss/media/state.h"
 
 
-bool mycss_media_state_token_all(mycss_entry_t* entry, mycss_token_t* token)
-{
-    mycss_media_t *media = entry->media;
-    return ((mycss_media_state_f)entry->parser_state)(entry, media, token);
-}
-
-bool mycss_media_state_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token)
-{
-    if(token->type != MyCSS_TOKEN_TYPE_WHITESPACE) {
-        mycss_media_t *media = entry->media;
-        return ((mycss_media_state_f)entry->parser_state)(entry, media, token);
-    }
-    
-    return true;
-}
-
-bool mycss_media_state_skep_all(mycss_entry_t* entry, mycss_media_t* media, mycss_token_t* token)
+bool mycss_media_state_begin(mycss_entry_t* entry, mycss_token_t* token, bool last_response)
 {
     return true;
 }
+
+

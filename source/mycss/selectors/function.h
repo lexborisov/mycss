@@ -22,14 +22,13 @@
 #define MyHTML_MyCSS_SELECTORS_FUNCTION_H
 #pragma once
 
-#define MyCSS_SELECTORS_FUNCTION_NAME_STATIC_SIZE 57
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include "mycss/entry.h"
 #include "mycss/selectors/myosi.h"
+#include "mycss/selectors/function_parser.h"
 
 typedef void (*mycss_selectors_function_begin_f)(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
 
@@ -68,22 +67,6 @@ void mycss_selectors_function_begin_has(mycss_entry_t* entry, mycss_selectors_en
 void mycss_selectors_function_begin_nth_column(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
 
 void mycss_selectors_begin_unknown(mycss_entry_t* entry, mycss_selectors_entry_t* selector);
-bool mycss_selectors_unknown_parser(mycss_entry_t* entry, mycss_token_t* token);
-
-bool mycss_selectors_function_not_or_matches_parser(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_selectors_function_has_parser(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_selectors_function_nth_with_selectors_parser(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_selectors_function_nth_with_selectors_before_of_parser(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_selectors_function_nth_without_selectors_parser(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_selectors_function_nth_of_selectors_parser(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_selectors_function_nth_of_whitespace_selectors_parser(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_selectors_function_drop_parser(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_selectors_function_drop_column_parser(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_selectors_function_drop_skip_all_parser(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_selectors_function_dir_parser(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_selectors_function_lang_parser(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_selectors_function_lang_after_parser(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_selectors_function_lang_comma_parser(mycss_entry_t* entry, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

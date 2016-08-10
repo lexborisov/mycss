@@ -51,8 +51,10 @@ FILE(GLOB ALL_SOURCE_LIST
   "${MyCSS_PROJECT_SOURCE}/mycss/*.c"
   "${MyCSS_PROJECT_SOURCE}/mycss/selectors/*.c"
   "${MyCSS_PROJECT_SOURCE}/mycss/namespace/*.c"
-  "${MyCSS_PROJECT_SOURCE}/mycss/rules/*.c"
-  "${MyCSS_PROJECT_SOURCE}/mycss/media/*.c")
+  "${MyCSS_PROJECT_SOURCE}/mycss/media/*.c"
+  "${MyCSS_PROJECT_SOURCE}/mycss/values/*.c"
+  "${MyCSS_PROJECT_SOURCE}/mycss/property/*.c"
+  "${MyCSS_PROJECT_SOURCE}/mycss/declaration/*.c")
 
 if (!UNIX AND WIN32)
   if(${CMAKE_CL_64})

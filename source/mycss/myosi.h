@@ -64,12 +64,17 @@ enum mycss_status {
     MyCSS_STATUS_ERROR_NAMESPACE_ENTRIES_CREATE         = 0x010202,
     MyCSS_STATUS_ERROR_NAMESPACE_ENTRIES_INIT           = 0x010203,
     MyCSS_STATUS_ERROR_NAMESPACE_NODE_ADD               = 0x010204,
-    MyCSS_STATUS_ERROR_RULES_CREATE                     = 0x010400,
+    MyCSS_STATUS_ERROR_MEDIA_CREATE                     = 0x010404,
     MyCSS_STATUS_ERROR_STRING_CREATE                    = 0x010501,
     MyCSS_STATUS_ERROR_STRING_INIT                      = 0x010502,
     MyCSS_STATUS_ERROR_STRING_NODE_INIT                 = 0x010503,
     MyCSS_STATUS_ERROR_AN_PLUS_B_CREATE                 = 0x010600,
-    MyCSS_STATUS_ERROR_AN_PLUS_B_INIT                   = 0x010601
+    MyCSS_STATUS_ERROR_AN_PLUS_B_INIT                   = 0x010601,
+    MyCSS_STATUS_ERROR_DECLARATION_CREATE               = 0x010700,
+    MyCSS_STATUS_ERROR_DECLARATION_INIT                 = 0x010701,
+    MyCSS_STATUS_ERROR_DECLARATION_ENTRY_CREATE         = 0x010702,
+    MyCSS_STATUS_ERROR_DECLARATION_ENTRY_INIT           = 0x010703,
+    MyCSS_STATUS_ERROR_PARSER_LIST_CREATE               = 0x010800
 }
 typedef mycss_status_t;
 
@@ -237,7 +242,8 @@ enum mycss_token_type {
     MyCSS_TOKEN_TYPE_BAD_URL              = 0x001e,
     MyCSS_TOKEN_TYPE_COMMENT              = 0x001f,
     MyCSS_TOKEN_TYPE_UNICODE_RANGE        = 0x0020,
-    MyCSS_TOKEN_TYPE_LAST_ENTRY           = 0x0021
+    MyCSS_TOKEN_TYPE_EOF                  = 0x0021,
+    MyCSS_TOKEN_TYPE_LAST_ENTRY           = 0x0022
 }
 typedef mycss_token_type_t;
 
@@ -263,7 +269,7 @@ typedef struct mycss_string_res mycss_string_res_t;
 typedef size_t (*mycss_tokenizer_state_f)(mycss_entry_t* entry, mycss_token_t* token, const char* css, size_t css_offset, size_t css_size);
 typedef mycss_token_t * (*mycss_token_ready_callback_f)(mycss_entry_t* entry, mycss_token_t* token);
 typedef size_t (*mycss_string_process_state_f)(myhtml_string_t* str, const char* data, size_t length, size_t size, mycss_string_res_t *out_res);
-typedef bool (*mycss_parser_token_f)(mycss_entry_t* entry, mycss_token_t* token);
+typedef bool (*mycss_parser_token_f)(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
 typedef bool (*mycss_an_plus_b_state_f)(mycss_entry_t* entry, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
 
 #ifdef __cplusplus

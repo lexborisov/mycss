@@ -1164,7 +1164,7 @@ size_t mycss_tokenizer_state_delim_single_code_point(mycss_entry_t* entry, mycss
     {
         if(u_css[css_offset] < 128)
         {
-            token->length = css_offset - token->begin;
+            token->length = (entry->current_buffer->offset + css_offset) - token->begin;
             token->type   = MyCSS_TOKEN_TYPE_DELIM;
             
             MyCSS_TOKEN_READY_CALLBACK_FUNCTION(entry, token);

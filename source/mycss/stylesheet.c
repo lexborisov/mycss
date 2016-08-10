@@ -33,13 +33,6 @@ mycss_status_t mycss_stylesheet_init(mycss_stylesheet_t* stylesheet, mycss_entry
     if(status != MyCSS_STATUS_OK)
         return status;
     
-    /* create first result entry and selector */
-    if(entry->selectors) {
-        stylesheet->sel_list_first = stylesheet->sel_list_last = mycss_selectors_list_create(entry->selectors);
-        stylesheet->sel_list_last->selector = mycss_selectors_entry_create(entry->selectors);
-        mycss_selectors_list_append_selector(entry->selectors, stylesheet->sel_list_last, stylesheet->sel_list_first->selector);
-    }
-    
     return MyCSS_STATUS_OK;
 }
 

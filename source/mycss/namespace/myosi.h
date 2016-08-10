@@ -35,8 +35,6 @@ typedef struct mycss_namespace mycss_namespace_t;
 typedef struct mycss_namespace_entry mycss_namespace_entry_t;
 typedef struct mycss_namespace_stylesheet mycss_namespace_stylesheet_t;
 
-typedef bool (*mycss_namespace_state_f)(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-
 struct mycss_namespace_entry {
     myhtml_string_t* name;
     myhtml_string_t* url;
@@ -51,6 +49,8 @@ struct mycss_namespace_entry {
 struct mycss_namespace_stylesheet {
     mctree_t* name_tree; // tree for namespace names
     
+    mycss_namespace_entry_t* entry_first;
+    
     mycss_namespace_entry_t* entry_default;
     mycss_namespace_entry_t entry_undef;
     mycss_namespace_entry_t entry_any;
@@ -59,7 +59,11 @@ struct mycss_namespace_stylesheet {
 };
 
 struct mycss_namespace {
-    mycss_namespace_entry_t* ns_entry; /* current namespace entry */
+    mycss_namespace_entry_t** entry;
+    mycss_namespace_entry_t*  entry_last;
+    
+    mycss_namespace_stylesheet_t* ns_stylesheet;
+    
     mcobject_t* mcobject_entries;
 };
 

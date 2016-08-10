@@ -31,17 +31,21 @@ extern "C" {
 #include "mycss/entry.h"
 #include "mycss/mystring.h"
 #include "mycss/convert.h"
-#include "mycss/selectors/state.h"
 #include "mycss/namespace/state.h"
-#include "mycss/rules/state.h"
-#include "mycss/media/state.h"
+#include "mycss/selectors/state.h"
 #include "mycss/selectors/parser.h"
+#include "mycss/declaration/state.h"
 #include "myhtml/incoming.h"
 
 mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry, mycss_token_t* token);
 
-bool mycss_parser_token(mycss_entry_t* entry, mycss_token_t* token);
+bool mycss_parser_token(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
+bool mycss_parser_token_selector_list_end(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
 
+bool mycss_parser_token_drop_component_value(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
+    
+bool mycss_parser_token_drop_at_rule(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
+bool mycss_parser_token_drop_at_rule_component_value(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
 
 #ifdef __cplusplus
 } /* extern "C" */

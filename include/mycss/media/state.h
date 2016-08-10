@@ -29,10 +29,7 @@
 extern "C" {
 #endif
 
-bool mycss_media_state_token_all(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_media_state_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token);
-
-bool mycss_media_state_skep_all(mycss_entry_t* entry, mycss_media_t* media, mycss_token_t* token);
+bool mycss_media_state_begin(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
 
 #ifdef __cplusplus
 } /* extern "C" */

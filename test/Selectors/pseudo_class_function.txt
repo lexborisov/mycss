@@ -227,9 +227,7 @@
 <entry>
     <data>:not(::)</data>
     <result>
-        <selector type="pseudo_class_function" key="not" flags="^B">
-            <selector type="undef" flags="^U^B"></selector>
-        </selector>
+        <selector type="pseudo_class_function" key="not" flags="^B"></selector>
     </result>
 </entry>
 
@@ -254,9 +252,7 @@
 <entry>
     <data>:not(:)</data>
     <result>
-        <selector type="pseudo_class_function" key="not" flags="^B">
-            <selector type="undef" flags="^U^B"></selector>
-        </selector>
+        <selector type="pseudo_class_function" key="not" flags="^B"></selector>
     </result>
 </entry>
 
@@ -498,9 +494,7 @@
 <entry>
     <data>:matches(::)</data>
     <result>
-        <selector type="pseudo_class_function" key="matches" flags="^B">
-            <selector type="undef" flags="^U^B"></selector>
-        </selector>
+        <selector type="pseudo_class_function" key="matches" flags="^B"></selector>
     </result>
 </entry>
 
@@ -525,9 +519,7 @@
 <entry>
     <data>:matches(:)</data>
     <result>
-        <selector type="pseudo_class_function" key="matches" flags="^B">
-            <selector type="undef" flags="^U^B"></selector>
-        </selector>
+        <selector type="pseudo_class_function" key="matches" flags="^B"></selector>
     </result>
 </entry>
 
@@ -587,8 +579,9 @@
 <entry>
     <data>:has( div #hash )</data>
     <result>
-        <selector type="pseudo_class_function" key="has" flags="^B">
+        <selector type="pseudo_class_function" key="has">
             <selector type="element" key="div"></selector>
+            <selector type="id" key="hash" comb=" "></selector>
         </selector>
     </result>
 </entry>
@@ -651,7 +644,9 @@
     <data>@namespace SVG "http://www.w3.org/2000/svg"; :has(SVG |div[html|a=b])</data>
     <result>
         <selector type="pseudo_class_function" key="has" flags="^B">
-            <selector type="element" key="SVG"></selector>
+        <selector type="element" key="SVG"></selector>
+        <selector type="element" key="div" comb=" " ns=""></selector>
+        <selector type="attribute" key="a" flags="^B" value="b"></selector>
         </selector>
     </result>
 </entry>
@@ -837,9 +832,7 @@
 <entry>
     <data>:has(::)</data>
     <result>
-        <selector type="pseudo_class_function" key="has" flags="^B">
-            <selector type="undef" flags="^U^B"></selector>
-        </selector>
+        <selector type="pseudo_class_function" key="has" flags="^B"></selector>
     </result>
 </entry>
 
@@ -847,7 +840,8 @@
     <data>:has(::blahblahblah div)</data>
     <result>
         <selector type="pseudo_class_function" key="has" flags="^B">
-            <selector type="pseudo_element" key="blahblahblah" flags="^B^UST">
+            <selector type="pseudo_element" key="blahblahblah" flags="^B^UST"></selector>
+            <selector type="element" key="div" comb=" "></selector>
         </selector>
     </result>
 </entry>
@@ -856,7 +850,8 @@
     <data>:has(:blahblahblah div)</data>
     <result>
         <selector type="pseudo_class_function" key="has" flags="^B">
-            <selector type="pseudo_class" key="blahblahblah" flags="^B^UST">
+            <selector type="pseudo_class" key="blahblahblah" flags="^B^UST"></selector>
+            <selector type="element" key="div" comb=" "></selector>
         </selector>
     </result>
 </entry>
@@ -864,9 +859,7 @@
 <entry>
     <data>:has(:)</data>
     <result>
-        <selector type="pseudo_class_function" key="has" flags="^B">
-            <selector type="undef" flags="^U^B"></selector>
-        </selector>
+        <selector type="pseudo_class_function" key="has" flags="^B"></selector>
     </result>
 </entry>
 
@@ -1265,9 +1258,7 @@
 <entry>
     <data>:current(::)</data>
     <result>
-        <selector type="pseudo_class_function" key="current" flags="^B">
-            <selector type="undef" flags="^U^B"></selector>
-        </selector>
+        <selector type="pseudo_class_function" key="current" flags="^B"></selector>
     </result>
 </entry>
 
@@ -1292,9 +1283,7 @@
 <entry>
     <data>:current(:)</data>
     <result>
-        <selector type="pseudo_class_function" key="current" flags="^B">
-            <selector type="undef" flags="^U^B"></selector>
-        </selector>
+        <selector type="pseudo_class_function" key="current" flags="^B"></selector>
     </result>
 </entry>
 
@@ -1303,7 +1292,7 @@
 <entry>
     <data>:drop()</data>
     <result>
-        <selector type="pseudo_class_function" key="drop" flags="^B"></selector>
+        <selector type="pseudo_class_function" key="drop"></selector>
     </result>
 </entry>
 
@@ -1311,7 +1300,7 @@
     <data>:drop( 
           )</data>
     <result>
-        <selector type="pseudo_class_function" key="drop" flags="^B"></selector>
+        <selector type="pseudo_class_function" key="drop"></selector>
     </result>
 </entry>
 

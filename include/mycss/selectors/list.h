@@ -28,12 +28,15 @@ extern "C" {
     
 #include <mycss/entry.h>
 #include <mycss/selectors/myosi.h>
+#include <mycss/declaration/myosi.h>
 
 struct mycss_selectors_list {
     mycss_selectors_entry_t** selector_list;
     size_t selector_list_length;
     
-    mycss_selectors_entry_t* selector; /* current selector/last entry */
+    mycss_declaration_entry_t* declaration_entry;
+    
+    mycss_selectors_flags_t flags;
     
     mycss_selectors_list_t* parent;
     mycss_selectors_list_t* next;
@@ -44,9 +47,13 @@ mycss_selectors_list_t * mycss_selectors_list_create(mycss_selectors_t* selector
 void mycss_selectors_list_clean(mycss_selectors_list_t* selector_list);
 mycss_selectors_list_t * mycss_selectors_list_destroy(mycss_selectors_t* selectors, mycss_selectors_list_t* selector_list, bool self_destroy);
 
-mycss_selectors_list_t * mycss_selectors_list_create_and_push(mycss_selectors_t* selectors, mycss_selectors_list_t* current_list);
 mycss_selectors_list_t * mycss_selectors_list_append_selector(mycss_selectors_t* selectors, mycss_selectors_list_t* selector_list, mycss_selectors_entry_t* selector);
-mycss_selectors_list_t * mycss_selectors_list_create_next_level_of_selectors(mycss_selectors_t* selectors, mycss_stylesheet_t* stylesheet, mycss_selectors_list_t* selector_list);
+mycss_selectors_entry_t * mycss_selectors_list_last_entry(mycss_selectors_list_t* list);
+mycss_selectors_entry_t ** mycss_selectors_list_current_chain(mycss_selectors_list_t* list);
+
+void mycss_selectors_list_append_to_current(mycss_selectors_t* selectors, mycss_selectors_list_t* current_list);
+
+bool mycss_selectors_list_destroy_last_empty_selector(mycss_selectors_t* selectors, mycss_selectors_list_t* list, bool destroy_found);
 
 #ifdef __cplusplus
 } /* extern "C" */

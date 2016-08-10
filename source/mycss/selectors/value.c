@@ -178,7 +178,7 @@ void * mycss_selectors_value_pseudo_class_function_nth_child_create(mycss_entry_
     if(set_clean)
         memset(anb_entry, 0, sizeof(mycss_an_plus_b_entry_t));
     
-    return anb_entry;
+    return NULL;
 }
 
 void * mycss_selectors_value_pseudo_class_function_nth_column_create(mycss_entry_t* entry, bool set_clean)

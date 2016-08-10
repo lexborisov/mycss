@@ -18,23 +18,42 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#ifndef MyHTML_MyCSS_RULES_INIT_H
-#define MyHTML_MyCSS_RULES_INIT_H
+#ifndef MyHTML_MyCSS_PROPERTY_MYOSI_H
+#define MyHTML_MyCSS_PROPERTY_MYOSI_H
 #pragma once
 
-#include "mycss/rules/myosi.h"
+#include <mycss/myosi.h>
+#include <mycss/property/const.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-mycss_rules_t * mycss_rules_create(void);
-mycss_status_t  mycss_rules_init(mycss_entry_t* entry, mycss_rules_t* rules);
-mycss_status_t  mycss_rules_clean_all(mycss_rules_t* rules);
-mycss_rules_t * mycss_rules_destroy(mycss_rules_t* rules, bool self_destroy);
+struct mycss_property_index_static_entry {
+    const char* name;
+    size_t name_length;
+    
+    mycss_property_type_t type;
+    mycss_parser_token_f parser;
+    
+    size_t next;
+    size_t curr;
+}
+typedef mycss_property_index_static_entry_t;
+
+struct mycss_property_value_index_static_entry {
+    const char* name;
+    size_t name_length;
+    
+    mycss_property_value_t type;
+    
+    size_t next;
+    size_t curr;
+}
+typedef mycss_property_value_index_static_entry_t;
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* MyHTML_MyCSS_RULES_INIT_H */
+#endif /* MyHTML_MyCSS_PROPERTY_MYOSI_H */

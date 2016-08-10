@@ -351,6 +351,7 @@ static const char mycss_token_type_description[][32] =
     "BAD_URL",
     "COMMENT",
     "UNICODE_RANGE",
+    "END_OF_FILE",
     ""
 };
 

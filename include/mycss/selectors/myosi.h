@@ -33,6 +33,7 @@ typedef struct mycss_selectors_list mycss_selectors_list_t;
 #include <mycss/myosi.h>
 #include <mycss/mystring.h>
 #include <mycss/namespace/myosi.h>
+#include <mycss/declaration/myosi.h>
 #include <myhtml/utils/mcobject.h>
 
 typedef bool (*mycss_selectors_state_f)(mycss_entry_t* entry, mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, mycss_token_t* token);
@@ -170,7 +171,17 @@ typedef mycss_selectors_function_drop_type_t;
 
 struct mycss_selectors {
     // refs
-    mycss_entry_t* entry;
+    mycss_entry_t* ref_entry;
+    
+    mycss_selectors_entry_t** entry;
+    mycss_selectors_entry_t*  entry_last;
+    
+    mycss_selectors_list_t** list;
+    mycss_selectors_list_t*  list_last;
+    
+    mycss_selectors_combinator_t* combinator;
+    
+    mycss_token_type_t ending_token;
     
     mcobject_t* mcobject_entries;
     mcobject_t* mcobject_list_entries;

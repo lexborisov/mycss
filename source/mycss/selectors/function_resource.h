@@ -22,25 +22,7 @@
 #define MyHTML_MyCSS_SELECTORS_FUNCTION_RESOURCE_H
 #pragma once
 
-static const mycss_selectors_function_index_t mycss_selectors_function_parser_map_by_sub_type[] = {
-    {mycss_parser_token, mycss_parser_token}, // MyCSS_SELECTORS_SUB_TYPE_UNDEF
-    {mycss_selectors_unknown_parser, mycss_selectors_unknown_parser}, // MyCSS_SELECTORS_SUB_TYPE_UNKNOWN
-    {mycss_selectors_function_not_or_matches_parser, mycss_selectors_function_not_or_matches_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_CURRENT
-    {mycss_parser_token, mycss_parser_token}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_DIR
-    {mycss_parser_token, mycss_parser_token}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_DROP
-    {mycss_selectors_function_has_parser, mycss_selectors_function_has_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_HAS
-    {mycss_parser_token, mycss_parser_token}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_LANG
-    {mycss_selectors_function_not_or_matches_parser, mycss_selectors_function_not_or_matches_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_MATCHES
-    {mycss_selectors_function_not_or_matches_parser, mycss_selectors_function_not_or_matches_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NOT
-    {mycss_selectors_function_nth_with_selectors_parser, mycss_selectors_function_nth_with_selectors_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_CHILD
-    {mycss_selectors_function_nth_without_selectors_parser, mycss_selectors_function_nth_without_selectors_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_COLUMN
-    {mycss_selectors_function_nth_with_selectors_parser, mycss_selectors_function_nth_with_selectors_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_CHILD
-    {mycss_selectors_function_nth_without_selectors_parser, mycss_selectors_function_nth_without_selectors_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_COLUMN
-    {mycss_selectors_function_nth_without_selectors_parser, mycss_selectors_function_nth_without_selectors_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_LAST_OF_TYPE
-    {mycss_selectors_function_nth_without_selectors_parser, mycss_selectors_function_nth_without_selectors_parser}, // MyCSS_SELECTORS_SUB_TYPE_FUNCTION_NTH_OF_TYPE
-    {mycss_parser_token, mycss_parser_token}, // MyCSS_SELECTORS_SUB_TYPE_UNDEF
-    {NULL, NULL}
-};
+#define MyCSS_SELECTORS_FUNCTION_NAME_STATIC_SIZE 57
 
 static const mycss_selectots_function_begin_entry_t mycss_selectors_function_begin_map_index[] =
 {

@@ -18,34 +18,10 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#include "mycss/rules/init.h"
-
-mycss_rules_t * mycss_rules_create(void)
-{
-    return (mycss_rules_t*)myhtml_calloc(1, sizeof(mycss_rules_t));
-}
-
-mycss_status_t mycss_rules_init(mycss_entry_t* entry, mycss_rules_t* rules)
-{
-    return MyCSS_STATUS_OK;
-}
-
-mycss_status_t mycss_rules_clean_all(mycss_rules_t* rules)
-{
-    return MyCSS_STATUS_OK;
-}
-
-mycss_rules_t * mycss_rules_destroy(mycss_rules_t* rules, bool self_destroy)
-{
-    if(rules == NULL)
-        return NULL;
-    
-    if(self_destroy) {
-        myhtml_free(rules);
-        return NULL;
-    }
-    
-    return rules;
-}
+#ifndef MyHTML_MyCSS_VALUES_RESOURCES_H
+#define MyHTML_MyCSS_VALUES_RESOURCES_H
+#pragma once
 
 
+
+#endif /* MyHTML_MyCSS_VALUES_RESOURCES_H */

@@ -18,25 +18,22 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#ifndef MyHTML_MyCSS_RULES_STATE_H
-#define MyHTML_MyCSS_RULES_STATE_H
+#ifndef MyHTML_MyCSS_PROPERTY_PARSER_H
+#define MyHTML_MyCSS_PROPERTY_PARSER_H
 #pragma once
-
-#include <mycss/rules/myosi.h>
-#include <mycss/entry.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-bool mycss_rules_state_token_all(mycss_entry_t* entry, mycss_token_t* token);
-bool mycss_rules_state_token_skip_whitespace(mycss_entry_t* entry, mycss_token_t* token);
+#include "mycss/property/myosi.h"
+#include "mycss/values/consume.h"
+#include "mycss/values/values.h"
 
-bool mycss_rules_state_body(mycss_entry_t* entry, mycss_rules_t* rules, mycss_token_t* token);
-
+bool mycss_property_parser_width(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* MyHTML_MyCSS_RULES_STATE_H */
+#endif /* MyHTML_MyCSS_PROPERTY_PARSER_H */

@@ -28,8 +28,10 @@ clone: create
 	cp $(SRCDIR)/*.h include/mycss
 	cp $(SRCDIR)/selectors/*.h include/mycss/selectors
 	cp $(SRCDIR)/namespace/*.h include/mycss/namespace
-	cp $(SRCDIR)/rules/*.h include/mycss/rules
 	cp $(SRCDIR)/media/*.h include/mycss/media
+	cp $(SRCDIR)/property/*.h include/mycss/property
+	cp $(SRCDIR)/values/*.h include/mycss/values
+	cp $(SRCDIR)/declaration/*.h include/mycss/declaration
 	find include -name "*.h" -exec sed -i '.bak' -E 's/^[ \t]*#[ \t]*include[ \t]*"([^"]+)"/#include <\1>/g' {} \;
 	find include -name "*.h.bak" -exec rm -f {} \;
 
@@ -37,7 +39,9 @@ create:
 	mkdir -p bin lib include/mycss
 	mkdir -p bin lib include/mycss/selectors
 	mkdir -p bin lib include/mycss/namespace
-	mkdir -p bin lib include/mycss/rules
 	mkdir -p bin lib include/mycss/media
+	mkdir -p bin lib include/mycss/property
+	mkdir -p bin lib include/mycss/values
+	mkdir -p bin lib include/mycss/declaration
 
 .PHONY:all clean test

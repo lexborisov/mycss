@@ -34,9 +34,9 @@ else
 endif
 
 SRCS := $(wildcard *.c)
-SRCS += $(wildcard selectors/*.c namespace/*.c rules/*.c media/*.c)
+SRCS += $(wildcard selectors/*.c namespace/*.c media/*.c values/*.c property/*.c declaration/*.c)
 HDRS := $(wildcard *.h)
-HDRS += $(wildcard selectors/*.h namespace/*.h rules/*.h media/*.h)
+HDRS += $(wildcard selectors/*.h namespace/*.h media/*.h values/*.h property/*.h declaration/*.h)
 OBJS := $(patsubst %.c, %.o, $(SRCS))
 
 all: shared static
@@ -51,8 +51,10 @@ clean:
 	rm -rf *.o
 	rm -rf selectors/*.o
 	rm -rf namespace/*.o
-	rm -rf rules/*.o
 	rm -rf media/*.o
+	rm -rf values/*.o
+	rm -rf property/*.o
+	rm -rf declaration/*.o
 	rm -rf *lib$(LIBNAME)*
 
 .PHONY: all clean

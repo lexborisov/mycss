@@ -57,6 +57,9 @@ mycss_status_t mycss_parse(mycss_entry_t* entry, myhtml_encoding_t encoding, con
         mycss_entry_clean_all(entry);
     }
     
+    /* set parser */
+    entry->parser = mycss_parser_token;
+    
     /* stylesheet */
     entry->stylesheet = mycss_stylesheet_create();
     mycss_stylesheet_init(entry->stylesheet, entry);

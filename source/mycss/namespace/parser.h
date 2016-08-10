@@ -31,11 +31,12 @@ extern "C" {
 #include "myhtml/mynamespace.h"
 #include "myhtml/utils/mctree.h"
 
-void mycss_namespace_parser_begin(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-void mycss_namespace_parser_name(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-void mycss_namespace_parser_url(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-void mycss_namespace_parser_end(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
-void mycss_namespace_parser_expectations_error(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token);
+void mycss_namespace_parser_begin(mycss_entry_t* entry);
+
+void mycss_namespace_parser_name(mycss_entry_t* entry, mycss_token_t* token);
+void mycss_namespace_parser_url(mycss_entry_t* entry, mycss_token_t* token);
+void mycss_namespace_parser_end(mycss_entry_t* entry, mycss_token_t* token);
+void mycss_namespace_parser_expectations_error(mycss_entry_t* entry, mycss_token_t* token);
 
 
 #ifdef __cplusplus

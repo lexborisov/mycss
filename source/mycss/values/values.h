@@ -18,27 +18,48 @@
  Author: lex.borisov@gmail.com (Alexander Borisov)
 */
 
-#ifndef MyHTML_MyCSS_RULES_MYOSI_H
-#define MyHTML_MyCSS_RULES_MYOSI_H
+#ifndef MyHTML_MyCSS_VALUES_VALUES_H
+#define MyHTML_MyCSS_VALUES_VALUES_H
 #pragma once
 
-#include <mycss/myosi.h>
+#include "mycss/myosi.h"
+#include "mycss/values/units.h"
+#include "myhtml/utils/mchar_async.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct mycss_rules mycss_rules_t;
+struct mycss_values_length {
+    union {
+        int i;
+        float f;
+    };
+    
+    bool is_float;
+    mycss_units_type_t type;
+}
+typedef mycss_values_length_t;
 
-typedef bool (*mycss_rules_state_f)(mycss_entry_t* entry, mycss_rules_t* rules, mycss_token_t* token);
+struct mycss_values_percentage {
+    union {
+        int i;
+        float f;
+    };
+    
+    bool is_float;
+}
+typedef mycss_values_percentage_t;
 
 
-struct mycss_rules {
-};
+void * mycss_values_create(mycss_entry_t* entry, size_t size);
+void * mycss_values_destroy(mycss_entry_t* entry, void* value);
 
+void * mycss_values_entry(mycss_entry_t* entry);
+void mycss_values_entry_set(mycss_entry_t* entry, void** value);
 
 #ifdef __cplusplus
 } /* extern "C" */
 #endif
 
-#endif /* MyHTML_MyCSS_RULES_MYOSI_H */
+#endif /* MyHTML_MyCSS_VALUES_VALUES_H */

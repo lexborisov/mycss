@@ -21,44 +21,41 @@
 #include "mycss/namespace/parser.h"
 
 
-void mycss_namespace_parser_begin(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token)
+void mycss_namespace_parser_begin(mycss_entry_t* entry)
 {
-    mycss_namespace_entry_t* new_ns_entry = mcobject_malloc(ns->mcobject_entries, NULL);
-    mycss_namespace_entry_clean(new_ns_entry);
+    mycss_namespace_entry_t *ns_entry = mycss_namespace_entry_create(entry->ns);
+    mycss_namespace_entry_clean(ns_entry);
     
-    if(ns_entry) {
-        ns_entry->next = new_ns_entry;
-        new_ns_entry->prev = ns_entry;
-    }
-    
-    ns->ns_entry = new_ns_entry;
+    mycss_namespace_entry_append_to_current(entry->ns, ns_entry);
 }
 
-void mycss_namespace_parser_name(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token)
+void mycss_namespace_parser_name(mycss_entry_t* entry, mycss_token_t* token)
 {
     myhtml_string_t *str = mcobject_malloc(entry->mcobject_string_entries, NULL);
     mycss_token_data_to_string(entry, token, str, true, false);
     
-    ns_entry->name = str;
+    entry->ns->entry_last->name = str;
 }
 
-void mycss_namespace_parser_url(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token)
+void mycss_namespace_parser_url(mycss_entry_t* entry, mycss_token_t* token)
 {
     myhtml_string_t *str = mcobject_malloc(entry->mcobject_string_entries, NULL);
     mycss_token_data_to_string(entry, token, str, true, false);
     
-    ns_entry->url = str;
+    entry->ns->entry_last->url = str;
 }
 
-void mycss_namespace_parser_end(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token)
+void mycss_namespace_parser_end(mycss_entry_t* entry, mycss_token_t* token)
 {
-    myhtml_string_t *str_url = ns_entry->url;
+    mycss_namespace_entry_t *ns_entry = entry->ns->entry_last;
+    
+    myhtml_string_t *str_url = entry->ns->entry_last->url;
     ns_entry->ns_id = myhtml_namespace_id_by_url(str_url->data, str_url->length);
     
     if(ns_entry->name) {
         myhtml_string_t *str = ns_entry->name;
         
-        ns_entry->mctree_id = mctree_insert(entry->stylesheet->ns_stylesheet.name_tree, str->data, str->length, (void*)ns_entry, NULL);
+        ns_entry->mctree_id = mctree_insert(entry->ns->ns_stylesheet->name_tree, str->data, str->length, (void*)ns_entry, NULL);
         
         if(str_url->length && ns_entry->ns_id == MyHTML_NAMESPACE_UNDEF)
             ns_entry->ns_id = MyHTML_NAMESPACE_LAST_ENTRY + (myhtml_namespace_t)ns_entry->mctree_id;
@@ -66,27 +63,28 @@ void mycss_namespace_parser_end(mycss_entry_t* entry, mycss_namespace_t* ns, myc
         return;
     }
     
-    mycss_namespace_stylesheet_append_default(&entry->stylesheet->ns_stylesheet, ns_entry);
-    ns_entry->mctree_id = mctree_insert(entry->stylesheet->ns_stylesheet.name_tree, " ", 1, (void*)ns_entry, NULL);
+    mycss_namespace_stylesheet_append_default(entry->ns->ns_stylesheet, ns_entry);
+    ns_entry->mctree_id = mctree_insert(entry->ns->ns_stylesheet->name_tree, " ", 1, (void*)ns_entry, NULL);
     
     if(str_url->length && ns_entry->ns_id == MyHTML_NAMESPACE_UNDEF)
         ns_entry->ns_id = MyHTML_NAMESPACE_LAST_ENTRY + (myhtml_namespace_t)ns_entry->mctree_id;
 }
 
-void mycss_namespace_parser_expectations_error(mycss_entry_t* entry, mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, mycss_token_t* token)
+void mycss_namespace_parser_expectations_error(mycss_entry_t* entry, mycss_token_t* token)
 {
+    mycss_namespace_entry_t *ns_entry = entry->ns->entry_last;
     mycss_namespace_entry_destroy(ns_entry, entry, false);
     
-    if(ns_entry)
-        mcobject_free(ns->mcobject_entries, ns_entry);
-    
     if(ns_entry->prev) {
-        ns->ns_entry = ns_entry->prev;
-        ns->ns_entry->next = NULL;
+        entry->ns->entry_last = ns_entry->prev;
+        entry->ns->entry_last->next = NULL;
     }
     else {
-        ns->ns_entry = NULL;
+        entry->ns->entry_last = NULL;
     }
+    
+    if(ns_entry)
+        mcobject_free(entry->ns->mcobject_entries, ns_entry);
     
     printf("Expectations error: Namespace!\n");
 }

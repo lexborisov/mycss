@@ -26,174 +26,218 @@ mycss_token_t * mycss_parser_token_ready_callback_function(mycss_entry_t* entry,
     if(token->type == MyCSS_TOKEN_TYPE_COMMENT)
         return token;
     
-    while(entry->parser(entry, token) == false) {};
+    bool last_response = true;
+    while((last_response = entry->parser(entry, token, last_response)) == false) {};
     
     return entry->token;
 }
 
-bool mycss_parser_token(mycss_entry_t* entry, mycss_token_t* token)
+bool mycss_parser_token(mycss_entry_t* entry, mycss_token_t* token, bool last_response)
 {
-    mycss_selectors_list_t *selectors_list = entry->stylesheet->sel_list_last;
-    
     switch (token->type) {
-    /* Selectors */
-        case MyCSS_TOKEN_TYPE_IDENT: {
-            MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_ident");
-            
-            mycss_selectors_parser_selector_ident_type(entry, entry->selectors, selectors_list->selector, token);
-            entry->parser_state = mycss_selectors_state_simple_selector_ident;
-            
-            if(entry->parser != mycss_selectors_state_token_all)
-                entry->parser = mycss_selectors_state_token_all;
-            
+        case MyCSS_TOKEN_TYPE_WHITESPACE:
             break;
-        }
-        case MyCSS_TOKEN_TYPE_COMMA: {
-            MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_comma");
             
-            mycss_selectors_parser_selector_comma(entry, entry->selectors, selectors_list->selector, token);
+        case MyCSS_TOKEN_TYPE_CDC:
+        case MyCSS_TOKEN_TYPE_CDO:
             break;
-        }
-        case MyCSS_TOKEN_TYPE_DELIM: {
-            switch(*token->data) {
-            /* combinator */
-                case '+': {
-                    MyCSS_DEBUG_MESSAGE("mycss_selectors_state_combinator_plus");
-                    
-                    mycss_selectors_parser_selector_combinator_plus(entry, entry->selectors, selectors_list->selector, token);
-                    return true;
-                }
-                case '>': {
-                    MyCSS_DEBUG_MESSAGE("mycss_selectors_state_combinator_greater_than");
-                    
-                    mycss_selectors_parser_selector_combinator_greater_than(entry, entry->selectors, selectors_list->selector, token);
-                    entry->parser_state = mycss_selectors_state_combinator_greater_than;
-                    
-                    if(entry->parser != mycss_selectors_state_token_skip_whitespace)
-                        entry->parser = mycss_selectors_state_token_skip_whitespace;
-                    
-                    break;
-                }
-                case '~': {
-                    MyCSS_DEBUG_MESSAGE("mycss_selectors_state_combinator_tilde");
-                    
-                    mycss_selectors_parser_selector_combinator_tilde(entry, entry->selectors, selectors_list->selector, token);
-                    return true;
-                }
-                
-            /* simple-selector */
-                case '*': {
-                    mycss_selectors_parser_selector_ident_type(entry, entry->selectors, selectors_list->selector, token);
-                    MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_asterisk")
-                    
-                    entry->parser_state = mycss_selectors_state_simple_selector_ident;
-                    break;
-                }
-                case '.': {
-                    entry->parser_state = mycss_selectors_state_simple_selector_full_stop;
-                    break;
-                }
-                case '|': {
-                    mycss_selectors_parser_selector_namespace_ident(entry, entry->selectors, selectors_list->selector, token);
-                    entry->parser_state = mycss_selectors_state_simple_selector_vertical_bar;
-                    break;
-                }
-                default: {
-                    // parse error
-                    mycss_selectors_parser_bad_token(entry, entry->selectors, selectors_list->selector, token);
-                    return true;
-                }
-            }
             
-            if(entry->parser != mycss_selectors_state_token_all)
-                entry->parser = mycss_selectors_state_token_all;
-            
-            break;
-        }
-        /* combinator */
-        case MyCSS_TOKEN_TYPE_COLUMN: {
-            MyCSS_DEBUG_MESSAGE("mycss_selectors_state_combinator_column");
-            
-            mycss_selectors_parser_selector_combinator_column(entry, entry->selectors, selectors_list->selector, token);
-            
-            entry->parser = mycss_parser_token;
-            break;
-        }
-        case MyCSS_TOKEN_TYPE_WHITESPACE: {
-            if(selectors_list->selector->flags & MyCSS_SELECTORS_FLAGS_SELECTOR_BAD)
-                mycss_selectors_parser_selector_create_new_entry(entry, entry->selectors, selectors_list->selector);
-            
-            if(selectors_list->selector->combinator == MyCSS_SELECTORS_COMBINATOR_UNDEF && selectors_list->selector->prev) {
-                mycss_selectors_parser_selector_combinator_whitespace(entry, entry->selectors, selectors_list->selector, token);
-            }
-            
-            break;
-        }
-        case MyCSS_TOKEN_TYPE_COLON: {
-            entry->parser_state = mycss_selectors_state_simple_selector_colon;
-            
-            if(entry->parser != mycss_selectors_state_token_all)
-                entry->parser = mycss_selectors_state_token_all;
-            
-            break;
-        }
-        case MyCSS_TOKEN_TYPE_LEFT_SQUARE_BRACKET: {
-            entry->parser_state = mycss_selectors_state_simple_selector_left_bracket;
-            
-            if(entry->parser != mycss_selectors_state_token_skip_whitespace)
-                entry->parser = mycss_selectors_state_token_skip_whitespace;
-            
-            break;
-        }
-        case MyCSS_TOKEN_TYPE_HASH: {
-            MyCSS_DEBUG_MESSAGE("mycss_selectors_state_simple_selector_hash");
-            
-            mycss_selectors_parser_selector_id(entry, entry->selectors, selectors_list->selector, token);
-            break;
-        }
-    /* Namespace and Media */
         case MyCSS_TOKEN_TYPE_AT_KEYWORD: {
             myhtml_string_t str;
             mycss_token_data_to_string(entry, token, &str, true, true);
             
             if(myhtml_strcmp(str.data, "namespace") == 0) {
-                mycss_namespace_parser_begin(entry, entry->ns, entry->ns->ns_entry, token);
-                entry->parser_state = mycss_namespace_state_namespace_namespace;
+                mycss_namespace_t *ns = entry->ns;
                 
-                if(entry->parser != mycss_namespace_state_token_skip_whitespace)
-                    entry->parser = mycss_namespace_state_token_skip_whitespace;
-            }
-            else if(myhtml_strcmp(str.data, "media") == 0) {
-                entry->parser_state = mycss_media_state_skep_all;
+                ns->ns_stylesheet = &entry->stylesheet->ns_stylesheet;
+                ns->entry = &ns->ns_stylesheet->entry_first;
                 
-                if(entry->parser != mycss_media_state_token_skip_whitespace)
-                    entry->parser = mycss_media_state_token_skip_whitespace;
+                entry->parser = mycss_namespace_state_namespace_namespace;
             }
             else {
-                // parse error
-                myhtml_string_destroy(&str, false);
-                mycss_selectors_parser_bad_token(entry, entry->selectors, selectors_list->selector, token);
-                
-                return true;
+                entry->parser = mycss_parser_token_drop_at_rule;
             }
             
             myhtml_string_destroy(&str, false);
+            
+            mycss_entry_parser_list_push(entry, mycss_parser_token, entry->parser_switch, MyCSS_TOKEN_TYPE_UNDEF, false);
             break;
         }
-    /* Rules */
+        
+        default: {
+            /* see selectors */
+            entry->parser = mycss_selectors_state_complex_selector_list;
+            
+            entry->selectors->list = &entry->stylesheet->sel_list_first;
+            entry->selectors->ending_token = MyCSS_TOKEN_TYPE_LEFT_CURLY_BRACKET;
+            
+            mycss_entry_parser_list_push(entry, mycss_parser_token_selector_list_end, entry->parser_switch, MyCSS_TOKEN_TYPE_UNDEF, false);
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+bool mycss_parser_token_selector_list_end(mycss_entry_t* entry, mycss_token_t* token, bool last_response)
+{
+    switch (token->type) {
         case MyCSS_TOKEN_TYPE_LEFT_CURLY_BRACKET: {
-            mycss_selectors_end(selectors_list, entry->selectors, true);
+            entry->declaration->entry = &entry->selectors->list_last->declaration_entry;
+            entry->declaration->entry_last = NULL;
             
-            entry->parser_state = mycss_rules_state_body;
+            entry->parser = mycss_declaration_state_begin;
+            entry->declaration->ending_token = MyCSS_TOKEN_TYPE_RIGHT_CURLY_BRACKET;
             
-            if(entry->parser != mycss_rules_state_token_skip_whitespace)
-                entry->parser = mycss_rules_state_token_skip_whitespace;
+            mycss_entry_parser_list_push(entry, mycss_parser_token, entry->parser_switch, MyCSS_TOKEN_TYPE_UNDEF, false);
+            break;
+        }
+        default:
+            mycss_entry_parser_list_push(entry, mycss_parser_token_selector_list_end, NULL, entry->parser_ending_token, false);
+            
+            entry->parser = mycss_parser_token_drop_component_value;
+            entry->parser_ending_token = MyCSS_TOKEN_TYPE_LEFT_CURLY_BRACKET;
+            
+            return false;
+    }
+    
+    return true;
+}
+
+bool mycss_parser_token_drop_component_value(mycss_entry_t* entry, mycss_token_t* token, bool last_response)
+{
+    if(token->type == entry->parser_ending_token) {
+        if(mycss_entry_parser_list_current_is_local(entry) == false) {
+            mycss_entry_parser_list_pop(entry);
+            return false;
+        }
+    }
+    
+    switch (token->type) {
+        case MyCSS_TOKEN_TYPE_FUNCTION: {
+            mycss_entry_parser_list_push(entry, mycss_parser_token_drop_component_value, NULL, entry->parser_ending_token, true);
+            entry->parser_ending_token = MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS;
+            
+            break;
+        }
+        case MyCSS_TOKEN_TYPE_LEFT_CURLY_BRACKET: {
+            mycss_entry_parser_list_push(entry, mycss_parser_token_drop_component_value, NULL, entry->parser_ending_token, true);
+            entry->parser_ending_token = MyCSS_TOKEN_TYPE_RIGHT_CURLY_BRACKET;
+            
+            break;
+        }
+        case MyCSS_TOKEN_TYPE_LEFT_SQUARE_BRACKET: {
+            mycss_entry_parser_list_push(entry, mycss_parser_token_drop_component_value, NULL, entry->parser_ending_token, true);
+            entry->parser_ending_token = MyCSS_TOKEN_TYPE_RIGHT_SQUARE_BRACKET;
+            
+            break;
+        }
+        case MyCSS_TOKEN_TYPE_LEFT_PARENTHESIS: {
+            mycss_entry_parser_list_push(entry, mycss_parser_token_drop_component_value, NULL, entry->parser_ending_token, true);
+            entry->parser_ending_token = MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS;
             
             break;
         }
         default: {
-            // parse error
-            mycss_selectors_parser_bad_token(entry, entry->selectors, selectors_list->selector, token);
+            if(token->type == entry->parser_ending_token) {
+                mycss_entry_parser_list_pop(entry);
+                return true;
+            }
+        }
+    }
+    
+    return true;
+}
+
+//
+//
+//bool mycss_parser_token_drop_qualified_rule(mycss_entry_t* entry, mycss_token_t* token, bool last_response)
+//{
+//    switch (token->type) {
+//        case MyCSS_TOKEN_TYPE_SEMICOLON:
+//            mycss_entry_parser_list_pop(entry);
+//            break;
+//            
+//        case MyCSS_TOKEN_TYPE_LEFT_CURLY_BRACKET:
+//            entry->parser = mycss_parser_token_drop_at_rule_component_value;
+//            
+//            mycss_entry_parser_list_push(entry, NULL, NULL, entry->parser_ending_token, false);
+//            entry->parser_ending_token = MyCSS_TOKEN_TYPE_RIGHT_CURLY_BRACKET;
+//            
+//            break;
+//            
+//        default:
+//            entry->parser = mycss_parser_token_drop_at_rule_component_value;
+//            return false;
+//    }
+//    
+//    return true;
+//}
+
+
+bool mycss_parser_token_drop_at_rule(mycss_entry_t* entry, mycss_token_t* token, bool last_response)
+{
+    switch (token->type) {
+        case MyCSS_TOKEN_TYPE_SEMICOLON:
+            mycss_entry_parser_list_pop(entry);
+            break;
+            
+        case MyCSS_TOKEN_TYPE_LEFT_CURLY_BRACKET:
+            entry->parser = mycss_parser_token_drop_at_rule_component_value;
+            
+            mycss_entry_parser_list_push(entry, NULL, NULL, entry->parser_ending_token, false);
+            entry->parser_ending_token = MyCSS_TOKEN_TYPE_RIGHT_CURLY_BRACKET;
+            
+            break;
+            
+        default:
+            entry->parser = mycss_parser_token_drop_at_rule_component_value;
+            return false;
+    }
+    
+    return true;
+}
+
+bool mycss_parser_token_drop_at_rule_component_value(mycss_entry_t* entry, mycss_token_t* token, bool last_response)
+{
+    switch (token->type) {
+        case MyCSS_TOKEN_TYPE_FUNCTION: {
+            mycss_entry_parser_list_push(entry, mycss_parser_token_drop_at_rule_component_value, NULL, entry->parser_ending_token, true);
+            entry->parser_ending_token = MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS;
+            
+            break;
+        }
+        case MyCSS_TOKEN_TYPE_LEFT_CURLY_BRACKET: {
+            mycss_entry_parser_list_push(entry, mycss_parser_token_drop_at_rule_component_value, NULL, entry->parser_ending_token, true);
+            entry->parser_ending_token = MyCSS_TOKEN_TYPE_RIGHT_CURLY_BRACKET;
+            
+            break;
+        }
+        case MyCSS_TOKEN_TYPE_LEFT_SQUARE_BRACKET: {
+            mycss_entry_parser_list_push(entry, mycss_parser_token_drop_at_rule_component_value, NULL, entry->parser_ending_token, true);
+            entry->parser_ending_token = MyCSS_TOKEN_TYPE_RIGHT_SQUARE_BRACKET;
+            
+            break;
+        }
+        case MyCSS_TOKEN_TYPE_LEFT_PARENTHESIS: {
+            mycss_entry_parser_list_push(entry, mycss_parser_token_drop_at_rule_component_value, NULL, entry->parser_ending_token, true);
+            entry->parser_ending_token = MyCSS_TOKEN_TYPE_RIGHT_PARENTHESIS;
+            
+            break;
+        }
+        case MyCSS_TOKEN_TYPE_SEMICOLON: {
+            if(mycss_entry_parser_list_current_parser(entry))
+                mycss_entry_parser_list_pop(entry);
+            
+            break;
+        }
+        default: {
+            if(mycss_entry_parser_list_current_is_local(entry) &&
+               token->type == entry->parser_ending_token)
+            {
+                mycss_entry_parser_list_pop(entry);
+            }
+            
             break;
         }
     }

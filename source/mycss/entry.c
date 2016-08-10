@@ -28,16 +28,21 @@ mycss_entry_t * mycss_entry_create(void)
 
 mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
 {
-    entry->mycss           = mycss;
-    entry->parser          = mycss_parser_token;
-    entry->parser_switch   = mycss_parser_token;
-    entry->parser_original = NULL;
-    entry->parser_state    = NULL;
+    entry->mycss               = mycss;
+    entry->parser              = NULL;
+    entry->parser_switch       = NULL;
+    entry->parser_original     = NULL;
+    entry->parser_ending_token = MyCSS_TOKEN_TYPE_UNDEF;
     
     // Other init
     entry->mchar = mchar_async_create(128, (4096 * 5));
     entry->mchar_node_id = mchar_async_node_add(entry->mchar);
     entry->mchar_value_node_id = mchar_async_node_add(entry->mchar);
+    
+    entry->parser_list = mycss_entry_parser_list_create_and_init(128);
+    
+    if(entry->parser_list == NULL)
+        return MyCSS_STATUS_ERROR_PARSER_LIST_CREATE;
     
     /* String Entries */
     entry->mcobject_string_entries = mcobject_create();
@@ -66,24 +71,6 @@ mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
     if(status != MyCSS_STATUS_OK)
         return status;
     
-    /* Rules */
-    entry->rules = mycss_rules_create();
-    if(entry->rules == NULL)
-        return MyCSS_STATUS_ERROR_RULES_CREATE;
-    
-    status = mycss_rules_init(entry, entry->rules);
-    if(status != MyCSS_STATUS_OK)
-        return status;
-    
-    /* Media */
-    entry->media = mycss_media_create();
-    if(entry->media == NULL)
-        return MyCSS_STATUS_ERROR_RULES_CREATE;
-    
-    status = mycss_media_init(entry, entry->media);
-    if(status != MyCSS_STATUS_OK)
-        return status;
-    
     /* An+B */
     entry->anb = mycss_an_plus_b_create();
     if(entry->ns == NULL)
@@ -92,7 +79,25 @@ mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
     status = mycss_an_plus_b_init(entry, entry->anb);
     if(status != MyCSS_STATUS_OK)
         return status;
-        
+    
+    /* Media */
+    entry->media = mycss_media_create();
+    if(entry->media == NULL)
+        return MyCSS_STATUS_ERROR_MEDIA_CREATE;
+    
+    status = mycss_media_init(entry, entry->media);
+    if(status != MyCSS_STATUS_OK)
+        return status;
+    
+    /* Declaration */
+    entry->declaration = mycss_declaration_create();
+    if(entry->declaration == NULL)
+        return MyCSS_STATUS_ERROR_DECLARATION_CREATE;
+    
+    status = mycss_declaration_init(entry, entry->declaration);
+    if(status != MyCSS_STATUS_OK)
+        return status;
+    
     /* Incoming Buffer */
     entry->mcobject_incoming_buffer = mcobject_create();
     if(entry->mcobject_incoming_buffer == NULL)
@@ -114,19 +119,21 @@ mycss_status_t mycss_entry_clean_all(mycss_entry_t* entry)
     mchar_async_node_clean(entry->mchar, entry->mchar_node_id);
     mchar_async_node_clean(entry->mchar, entry->mchar_value_node_id);
     
+    mycss_entry_parser_list_clean(entry->parser_list);
+    
     mcobject_clean(entry->mcobject_string_entries);
     
     /* CSS Modules */
     mycss_selectors_clean_all(entry->selectors);
     mycss_namespace_clean_all(entry->ns);
-    mycss_rules_clean_all(entry->rules);
-    mycss_media_clean_all(entry->media);
     mycss_an_plus_b_clean_all(entry->anb);
+    mycss_media_clean_all(entry->media);
+    mycss_declaration_clean_all(entry->declaration);
     
-    entry->parser               = mycss_parser_token;
-    entry->parser_switch        = mycss_parser_token;
+    entry->parser               = NULL;
+    entry->parser_switch        = NULL;
     entry->parser_original      = NULL;
-    entry->parser_state         = NULL;
+    entry->parser_ending_token  = MyCSS_TOKEN_TYPE_UNDEF;
     entry->token                = NULL;
     entry->state                = MyCSS_TOKENIZER_STATE_DATA;
     entry->state_back           = MyCSS_TOKENIZER_STATE_DATA;
@@ -151,13 +158,14 @@ mycss_entry_t * mycss_entry_destroy(mycss_entry_t* entry, bool self_destroy)
     
     entry->mchar = mchar_async_destroy(entry->mchar, 1);
     entry->mcobject_string_entries = mcobject_destroy(entry->mcobject_string_entries, true);
+    entry->parser_list = mycss_entry_parser_list_destroy(entry->parser_list, true);
     
     /* CSS Modules */
-    entry->selectors = mycss_selectors_destroy(entry->selectors, true);
-    entry->ns        = mycss_namespace_destroy(entry->ns, true);
-    entry->rules     = mycss_rules_destroy(entry->rules, true);
-    entry->media     = mycss_media_destroy(entry->media, true);
-    entry->anb       = mycss_an_plus_b_destroy(entry->anb, true);
+    entry->selectors   = mycss_selectors_destroy(entry->selectors, true);
+    entry->ns          = mycss_namespace_destroy(entry->ns, true);
+    entry->anb         = mycss_an_plus_b_destroy(entry->anb, true);
+    entry->media       = mycss_media_destroy(entry->media, true);
+    entry->declaration = mycss_declaration_destroy(entry->declaration, true);
     
     entry->mcobject_incoming_buffer = mcobject_destroy(entry->mcobject_incoming_buffer, true);
     
@@ -176,46 +184,7 @@ mycss_entry_t * mycss_entry_destroy(mycss_entry_t* entry, bool self_destroy)
 
 void mycss_entry_end(mycss_entry_t* entry)
 {
-    mycss_selectors_end(entry->stylesheet->sel_list_last, entry->selectors, false);
-}
-
-mycss_selectors_list_t * mycss_entry_get_parent_set_parser(mycss_entry_t* entry, mycss_selectors_list_t* selectors_list)
-{
-    if(selectors_list->parent == NULL) {
-        if(entry->parser != mycss_parser_token)
-            entry->parser = mycss_parser_token;
-        
-        if(entry->parser_switch != mycss_parser_token)
-            entry->parser_switch = mycss_parser_token;
-        
-        return selectors_list;
-    }
-    
-    selectors_list = selectors_list->parent;
-    
-    if(selectors_list->parent) {
-        mycss_selectors_entry_t* selector = selectors_list->parent->selector;
-        
-        if(selector->type == MyCSS_SELECTORS_TYPE_PSEUDO_CLASS_FUNCTION) {
-            const mycss_selectors_function_index_t *findex = &mycss_selectors_function_parser_map_by_sub_type[ selector->sub_type ];
-            
-            entry->parser = findex->parser;
-            entry->parser_switch = findex->switch_parser;
-        }
-        else {
-            entry->parser = mycss_parser_token;
-            entry->parser_switch = mycss_parser_token;
-        }
-    }
-    else {
-        if(entry->parser != mycss_parser_token)
-            entry->parser = mycss_parser_token;
-        
-        if(entry->parser_switch != mycss_parser_token)
-            entry->parser_switch = mycss_parser_token;
-    }
-    
-    return selectors_list;
+    /* need some code */
 }
 
 myhtml_string_t * mycss_entry_string_create_and_init(mycss_entry_t* entry, size_t string_size)
@@ -242,8 +211,19 @@ void mycss_entry_print(mycss_entry_t* entry, mycss_selectors_list_t* selectors_l
                 fprintf(fh, ", ");
         }
         
-        if(selectors_list->next)
-            fprintf(fh, " {}\n");
+        if(selectors_list->declaration_entry) {
+            fprintf(fh, " {");
+            mycss_declaration_entries_print(entry->declaration, selectors_list->declaration_entry, fh);
+            fprintf(fh, "}");
+        }
+        
+        if(selectors_list->flags == MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) {
+            fprintf(fh, "^BAD_SELECTOR_LIST");
+        }
+        
+        if(selectors_list->next) {
+            fprintf(fh, "\n");
+        }
         
         selectors_list = selectors_list->next;
     }
@@ -277,4 +257,135 @@ mycss_stylesheet_t * mycss_entry_stylesheet(mycss_entry_t* entry)
     return entry->stylesheet;
 }
 
+mycss_selectors_list_t * mycss_entry_current_selectors_list(mycss_entry_t* entry)
+{
+    return entry->selectors->list_last;
+}
+
+void mycss_entry_parser_set(mycss_entry_t* entry, mycss_parser_token_f parser)
+{
+    entry->parser = parser;
+}
+
+void mycss_entry_parser_switch_set(mycss_entry_t* entry, mycss_parser_token_f parser_switch)
+{
+    entry->parser_switch = parser_switch;
+}
+
+void mycss_entry_parser_original_set(mycss_entry_t* entry, mycss_parser_token_f parser_original)
+{
+    entry->parser_original = parser_original;
+}
+
+/* parser list */
+mycss_entry_parser_list_t * mycss_entry_parser_list_create_and_init(size_t size)
+{
+    mycss_entry_parser_list_t* parser_list = myhtml_malloc(sizeof(mycss_entry_parser_list_t));
+    
+    if(parser_list == NULL)
+        return NULL;
+    
+    parser_list->length = 0;
+    parser_list->size   = size;
+    parser_list->list   = myhtml_malloc(parser_list->size * sizeof(mycss_entry_parser_list_entry_t));
+    
+    if(parser_list->list == NULL) {
+        myhtml_free(parser_list);
+        return NULL;
+    }
+    
+    return parser_list;
+}
+
+void mycss_entry_parser_list_clean(mycss_entry_parser_list_t* parser_list)
+{
+    parser_list->length = 0;
+}
+
+mycss_entry_parser_list_t * mycss_entry_parser_list_destroy(mycss_entry_parser_list_t* parser_list, bool self_destroy)
+{
+    if(parser_list == NULL)
+        return NULL;
+    
+    if(parser_list->list) {
+        myhtml_free(parser_list->list);
+        parser_list->list = NULL;
+    }
+    
+    if(self_destroy) {
+        myhtml_free(parser_list);
+        return NULL;
+    }
+    
+    return parser_list;
+}
+
+mycss_status_t mycss_entry_parser_list_push(mycss_entry_t* entry, mycss_parser_token_f parser_func,
+                                            mycss_parser_token_f parser_switch, mycss_token_type_t ending_token,
+                                            bool is_local)
+{
+    mycss_entry_parser_list_t *parser_list = entry->parser_list;
+    
+    if(parser_list->length >= parser_list->size) {
+        size_t new_size = parser_list->length + 1024;
+        
+        mycss_entry_parser_list_entry_t *new_list = myhtml_realloc(parser_list->list, new_size * sizeof(mycss_entry_parser_list_entry_t));
+        
+        if(new_list) {
+            parser_list->size = new_size;
+            parser_list->list = new_list;
+        }
+        else
+            return MyCSS_STATUS_ERROR_MEMORY_ALLOCATION;
+    }
+    
+    mycss_entry_parser_list_entry_t *parser_list_entry = &parser_list->list[ parser_list->length ];
+    
+    parser_list_entry->parser        = parser_func;
+    parser_list_entry->parser_switch = parser_switch;
+    parser_list_entry->ending_token  = ending_token;
+    parser_list_entry->is_local      = is_local;
+    parser_list->length++;
+    
+    return MyCSS_STATUS_OK;
+}
+
+void mycss_entry_parser_list_pop(mycss_entry_t* entry)
+{
+    mycss_entry_parser_list_t *parser_list = entry->parser_list;
+    parser_list->length--;
+    
+    mycss_entry_parser_list_entry_t *list_entery = &parser_list->list[ parser_list->length ];
+    
+    if(entry->parser_ending_token != list_entery->ending_token)
+        entry->parser_ending_token = list_entery->ending_token;
+    
+    entry->parser = list_entery->parser;
+    entry->parser_switch = list_entery->parser_switch;
+}
+
+size_t mycss_entry_parser_list_length(mycss_entry_t* entry)
+{
+    return entry->parser_list->length;
+}
+
+mycss_token_type_t mycss_entry_parser_list_current_ending_token_type(mycss_entry_t* entry)
+{
+    return entry->parser_list->list[ (entry->parser_list->length - 1) ].ending_token;
+}
+
+mycss_parser_token_f mycss_entry_parser_list_current_parser(mycss_entry_t* entry)
+{
+    return entry->parser_list->list[ (entry->parser_list->length - 1) ].parser;
+}
+
+mycss_parser_token_f mycss_entry_parser_list_current_parser_switch(mycss_entry_t* entry)
+{
+    return entry->parser_list->list[ (entry->parser_list->length - 1) ].parser_switch;
+}
+
+bool mycss_entry_parser_list_current_is_local(mycss_entry_t* entry)
+{
+    return entry->parser_list->list[ (entry->parser_list->length - 1) ].is_local;
+}
 

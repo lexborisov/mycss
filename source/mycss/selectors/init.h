@@ -29,13 +29,11 @@ extern "C" {
 #include "mycss/entry.h"
 #include "mycss/selectors/myosi.h"
 #include "mycss/selectors/list.h"
-#include "mycss/namespace/init.h"
 
 mycss_selectors_t * mycss_selectors_create(void);
 mycss_status_t mycss_selectors_init(mycss_entry_t* entry, mycss_selectors_t* selectors);
 mycss_status_t mycss_selectors_clean_all(mycss_selectors_t* selectors);
 mycss_selectors_t * mycss_selectors_destroy(mycss_selectors_t* selectors, bool self_destroy);
-void mycss_selectors_end(mycss_selectors_list_t* selectors_list, mycss_selectors_t* selectors, bool self_destroy);
 
 void mycss_selectors_entry_clean(mycss_selectors_entry_t* sel_entry);
 mycss_selectors_entry_t * mycss_selectors_entry_destroy(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, bool self_destroy);
@@ -52,6 +50,8 @@ mycss_selectors_entry_t ** mycss_selectors_entry_list_create(mycss_selectors_t* 
 mycss_selectors_entry_t ** mycss_selectors_entry_list_add_one(mycss_selectors_t* selectors, mycss_selectors_entry_t** list, size_t current_size);
 mycss_selectors_entry_t ** mycss_selectors_entry_list_destroy(mycss_selectors_t* selectors, mycss_selectors_entry_t** list);
 
+mycss_selectors_entry_t * mycss_selectors_entry(mycss_selectors_t* selectors);
+void mycss_selectors_entry_append_to_current(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector);
 
 #ifdef __cplusplus
 } /* extern "C" */
