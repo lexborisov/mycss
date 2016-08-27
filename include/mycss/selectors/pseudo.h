@@ -33,7 +33,7 @@ struct mycss_selectots_pseudo_begin_entry {
     const char* name;
     size_t length;
     
-    mycss_selectors_sub_type_t sub_type;
+    int sub_type;
     
     size_t next;
     size_t curr;
@@ -41,8 +41,8 @@ struct mycss_selectots_pseudo_begin_entry {
 typedef mycss_selectots_pseudo_begin_entry_t;
 
 
-mycss_selectors_sub_type_t mycss_pseudo_class_by_name(const char *name, size_t length);
-mycss_selectors_sub_type_t mycss_pseudo_element_by_name(const char *name, size_t length);
+mycss_selectors_sub_type_pseudo_class_t mycss_pseudo_class_by_name(const char *name, size_t length);
+mycss_selectors_sub_type_pseudo_element_t mycss_pseudo_element_by_name(const char *name, size_t length);
 const mycss_selectots_pseudo_begin_entry_t * mycss_pseudo_begin_entry_by_name(const char* name, size_t length, size_t static_size, const mycss_selectots_pseudo_begin_entry_t* pseudo);
 
 #ifdef __cplusplus

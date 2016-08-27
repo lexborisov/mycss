@@ -54,11 +54,16 @@ bool mycss_selectors_state_drop(mycss_entry_t* entry, mycss_token_t* token, bool
         case MyCSS_TOKEN_TYPE_WHITESPACE:
             break;
             
-        case MyCSS_TOKEN_TYPE_LEFT_CURLY_BRACKET:
-            if(mycss_entry_parser_list_length(entry) <= 1) {
-                mycss_entry_parser_list_pop(entry);
-                return false;
+        case MyCSS_TOKEN_TYPE_LEFT_CURLY_BRACKET: {
+            if(mycss_entry_parser_list_length(entry) == 0) {
+                entry->parser = mycss_selectors_state_drop_component_value;
             }
+            else if(mycss_entry_parser_list_length(entry) <= 1) {
+                mycss_entry_parser_list_pop(entry);
+                
+            }
+            return false;
+        }
         default:
             if(entry->selectors->list_last)
                 entry->selectors->list_last->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
@@ -634,7 +639,13 @@ bool mycss_selectors_state_simple_selector_left_bracket(mycss_entry_t* entry, my
             break;
         }
         case MyCSS_TOKEN_TYPE_DELIM: {
-            if(*token->data == '|') {
+            if(*token->data == '*') {
+                // HAND_EDIT_BEGIN
+                mycss_selectors_parser_selector_ident_attr(entry, token);
+                // HAND_EDIT_END
+                entry->parser = mycss_selectors_state_simple_selector_left_bracket_ident;
+            }
+            else if(*token->data == '|') {
                 // HAND_EDIT_BEGIN
                 mycss_selectors_parser_selector_namespace_attr(entry, token);
                 // HAND_EDIT_END
@@ -1027,6 +1038,7 @@ bool mycss_selectors_state_left_bracket_after_wq_name_attr(mycss_entry_t* entry,
                 selector->value = mycss_selectors_value_attribute_create(entry, true);
             
             mycss_selector_value_attribute(selector->value)->match = MyCSS_SELECTORS_MATCH_SUBSTRING;
+            
             entry->parser = mycss_selectors_state_shared_after_attr_matcher;
             
             break;

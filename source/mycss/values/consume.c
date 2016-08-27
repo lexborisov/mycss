@@ -80,6 +80,8 @@ bool mycss_values_consume_percentage(mycss_entry_t* entry, mycss_token_t* token)
             value->i = (int)return_num;
         
         *entry->values = value;
+        
+        return true;
     }
     
     return false;

@@ -31,6 +31,7 @@ extern "C" {
 #include "mycss/values/values.h"
 
 bool mycss_property_parser_width(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
+bool mycss_property_parser_height(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
 
 #ifdef __cplusplus
 } /* extern "C" */

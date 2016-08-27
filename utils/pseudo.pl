@@ -58,14 +58,39 @@ sub create_result {
                 push @{$result->{$id}}, [$ns, length($ns)];
         }
         
-        my $count = 15; # see max number in print of functions.pl (max + 1)
-        print "enum mycss_selectors_sub_type {\n";
+        my $count = 0;
+        my @res = (["MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_UNDEF", sprintf("0x%02x", $count++)],
+                   ["MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_UNKNOWN", sprintf("0x%02x", $count++)]);
+        
         foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "\tMyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_", uc(name_to_correct_name($name)), " = ", sprintf("0x%03x", ++$count), ",\n";
+                push @res, ["MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_".uc(name_to_correct_name($name)), sprintf("0x%02x", $count++)];
         }
-        print "}\n\n";
+        
+        push @res, ["MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_LAST_ENTRY", sprintf("0x%02x", $count++)];
+        
+        print "enum mycss_selectors_sub_type_pseudo_class {\n\t";
+        print join(",\n\t", @{format_list_text(\@res, "= ")}), "\n";
+        print "}\ntypedef mycss_selectors_sub_type_pseudo_class_t;\n\n";
         
         $result;
+}
+
+sub format_list_text {
+        my ($list, $join_val) = @_;
+        
+        my ($max, $len) = (0, 0);
+        foreach my $struct (@$list) {
+                $len = length($struct->[0]);
+                $max = $len if $len > $max;
+        }
+        
+        my @res;
+        foreach my $struct (@$list) {
+                $len = $max - length($struct->[0]);
+                push @res, sprintf("%s%$len"."s %s%s", $struct->[0], ($len ? " " : ""), $join_val, $struct->[1]);
+        }
+        
+        \@res;
 }
 
 sub test_result {
@@ -151,7 +176,7 @@ sub create_static_list_index {
                         "$id, $i},\n";
 				}
 				else {
-                        push @res, "\t{NULL, 0, MyCSS_SELECTORS_SUB_TYPE_UNDEF, 0, 0},\n";
+                        push @res, "\t{NULL, 0, MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_UNDEF, 0, 0},\n";
                 }
         }
         

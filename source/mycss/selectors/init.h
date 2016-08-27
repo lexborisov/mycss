@@ -32,6 +32,7 @@ extern "C" {
 
 mycss_selectors_t * mycss_selectors_create(void);
 mycss_status_t mycss_selectors_init(mycss_entry_t* entry, mycss_selectors_t* selectors);
+void mycss_selectors_clean(mycss_selectors_t* selectors);
 mycss_status_t mycss_selectors_clean_all(mycss_selectors_t* selectors);
 mycss_selectors_t * mycss_selectors_destroy(mycss_selectors_t* selectors, bool self_destroy);
 
@@ -40,7 +41,12 @@ mycss_selectors_entry_t * mycss_selectors_entry_destroy(mycss_selectors_t* selec
 
 void * mycss_selectors_entry_value_destroy(mycss_entry_t* entry, mycss_selectors_entry_t* selector_entry, bool destroy_self);
 
+mycss_selectors_list_t * mycss_selectors_parse(mycss_selectors_t* selectors, myhtml_encoding_t encoding, const char* data, size_t data_size, mycss_status_t* out_status);
+mycss_selectors_list_t * mycss_selectors_parse_by_function(mycss_selectors_t* selectors, mycss_parser_token_f func, myhtml_encoding_t encoding, const char* data, size_t data_size, mycss_status_t* out_status);
+
 mycss_selectors_entry_t * mycss_selectors_entry_find_first(mycss_selectors_entry_t* selector);
+
+void mycss_selectors_print_list(mycss_selectors_t* selectors, mycss_selectors_list_t* selectors_list, FILE* fh);
 void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, FILE* fh);
 void mycss_selectors_print_chain(mycss_selectors_t* selectors, mycss_selectors_entry_t* selector, FILE* fh);
 

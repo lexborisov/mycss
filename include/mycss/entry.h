@@ -113,6 +113,7 @@ struct mycss_entry {
 
 mycss_entry_t * mycss_entry_create(void);
 mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry);
+mycss_status_t mycss_entry_clean(mycss_entry_t* entry);
 mycss_status_t mycss_entry_clean_all(mycss_entry_t* entry);
 mycss_entry_t * mycss_entry_destroy(mycss_entry_t* entry, bool self_destroy);
 
@@ -148,8 +149,6 @@ mycss_token_type_t mycss_entry_parser_list_current_ending_token_type(mycss_entry
 mycss_parser_token_f mycss_entry_parser_list_current_parser(mycss_entry_t* entry);
 mycss_parser_token_f mycss_entry_parser_list_current_parser_switch(mycss_entry_t* entry);
 bool mycss_entry_parser_list_current_is_local(mycss_entry_t* entry);
-
-void mycss_entry_print(mycss_entry_t* entry, mycss_selectors_list_t* selectors_list, FILE* fh);
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -113,6 +113,31 @@ mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
     return MyCSS_STATUS_OK;
 }
 
+mycss_status_t mycss_entry_clean(mycss_entry_t* entry)
+{
+    mcobject_clean(entry->mcobject_incoming_buffer);
+    mycss_entry_parser_list_clean(entry->parser_list);
+    
+    /* CSS Modules */
+    mycss_selectors_clean(entry->selectors);
+    mycss_namespace_clean(entry->ns);
+    mycss_declaration_clean(entry->declaration);
+    
+    entry->parser               = NULL;
+    entry->parser_switch        = NULL;
+    entry->parser_original      = NULL;
+    entry->parser_ending_token  = MyCSS_TOKEN_TYPE_UNDEF;
+    entry->state                = MyCSS_TOKENIZER_STATE_DATA;
+    entry->state_back           = MyCSS_TOKENIZER_STATE_DATA;
+    entry->first_buffer         = NULL;
+    entry->current_buffer       = NULL;
+    entry->token_counter        = 0;
+    entry->help_counter         = 0;
+    entry->type                 = MyCSS_ENTRY_TYPE_CLEAN;
+    
+    return MyCSS_STATUS_OK;
+}
+
 mycss_status_t mycss_entry_clean_all(mycss_entry_t* entry)
 {
     mcobject_clean(entry->mcobject_incoming_buffer);
@@ -134,7 +159,6 @@ mycss_status_t mycss_entry_clean_all(mycss_entry_t* entry)
     entry->parser_switch        = NULL;
     entry->parser_original      = NULL;
     entry->parser_ending_token  = MyCSS_TOKEN_TYPE_UNDEF;
-    entry->token                = NULL;
     entry->state                = MyCSS_TOKENIZER_STATE_DATA;
     entry->state_back           = MyCSS_TOKENIZER_STATE_DATA;
     entry->first_buffer         = NULL;
@@ -142,11 +166,6 @@ mycss_status_t mycss_entry_clean_all(mycss_entry_t* entry)
     entry->token_counter        = 0;
     entry->help_counter         = 0;
     entry->type                 = MyCSS_ENTRY_TYPE_CLEAN;
-    
-    if(entry->token) {
-        myhtml_free(entry->token);
-        entry->token = NULL;
-    }
     
     return MyCSS_STATUS_OK;
 }
@@ -197,36 +216,6 @@ myhtml_string_t * mycss_entry_string_create_and_init(mycss_entry_t* entry, size_
     myhtml_string_init(entry->mchar, entry->mchar_node_id, str, (string_size + 1));
     
     return str;
-}
-
-/* Print */
-
-void mycss_entry_print(mycss_entry_t* entry, mycss_selectors_list_t* selectors_list, FILE* fh)
-{
-    while(selectors_list) {
-        for(size_t i = 0; i < selectors_list->selector_list_length; i++) {
-            mycss_selectors_print_chain(entry->selectors, selectors_list->selector_list[i], fh);
-            
-            if((i + 1) != selectors_list->selector_list_length)
-                fprintf(fh, ", ");
-        }
-        
-        if(selectors_list->declaration_entry) {
-            fprintf(fh, " {");
-            mycss_declaration_entries_print(entry->declaration, selectors_list->declaration_entry, fh);
-            fprintf(fh, "}");
-        }
-        
-        if(selectors_list->flags == MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) {
-            fprintf(fh, "^BAD_SELECTOR_LIST");
-        }
-        
-        if(selectors_list->next) {
-            fprintf(fh, "\n");
-        }
-        
-        selectors_list = selectors_list->next;
-    }
 }
 
 mycss_token_ready_callback_f mycss_entry_token_ready_callback(mycss_entry_t* entry, mycss_token_ready_callback_f callback_f)
@@ -352,6 +341,9 @@ mycss_status_t mycss_entry_parser_list_push(mycss_entry_t* entry, mycss_parser_t
 
 void mycss_entry_parser_list_pop(mycss_entry_t* entry)
 {
+    if(entry->parser_list->length == 0)
+        return;
+    
     mycss_entry_parser_list_t *parser_list = entry->parser_list;
     parser_list->length--;
     

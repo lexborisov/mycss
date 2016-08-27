@@ -95,6 +95,9 @@ size_t mycss_convert_data_to_double(const char *data, size_t size, double *retur
     if(num_digits == 0)
         return 0;
     
+    if(is_float)
+        *is_float = true;
+    
     // Correct for sign
     if(is_negative) number = -number;
     
@@ -107,33 +110,29 @@ size_t mycss_convert_data_to_double(const char *data, size_t size, double *retur
         
         if(offset >= size || ((data[offset] != '-' || data[offset] != '+') &&
                               (data[offset] < '0' || data[offset] > '9'))) {
-            *return_num = number;
+            offset--;
+        }
+        else {
+            // Handle optional sign
+            is_negative = false;
             
-            if(is_float)
-                *is_float = false;
+            switch(data[offset]) {
+                case '-': is_negative = true;
+                case '+': offset++;
+            }
             
-            return (offset - 1);
-        }
-        
-        // Handle optional sign
-        is_negative = false;
-        
-        switch(data[offset]) {
-            case '-': is_negative = true;
-            case '+': offset++;
-        }
-        
-        // Process string of digits
-        while(offset < size && (data[offset] >= '0' && data[offset] <= '9'))
-        {
-            n = (data[offset] - '0') + n * 10;
-            ++offset;
-        }
-        
-        if(is_negative) {
-            exponent -= n;
-        } else {
-            exponent += n;
+            // Process string of digits
+            while(offset < size && (data[offset] >= '0' && data[offset] <= '9'))
+            {
+                n = (data[offset] - '0') + n * 10;
+                ++offset;
+            }
+            
+            if(is_negative) {
+                exponent -= n;
+            } else {
+                exponent += n;
+            }
         }
     }
     

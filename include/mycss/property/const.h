@@ -28,8 +28,9 @@ extern "C" {
 
 enum mycss_property_type {
 	MyCSS_PROPERTY_TYPE_UNDEF      = 0x0000,
-	MyCSS_PROPERTY_TYPE_WIDTH      = 0x0001,
-	MyCSS_PROPERTY_TYPE_LAST_ENTRY = 0x0002
+	MyCSS_PROPERTY_TYPE_HEIGHT     = 0x0001,
+	MyCSS_PROPERTY_TYPE_WIDTH      = 0x0002,
+	MyCSS_PROPERTY_TYPE_LAST_ENTRY = 0x0003
 }
 typedef mycss_property_type_t;
 
@@ -42,6 +43,14 @@ enum mycss_property_value {
 	MyCSS_PROPERTY_VALUE_LAST_ENTRY = 0x0005
 }
 typedef mycss_property_value_t;
+
+enum mycss_property_height {
+	MyCSS_PROPERTY_HEIGHT_AUTO       = 0x0001,
+	MyCSS_PROPERTY_HEIGHT_INHERIT    = 0x0002,
+	MyCSS_PROPERTY_HEIGHT_LENGTH     = 0x0003,
+	MyCSS_PROPERTY_HEIGHT_PERCENTAGE = 0x0004
+}
+typedef mycss_property_height_t;
 
 enum mycss_property_width {
 	MyCSS_PROPERTY_WIDTH_AUTO       = 0x0001,

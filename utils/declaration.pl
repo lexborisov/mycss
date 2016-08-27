@@ -26,6 +26,9 @@ my $ENUM_VALUE = "mycss_property";
 # The Code
 my ($tree, $node) = load_properties("data/property.txt");
 
+$STATIC_DECLARATION_NAME_INDEX_LENGTH = test_name_result($tree, $node);
+$STATIC_DECLARATION_VALUE_INDEX_LENGTH = test_value_result($tree, $node);
+
 my ($index_name, $index_value) = create_const_file($tree, $node, 1);
 create_resource_file($tree, $node, $index_name, $index_value);
 
@@ -82,7 +85,7 @@ sub create_index {
         }
         
         return
-        "const char * $var_name\[] = \n{\n".
+        "static const char * $var_name\[] = \n{\n".
         join(",\n", @res).
         "\n};\n";
 }
@@ -159,6 +162,7 @@ sub create_name_enum {
 sub create_value_result {
         my ($tree, $node, $index_length) = @_;
         my $result = {};
+        my $exists = {};
         
         while($node) {
                 my $info = $node->info($tree);
@@ -171,8 +175,12 @@ sub create_value_result {
                 my $val_list = split_value_only_ident(lc($info->{attr}->{value}));
                 
                 foreach my $val (@$val_list) {
+                        next if exists $exists->{$val};
+                        
                         my $id = get_index_id($val, $index_length);
                         push @{$result->{$id}}, [$val, length($val)];
+                        
+                        $exists->{$val} = 1;
                 }
                 
                 $node = $node->next;
@@ -191,7 +199,7 @@ sub create_value_enum {
         my $index_val = {};
         my @index = ("");
         
-        my @for_sort;
+        my %all_prop;
         
         while($node) {
                 my $info = $node->info($tree);
@@ -204,7 +212,7 @@ sub create_value_enum {
                 my $val_list = split_value(lc($info->{attr}->{value}));
                 
                 foreach my $val (@$val_list) {
-                        push @for_sort, $val;
+                        $all_prop{$val} = 1;
                         push @{$by_prop->{ $info->{attr}->{name} }}, $val;
                 }
                 
@@ -215,17 +223,17 @@ sub create_value_enum {
         $norm_prefix =~ s/^my/My/i;
         
         push @$res, [$norm_prefix ."_VALUE_UNDEF", "0x0000"];
-        foreach my $name (sort {$a cmp $b} @for_sort) {
+        foreach my $name (sort {$a cmp $b} keys %all_prop) {
                 my $id = sprintf("0x%04x", $idx++);
                 my $norm_name = $norm_prefix ."_VALUE_". uc(name_to_norm($name));
                 
                 push @$res, [$norm_name, $id];
+                push @index, $name;
                 
                 $index_val->{$norm_name} = $id;
-                
-                push @index, $name;
         }
         push @$res, [$norm_prefix ."_VALUE_LAST_ENTRY", sprintf("0x%04x", $idx++)];
+        push @index, "";
         
         my @return;
         push @return, "enum $ENUM_VALUE\_value {\n\t";
@@ -234,18 +242,18 @@ sub create_value_enum {
         
         foreach my $key (sort {$a cmp $b} keys %$by_prop)
         {
-                $key = name_to_norm($key);
+                my $norm_key = name_to_norm($key);
                 $res = [];
                 
-                foreach my $name (sort {$a cmp $b} @for_sort) {
+                foreach my $name (sort {$a cmp $b} @{$by_prop->{$key}}) {
                         my $norm_name = $norm_prefix ."_VALUE_". uc(name_to_norm($name));
                         
-                        push @$res, [$norm_prefix ."_". uc($key) ."_". uc(name_to_norm($name)), $index_val->{$norm_name}];
+                        push @$res, [$norm_prefix ."_". uc($norm_key) ."_". uc(name_to_norm($name)), $index_val->{$norm_name}];
                 }
                 
-                push @return, "enum $ENUM_VALUE\_$key {\n\t";
+                push @return, "enum $ENUM_VALUE\_$norm_key {\n\t";
                 push @return, join(",\n\t", @{format_list_text($res, "= ")}), "\n";
-                push @return, "}\ntypedef $ENUM_VALUE\_$key\_t;\n\n";
+                push @return, "}\ntypedef $ENUM_VALUE\_$norm_key\_t;\n\n";
         }
         
         (\@return, \@index);
@@ -287,11 +295,12 @@ sub split_value_only_ident {
         \@res;
 }
 
-sub test_result {
+sub test_name_result {
+        my ($tree, $node) = @_;
         my $op = [0, undef];
         
-        foreach my $idx (1..1024) {
-                my $result = create_result($idx);
+        foreach my $idx (1..2048) {
+                my $result = create_name_result($tree, $node, $idx);
                 my $res_max = test_result_max_value($result, 0);
                 
                 if(!defined($op->[1]) || $op->[1] > $res_max) {
@@ -302,6 +311,28 @@ sub test_result {
         
         print "Best:\n";
         print $op->[0], ": ", $op->[1], "\n";
+        
+        $op->[0];
+}
+
+sub test_value_result {
+        my ($tree, $node) = @_;
+        my $op = [0, undef];
+        
+        foreach my $idx (1..2048) {
+                my $result = create_value_result($tree, $node, $idx);
+                my $res_max = test_result_max_value($result, 0);
+                
+                if(!defined($op->[1]) || $op->[1] > $res_max) {
+                        $op->[0] = $idx;
+                        $op->[1] = $res_max;
+                }
+        }
+        
+        print "Best:\n";
+        print $op->[0], ": ", $op->[1], "\n";
+        
+        $op->[0];
 }
 
 sub test_result_max_value {

@@ -52,10 +52,29 @@ void mycss_declaration_parser_ident(mycss_entry_t* entry, mycss_token_t* token)
         entry->parser_switch = prop_entry->parser;
     }
     else {
+        
         entry->parser = mycss_declaration_state_parse_error;
     }
     
     myhtml_string_destroy(&str, false);
 }
 
-
+void mycss_declaration_parser_end(mycss_entry_t* entry, mycss_token_t* token)
+{
+    mycss_declaration_entry_t* dec_entry = mycss_declaration_entry(entry->declaration);
+    
+    if(dec_entry && dec_entry->type == MyCSS_PROPERTY_TYPE_UNDEF) {
+        if(dec_entry->prev) {
+            entry->declaration->entry_last = dec_entry->prev;
+            
+            dec_entry->prev->next = NULL;
+            dec_entry->prev = NULL;
+            
+            mycss_declaration_entry_destroy(entry->declaration, dec_entry);
+        }
+        else {
+            *entry->declaration->entry = NULL;
+            entry->declaration->entry_last = NULL;
+        }
+    }
+}

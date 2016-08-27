@@ -32,6 +32,7 @@ extern "C" {
 
 mycss_namespace_t * mycss_namespace_create(void);
 mycss_status_t mycss_namespace_init(mycss_entry_t* entry, mycss_namespace_t* ns);
+void mycss_namespace_clean(mycss_namespace_t* ns);
 mycss_status_t mycss_namespace_clean_all(mycss_namespace_t* ns);
 mycss_namespace_t * mycss_namespace_destroy(mycss_namespace_t* ns, bool self_destroy);
 
@@ -54,6 +55,7 @@ mycss_namespace_entry_t * mycss_namespace_entry_by_name(mycss_namespace_t *ns, m
 const char * mycss_namespace_name_by_entry(mycss_namespace_entry_t* ns_entry, mctree_t* name_tree, size_t* length, bool* is_default);
 
 void mycss_namespace_print(mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, FILE* fh, bool with_vbar);
+void mycss_namespace_print_stylesheet(mycss_namespace_stylesheet_t* ns_stylesheet, FILE* fh);
 
 #ifdef __cplusplus
 } /* extern "C" */

@@ -32,7 +32,7 @@ extern "C" {
 
 void mycss_declaration_parser_begin(mycss_entry_t* entry, mycss_token_t* token);
 void mycss_declaration_parser_ident(mycss_entry_t* entry, mycss_token_t* token);
-
+void mycss_declaration_parser_end(mycss_entry_t* entry, mycss_token_t* token);
 
 #ifdef __cplusplus
 } /* extern "C" */

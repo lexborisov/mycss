@@ -55,24 +55,24 @@ const mycss_selectots_pseudo_begin_entry_t * mycss_pseudo_begin_entry_by_name(co
     return NULL;
 }
 
-mycss_selectors_sub_type_t mycss_pseudo_class_by_name(const char *name, size_t length)
+mycss_selectors_sub_type_pseudo_class_t mycss_pseudo_class_by_name(const char *name, size_t length)
 {
     const mycss_selectots_pseudo_begin_entry_t *entry = mycss_pseudo_begin_entry_by_name(name, length, MyCSS_SELECTORS_PSEUDO_CLASS_NAME_STATIC_SIZE, mycss_selectors_pseudo_class_begin_map_index);
     
     if(entry)
         return entry->sub_type;
     
-    return MyCSS_SELECTORS_SUB_TYPE_UNKNOWN;
+    return MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_UNKNOWN;
 }
 
-mycss_selectors_sub_type_t mycss_pseudo_element_by_name(const char *name, size_t length)
+mycss_selectors_sub_type_pseudo_element_t mycss_pseudo_element_by_name(const char *name, size_t length)
 {
     const mycss_selectots_pseudo_begin_entry_t *entry = mycss_pseudo_begin_entry_by_name(name, length, MyCSS_SELECTORS_PSEUDO_ELEMENT_NAME_STATIC_SIZE, mycss_selectors_pseudo_element_begin_map_index);
     
     if(entry)
         return entry->sub_type;
     
-    return MyCSS_SELECTORS_SUB_TYPE_UNKNOWN;
+    return MyCSS_SELECTORS_SUB_TYPE_PSEUDO_ELEMENT_UNKNOWN;
 }
 
 

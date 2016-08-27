@@ -38,7 +38,7 @@ extern "C" {
 #include "mycss/selectors/myosi.h"
 #include "myhtml/utils/mchar_async.h"
 
-typedef void * (*mycss_selectors_value_destroy_f)(mycss_entry_t* entry, mycss_selectors_type_t type, mycss_selectors_sub_type_t sub_type, void* value, bool self_destroy);
+typedef void * (*mycss_selectors_value_destroy_f)(mycss_entry_t* entry, mycss_selectors_type_t type, int sub_type, void* value, bool self_destroy);
 typedef void * (*mycss_selectors_value_function_destroy_f)(mycss_entry_t* entry, void* value, bool self_destroy);
 
 struct mycss_selectors_value_attribute {
@@ -61,12 +61,12 @@ void * mycss_selectors_value_undef_create(mycss_entry_t* entry, bool set_clean);
 mycss_selectors_object_attribute_t * mycss_selectors_value_attribute_create(mycss_entry_t* entry, bool set_clean);
 
 /* destroy */
-void * mycss_selectors_value_undef_destroy(mycss_entry_t* entry, mycss_selectors_type_t type, mycss_selectors_sub_type_t sub_type, void* value, bool self_destroy);
-void * mycss_selectors_value_id_destroy(mycss_entry_t* entry, mycss_selectors_type_t type, mycss_selectors_sub_type_t sub_type, void* value, bool self_destroy);
-void * mycss_selectors_value_class_destroy(mycss_entry_t* entry, mycss_selectors_type_t type, mycss_selectors_sub_type_t sub_type, void* value, bool self_destroy);
-void * mycss_selectors_value_element_destroy(mycss_entry_t* entry, mycss_selectors_type_t type, mycss_selectors_sub_type_t sub_type, void* value, bool self_destroy);
-void * mycss_selectors_value_attribute_destroy(mycss_entry_t* entry, mycss_selectors_type_t type, mycss_selectors_sub_type_t sub_type, void* value, bool self_destroy);
-void * mycss_selectors_value_pseudo_class_function_destroy(mycss_entry_t* entry, mycss_selectors_type_t type, mycss_selectors_sub_type_t sub_type, void* value, bool self_destroy);
+void * mycss_selectors_value_undef_destroy(mycss_entry_t* entry, mycss_selectors_type_t type, int sub_type, void* value, bool self_destroy);
+void * mycss_selectors_value_id_destroy(mycss_entry_t* entry, mycss_selectors_type_t type, int sub_type, void* value, bool self_destroy);
+void * mycss_selectors_value_class_destroy(mycss_entry_t* entry, mycss_selectors_type_t type, int sub_type, void* value, bool self_destroy);
+void * mycss_selectors_value_element_destroy(mycss_entry_t* entry, mycss_selectors_type_t type, int sub_type, void* value, bool self_destroy);
+void * mycss_selectors_value_attribute_destroy(mycss_entry_t* entry, mycss_selectors_type_t type, int sub_type, void* value, bool self_destroy);
+void * mycss_selectors_value_pseudo_class_function_destroy(mycss_entry_t* entry, mycss_selectors_type_t type, int sub_type, void* value, bool self_destroy);
 
 /* pseudo class function create */
 void * mycss_selectors_value_pseudo_class_function_undef_create(mycss_entry_t* entry, bool set_clean);

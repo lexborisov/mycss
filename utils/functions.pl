@@ -38,35 +38,40 @@ sub create_result {
                 push @{$result->{$id}}, [$ns, length($ns)];
         }
         
-        my $count = 1;
-        print "enum mycss_selectors_sub_type {\n";
-        print "\tMyCSS_SELECTORS_SUB_TYPE_UNDEF = 0x000,\n";
-        print "\tMyCSS_SELECTORS_SUB_TYPE_UNKNOWN = 0x001,\n";
+        my $count = 0;
+        my @res = (["MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_UNDEF", sprintf("0x%02x", $count++)],
+                   ["MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_UNKNOWN", sprintf("0x%02x", $count++)]);
+        
         foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "\tMyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_", uc(name_to_correct_name($name)), " = ", sprintf("0x%03x", ++$count), ",\n";
+                push @res, ["MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_".uc(name_to_correct_name($name)), sprintf("0x%02x", $count++)];
         }
-        print "}\n\n";
+        
+        push @res, ["MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_LAST_ENTRY", sprintf("0x%02x", $count++)];
+        
+        print "enum mycss_selectors_sub_type_pseudo_class_function {\n\t";
+        print join(",\n\t", @{format_list_text(\@res, "= ")}), "\n";
+        print "}\ntypedef mycss_selectors_sub_type_pseudo_class_function_t;\n\n";
         
         print "Max number: $count\n";
         
         foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "void * mycss_selectors_value_function_", lc(name_to_correct_name($name)), "_create(mycss_result_t* result, bool set_clean);\n";
+                print "void * mycss_selectors_value_pseudo_class_function_", lc(name_to_correct_name($name)), "_create(mycss_result_t* result, bool set_clean);\n";
         }
         print "\n";
         
         foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "void * mycss_selectors_value_function_", lc(name_to_correct_name($name)), "_create(mycss_result_t* result, bool set_clean)\n{\n";
+                print "void * mycss_selectors_value_pseudo_class_function_", lc(name_to_correct_name($name)), "_create(mycss_result_t* result, bool set_clean)\n{\n";
                 print "\treturn NULL;\n";
                 print "}\n\n";
         }
         
         foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "void * mycss_selectors_value_function_", lc(name_to_correct_name($name)), "_destroy(mycss_result_t* result, void* value, bool self_destroy);\n";
+                print "void * mycss_selectors_value_pseudo_class_function_", lc(name_to_correct_name($name)), "_destroy(mycss_result_t* result, void* value, bool self_destroy);\n";
         }
         print "\n";
         
         foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "void * mycss_selectors_value_function_", lc(name_to_correct_name($name)), "_destroy(mycss_result_t* result, void* value, bool self_destroy)\n{\n";
+                print "void * mycss_selectors_value_pseudo_class_function_", lc(name_to_correct_name($name)), "_destroy(mycss_result_t* result, void* value, bool self_destroy)\n{\n";
                 print "\tif(self_destroy) {\n";
                 print "\t\treturn NULL;\n";
                 print "\t}\n\n";
@@ -74,13 +79,33 @@ sub create_result {
                 print "\n}\n\n";
         }
         
-        print "static const mycss_selectors_value_function_destroy_f mycss_selectors_value_function_destroy_map[MyCSS_SELECTORS_TYPE_LAST_ENTRY] = {\n";
+        print "static const mycss_selectors_value_function_destroy_f mycss_selectors_value_function_destroy_map[MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_LAST_ENTRY] = {\n";
+        print "\tmycss_selectors_value_pseudo_class_function_undef_destroy,\n";
+        print "\tmycss_selectors_value_pseudo_class_function_undef_destroy,\n";
         foreach my $name (sort {$a cmp $b} keys %$func_map) {
-                print "\tmycss_selectors_value_function_", lc(name_to_correct_name($name)), "_destroy,\n";
+                print "\tmycss_selectors_value_pseudo_class_function_", lc(name_to_correct_name($name)), "_destroy,\n";
         }
         print "};\n\n";
         
         $result;
+}
+
+sub format_list_text {
+        my ($list, $join_val) = @_;
+        
+        my ($max, $len) = (0, 0);
+        foreach my $struct (@$list) {
+                $len = length($struct->[0]);
+                $max = $len if $len > $max;
+        }
+        
+        my @res;
+        foreach my $struct (@$list) {
+                $len = $max - length($struct->[0]);
+                push @res, sprintf("%s%$len"."s %s%s", $struct->[0], ($len ? " " : ""), $join_val, $struct->[1]);
+        }
+        
+        \@res;
 }
 
 sub test_result {

@@ -48,6 +48,8 @@ mycss_status_t mycss_stylesheet_init(mycss_stylesheet_t* stylesheet, mycss_entry
 mycss_status_t mycss_stylesheet_clean_all(mycss_stylesheet_t* stylesheet);
 mycss_stylesheet_t * mycss_stylesheet_destroy(mycss_stylesheet_t* stylesheet, bool self_destroy);
 
+void mycss_stylesheet_print(mycss_stylesheet_t* stylesheet, FILE* fh);
+
 #ifdef __cplusplus
 } /* extern "C" */
 #endif

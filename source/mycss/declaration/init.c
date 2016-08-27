@@ -44,18 +44,18 @@ mycss_status_t mycss_declaration_init(mycss_entry_t* entry, mycss_declaration_t*
     return MyCSS_STATUS_OK;
 }
 
+void mycss_declaration_clean(mycss_declaration_t* declaration)
+{
+    declaration->entry = NULL;
+    declaration->ending_token = MyCSS_TOKEN_TYPE_UNDEF;
+}
+
 void mycss_declaration_clean_all(mycss_declaration_t* declaration)
 {
     declaration->entry = NULL;
     declaration->ending_token = MyCSS_TOKEN_TYPE_UNDEF;
     
     mcobject_clean(declaration->mcobject_entries);
-}
-
-void mycss_declaration_clean(mycss_declaration_t* declaration)
-{
-    declaration->entry = NULL;
-    declaration->ending_token = MyCSS_TOKEN_TYPE_UNDEF;
 }
 
 mycss_declaration_t * mycss_declaration_destroy(mycss_declaration_t* declaration, bool self_destroy)
@@ -125,6 +125,8 @@ mycss_declaration_entry_t * mycss_declaration_parse(mycss_declaration_t* declara
     }
     
     status = mycss_tokenizer_end(entry);
+    
+    mycss_declaration_parser_end(entry, NULL);
     
     if(out_status)
         *out_status = status;

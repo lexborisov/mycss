@@ -22,71 +22,43 @@
 #define MyHTML_MyCSS_PROPERTY_RESOURCES_H
 #pragma once
 
-#define MyCSS_PROPERTY_STATIC_INDEX_FOR_SEARCH_SIZE 19
-#define MyCSS_PROPERTY_VALUE_STATIC_INDEX_FOR_SEARCH_SIZE 19
+#define MyCSS_PROPERTY_STATIC_INDEX_FOR_SEARCH_SIZE 3
+#define MyCSS_PROPERTY_VALUE_STATIC_INDEX_FOR_SEARCH_SIZE 5
 
 static const mycss_property_index_static_entry_t mycss_property_index_static_for_search[] = 
 {
 	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
+	{"height", 6, MyCSS_PROPERTY_TYPE_HEIGHT, mycss_property_parser_height, 0, 1},
 	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{"width", 5, MyCSS_PROPERTY_TYPE_WIDTH, mycss_property_parser_width, 0, 17},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_TYPE_UNDEF, NULL, 0, 0},
+	{"width", 5, MyCSS_PROPERTY_TYPE_WIDTH, mycss_property_parser_width, 0, 3},
 };
 
 static const mycss_property_value_index_static_entry_t mycss_property_value_index_static_for_search[] = 
 {
 	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
+	{"inherit", 7, MyCSS_PROPERTY_VALUE_INHERIT, 0, 1},
 	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
 	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{"inherit", 7, MyCSS_PROPERTY_VALUE_INHERIT, 0, 8},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{"auto", 4, MyCSS_PROPERTY_VALUE_AUTO, 0, 15},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
-	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
+	{"auto", 4, MyCSS_PROPERTY_VALUE_AUTO, 0, 4},
 	{NULL, 0, MyCSS_PROPERTY_VALUE_UNDEF, 0, 0},
 };
 
-const char * mycss_property_index_type_name[] = 
+static const char * mycss_property_index_type_name[] = 
 {
 	"",
+	"height",
 	"width",
 	""
 };
 
-const char * mycss_property_index_type_value[] = 
+static const char * mycss_property_index_type_value[] = 
 {
 	"",
 	"auto",
 	"inherit",
 	"length",
-	"percentage"
+	"percentage",
+	""
 };
 
 

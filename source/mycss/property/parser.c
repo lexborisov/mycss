@@ -32,7 +32,7 @@ bool mycss_property_parser_switch_to_parse_error(mycss_entry_t* entry)
     return false;
 }
 
-bool mycss_property_parser_width(mycss_entry_t* entry, mycss_token_t* token, bool last_response)
+bool mycss_property_parser_shared_wh(mycss_entry_t* entry, mycss_token_t* token, bool last_response)
 {
     if(token->type == MyCSS_TOKEN_TYPE_WHITESPACE)
         return true;
@@ -69,6 +69,20 @@ bool mycss_property_parser_width(mycss_entry_t* entry, mycss_token_t* token, boo
     }
     
     return mycss_property_parser_switch_to_find_important(entry);
+}
+
+/////////////////////////////////////////////////////////
+//// CSS Property
+////
+/////////////////////////////////////////////////////////
+bool mycss_property_parser_width(mycss_entry_t* entry, mycss_token_t* token, bool last_response)
+{
+    return mycss_property_parser_shared_wh(entry, token, last_response);
+}
+
+bool mycss_property_parser_height(mycss_entry_t* entry, mycss_token_t* token, bool last_response)
+{
+    return mycss_property_parser_shared_wh(entry, token, last_response);
 }
 
 

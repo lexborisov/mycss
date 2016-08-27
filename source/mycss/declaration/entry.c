@@ -85,7 +85,7 @@ mycss_declaration_entry_t * mycss_declaration_entry_delete(mycss_declaration_t* 
 
 mycss_declaration_entry_t * mycss_declaration_entry(mycss_declaration_t* declaration)
 {
-    return *declaration->entry;
+    return declaration->entry_last;
 }
 
 mycss_declaration_entry_t * mycss_declaration_entry_last(mycss_declaration_t* declaration)

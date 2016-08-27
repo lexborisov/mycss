@@ -39,6 +39,11 @@ mycss_status_t mycss_namespace_init(mycss_entry_t* entry, mycss_namespace_t* ns)
     return MyCSS_STATUS_OK;
 }
 
+void mycss_namespace_clean(mycss_namespace_t* ns)
+{
+    ns->entry = NULL;
+}
+
 mycss_status_t mycss_namespace_clean_all(mycss_namespace_t* ns)
 {
     mcobject_clean(ns->mcobject_entries);
@@ -282,6 +287,27 @@ mycss_namespace_entry_t * mycss_namespace_entry_by_name(mycss_namespace_t *ns, m
         return 0;
     
     return (mycss_namespace_entry_t*)(name_tree->nodes[ idx ].value);
+}
+
+void mycss_namespace_print_stylesheet(mycss_namespace_stylesheet_t* ns_stylesheet, FILE* fh)
+{
+    mycss_namespace_entry_t* ns_entry = ns_stylesheet->entry_first;
+    
+    while(ns_entry) {
+        fprintf(fh, "@namespace");
+        
+        if(ns_entry->name && ns_entry->name->length) {
+            fprintf(fh, " %s", ns_entry->name->data);
+        }
+        
+        if(ns_entry->url && ns_entry->url->length) {
+            fprintf(fh, " \"%s\"", ns_entry->url->data);
+        }
+        
+        fprintf(fh, ";\n");
+        
+        ns_entry = ns_entry->next;
+    }
 }
 
 void mycss_namespace_print(mycss_namespace_t* ns, mycss_namespace_entry_t* ns_entry, FILE* fh, bool with_vbar)

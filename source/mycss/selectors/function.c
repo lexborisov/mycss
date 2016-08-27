@@ -72,7 +72,7 @@ mycss_selectors_function_begin_f mycss_function_begin_by_name(const char *name, 
 /////////////////////////////////////////////////////////
 void mycss_selectors_begin_unknown(mycss_entry_t* entry, mycss_selectors_entry_t* selector)
 {
-    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_UNKNOWN;
+    selector->sub_type = MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_UNKNOWN;
     
     entry->parser = mycss_selectors_unknown_parser;
 }

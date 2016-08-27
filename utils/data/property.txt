@@ -1,9 +1,8 @@
-<!-- Border -->
 <property name="width" value="<length> | <percentage> | auto | inherit" initial="auto"></property>
+<property name="height" value="<length> | <percentage> | auto | inherit" initial="auto"></property>
 <!--
 <property name="border-width" value="[<length> | thin | medium | thick]{1,4}" initial=""></property>
 <property name="border-top-width" value="<length> | thin | medium | thick" initial="medium"></property>
 <property name="border-right-width" value="<length> | thin | medium | thick" initial="medium"></property>
 <property name="border-bottom-width" value="<length> | thin | medium | thick" initial="medium"></property>
 <property name="border-left-width" value="<length> | thin | medium | thick" initial="medium"></property>
--->

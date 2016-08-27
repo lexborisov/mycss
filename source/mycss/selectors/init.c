@@ -57,6 +57,15 @@ mycss_status_t mycss_selectors_init(mycss_entry_t* entry, mycss_selectors_t* sel
     return MyCSS_STATUS_OK;
 }
 
+void mycss_selectors_clean(mycss_selectors_t* selectors)
+{
+    selectors->entry      = NULL;
+    selectors->entry_last = NULL;
+    selectors->list       = NULL;
+    selectors->list_last  = NULL;
+    selectors->combinator = NULL;
+}
+
 mycss_status_t mycss_selectors_clean_all(mycss_selectors_t* selectors)
 {
     selectors->entry      = NULL;
@@ -90,6 +99,61 @@ mycss_selectors_t * mycss_selectors_destroy(mycss_selectors_t* selectors, bool s
 void mycss_selectors_entry_clean(mycss_selectors_entry_t* sel_entry)
 {
     memset(sel_entry, 0, sizeof(mycss_selectors_entry_t));
+}
+
+mycss_token_t * mycss_selectors_parse_token_callback(mycss_entry_t* entry, mycss_token_t* token)
+{
+    if(token->type == MyCSS_TOKEN_TYPE_COMMENT)
+        return token;
+    
+    bool last_response = true;
+    while((last_response = entry->parser(entry, token, last_response)) == false) {};
+    
+    return entry->token;
+}
+
+mycss_selectors_list_t * mycss_selectors_parse_by_function(mycss_selectors_t* selectors, mycss_parser_token_f func, myhtml_encoding_t encoding, const char* data, size_t data_size, mycss_status_t* out_status)
+{
+    mycss_entry_t *entry = selectors->ref_entry;
+    
+    mycss_entry_clean(entry);
+    
+    entry->token_ready_callback      = mycss_selectors_parse_token_callback;
+    entry->parser                    = func;
+    entry->parser_original           = NULL;
+    entry->parser_switch             = NULL;
+    entry->state                     = MyCSS_TOKENIZER_STATE_DATA;
+    entry->state_back                = MyCSS_TOKENIZER_STATE_DATA;
+    entry->selectors->ending_token   = MyCSS_TOKEN_TYPE_UNDEF;
+    
+    mycss_selectors_list_t *list = NULL;
+    selectors->list = &list;
+    
+    /* parsing */
+    mycss_encoding_set(entry, encoding);
+    
+    mycss_status_t status = mycss_tokenizer_chunk(entry, data, data_size);
+    if(status != MyCSS_STATUS_OK) {
+        if(out_status)
+            *out_status = status;
+        
+        return NULL;
+    }
+    
+    status = mycss_tokenizer_end(entry);
+    
+    if(out_status)
+        *out_status = status;
+    
+    if(list)
+        return list;
+    
+    return NULL;
+}
+
+mycss_selectors_list_t * mycss_selectors_parse(mycss_selectors_t* selectors, myhtml_encoding_t encoding, const char* data, size_t data_size, mycss_status_t* out_status)
+{
+    return mycss_selectors_parse_by_function(selectors, mycss_selectors_state_complex_selector_list, encoding, data, data_size, out_status);
 }
 
 mycss_selectors_entry_t * mycss_selectors_entry_find_first(mycss_selectors_entry_t* selector)
@@ -211,11 +275,14 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
             fprintf(fh, " %s ", mycss_selectors_resource_matcher_names_map[ mycss_selector_value_attribute(selector->value)->match ]);
             
             if(mycss_selector_value_attribute(selector->value)->value) {
-                fprintf(fh, "%s]", mycss_selector_value_attribute(selector->value)->value->data);
+                fprintf(fh, "%s", mycss_selector_value_attribute(selector->value)->value->data);
             }
-            else {
-                fprintf(fh, "]");
+            
+            if(mycss_selector_value_attribute(selector->value)->mod & MyCSS_SELECTORS_MOD_I) {
+                fprintf(fh, " i");
             }
+            
+            fprintf(fh, "]");
             
             break;
         }
@@ -241,7 +308,7 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
                 case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_MATCHES:
                 case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_CURRENT:
                     if(selector->value)
-                        mycss_entry_print(selectors->ref_entry, selector->value, fh);
+                        mycss_selectors_print_list(selectors, selector->value, fh);
                     break;
                 
                 case MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_FUNCTION_NTH_CHILD:
@@ -255,7 +322,7 @@ void mycss_selectors_print_selector(mycss_selectors_t* selectors, mycss_selector
                     
                         if(mycss_selector_value_an_plus_b(selector->value)->of) {
                             fprintf(fh, " of ");
-                            mycss_entry_print(selectors->ref_entry, mycss_selector_value_an_plus_b(selector->value)->of, fh);
+                            mycss_selectors_print_list(selectors, mycss_selector_value_an_plus_b(selector->value)->of, fh);
                         }
                     }
                     
@@ -369,4 +436,31 @@ void mycss_selectors_print_chain(mycss_selectors_t* selectors, mycss_selectors_e
     }
 }
 
+void mycss_selectors_print_list(mycss_selectors_t* selectors, mycss_selectors_list_t* selectors_list, FILE* fh)
+{
+    while(selectors_list) {
+        for(size_t i = 0; i < selectors_list->selector_list_length; i++) {
+            mycss_selectors_print_chain(selectors, selectors_list->selector_list[i], fh);
+            
+            if((i + 1) != selectors_list->selector_list_length)
+                fprintf(fh, ", ");
+        }
+        
+        if(selectors_list->declaration_entry) {
+            fprintf(fh, " {");
+            mycss_declaration_entries_print(selectors->ref_entry->declaration, selectors_list->declaration_entry, fh);
+            fprintf(fh, "}");
+        }
+        
+        if(selectors_list->flags == MyCSS_SELECTORS_FLAGS_SELECTOR_BAD) {
+            fprintf(fh, "^BAD_SELECTOR_LIST");
+        }
+        
+        if(selectors_list->next) {
+            fprintf(fh, "\n");
+        }
+        
+        selectors_list = selectors_list->next;
+    }
+}
 

@@ -72,7 +72,6 @@ mycss_status_t mycss_parse(mycss_entry_t* entry, myhtml_encoding_t encoding, con
         return status;
     
     status = mycss_tokenizer_end(entry);
-    mycss_entry_end(entry);
     
     return status;
 }

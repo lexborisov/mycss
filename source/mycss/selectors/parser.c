@@ -43,8 +43,8 @@ void mycss_selectors_parser_selector_ident_type(mycss_entry_t* entry, mycss_toke
     mycss_token_data_to_string(entry, token, str, true, false);
     
     /* set default namespace */
-    mycss_stylesheet_t* stylesheet = entry->stylesheet;
-    selector->ns_entry = stylesheet->ns_stylesheet.entry_default;
+    if(entry->stylesheet)
+        selector->ns_entry = entry->stylesheet->ns_stylesheet.entry_default;
     
     selector->type = MyCSS_SELECTORS_TYPE_ELEMENT;
     selector->key  = str;
@@ -58,8 +58,8 @@ void mycss_selectors_parser_selector_ident_attr(mycss_entry_t* entry, mycss_toke
     mycss_token_data_to_string(entry, token, str, true, false);
     
     /* set default namespace */
-    mycss_stylesheet_t* stylesheet = entry->stylesheet;
-    selector->ns_entry = stylesheet->ns_stylesheet.entry_default;
+    if(entry->stylesheet)
+        selector->ns_entry = entry->stylesheet->ns_stylesheet.entry_default;
     
     selector->type = MyCSS_SELECTORS_TYPE_ATTRIBUTE;
     selector->key  = str;
@@ -73,8 +73,8 @@ void mycss_selectors_parser_selector_id(mycss_entry_t* entry, mycss_token_t* tok
     mycss_token_data_to_string(entry, token, str, true, false);
     
     /* set default namespace */
-    mycss_stylesheet_t* stylesheet = entry->stylesheet;
-    selector->ns_entry = stylesheet->ns_stylesheet.entry_default;
+    if(entry->stylesheet)
+        selector->ns_entry = entry->stylesheet->ns_stylesheet.entry_default;
     
     selector->type = MyCSS_SELECTORS_TYPE_ID;
     selector->key  = str;
@@ -90,8 +90,8 @@ void mycss_selectors_parser_selector_class(mycss_entry_t* entry, mycss_token_t* 
     mycss_token_data_to_string(entry, token, str, true, false);
     
     /* set default namespace */
-    mycss_stylesheet_t* stylesheet = entry->stylesheet;
-    selector->ns_entry = stylesheet->ns_stylesheet.entry_default;
+    if(entry->stylesheet)
+        selector->ns_entry = entry->stylesheet->ns_stylesheet.entry_default;
     
     selector->type = MyCSS_SELECTORS_TYPE_CLASS;
     selector->key  = str;
@@ -112,7 +112,9 @@ void mycss_selectors_parser_selector_namespace(mycss_entry_t* entry, mycss_token
         myhtml_string_destroy(str, 0);
         
         selector->key = NULL;
-        selector->ns_entry = &entry->stylesheet->ns_stylesheet.entry_undef;
+        
+        if(entry->stylesheet)
+            selector->ns_entry = &entry->stylesheet->ns_stylesheet.entry_undef;
         
         return;
     }
@@ -121,12 +123,15 @@ void mycss_selectors_parser_selector_namespace(mycss_entry_t* entry, mycss_token
         myhtml_string_destroy(str, 0);
         
         selector->key = NULL;
-        selector->ns_entry = &entry->stylesheet->ns_stylesheet.entry_any;
+        
+        if(entry->stylesheet)
+            selector->ns_entry = &entry->stylesheet->ns_stylesheet.entry_any;
         
         return;
     }
     
-    selector->ns_entry = mycss_namespace_entry_by_name(entry->ns, entry->stylesheet->ns_stylesheet.name_tree, str->data, str->length, false);
+    if(entry->stylesheet)
+        selector->ns_entry = mycss_namespace_entry_by_name(entry->ns, entry->stylesheet->ns_stylesheet.name_tree, str->data, str->length, false);
     
     if(selector->ns_entry == NULL)
         mycss_selectors_parser_expectations_error(entry, token);
@@ -172,14 +177,12 @@ void mycss_selectors_parser_selector_after_namespace(mycss_entry_t* entry, mycss
 void mycss_selectors_parser_selector_value(mycss_entry_t* entry, mycss_token_t* token)
 {
     mycss_selectors_entry_t *selector = entry->selectors->entry_last;
-    
-    mycss_selectors_object_attribute_t *attr = mycss_selectors_value_attribute_create(entry, 1);
+    mycss_selectors_object_attribute_t *attr = selector->value;
     
     myhtml_string_t *str = mcobject_malloc(entry->mcobject_string_entries, NULL);
     mycss_token_data_to_string(entry, token, str, true, false);
     
     attr->value = str;
-    selector->value = attr;
 }
 
 void mycss_selectors_parser_selector_modifier(mycss_entry_t* entry, mycss_token_t* token)
@@ -199,13 +202,21 @@ void mycss_selectors_parser_selector_pseudo_class(mycss_entry_t* entry, mycss_to
     myhtml_string_t *str = mcobject_malloc(entry->mcobject_string_entries, NULL);
     mycss_token_data_to_string(entry, token, str, true, true);
     
-    selector->key  = str;
-    selector->type = MyCSS_SELECTORS_TYPE_PSEUDO_CLASS;
-    
     selector->sub_type = mycss_pseudo_class_by_name(str->data, str->length);
+    selector->key      = str;
+    selector->type     = MyCSS_SELECTORS_TYPE_PSEUDO_CLASS;
     
-    if(selector->sub_type == MyCSS_SELECTORS_SUB_TYPE_UNKNOWN)
-        selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+    /* hack for elements */
+    if(selector->sub_type == MyCSS_SELECTORS_SUB_TYPE_PSEUDO_CLASS_UNKNOWN) {
+        selector->sub_type = mycss_pseudo_element_by_name(str->data, str->length);
+        
+        if(selector->sub_type == MyCSS_SELECTORS_SUB_TYPE_PSEUDO_ELEMENT_UNKNOWN) {
+            selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
+        }
+        else {
+            selector->type = MyCSS_SELECTORS_TYPE_PSEUDO_ELEMENT;
+        }
+    }
     
     mycss_selectors_parser_check_and_set_bad_parent_selector(entry, entry->selectors->list_last);
     mycss_selectors_parser_selector_end(entry, token);
@@ -264,7 +275,7 @@ void mycss_selectors_parser_selector_pseudo_element(mycss_entry_t* entry, mycss_
     
     selector->sub_type = mycss_pseudo_element_by_name(str->data, str->length);
     
-    if(selector->sub_type == MyCSS_SELECTORS_SUB_TYPE_UNKNOWN)
+    if(selector->sub_type == MyCSS_SELECTORS_SUB_TYPE_PSEUDO_ELEMENT_UNKNOWN)
         selector->flags |= MyCSS_SELECTORS_FLAGS_SELECTOR_BAD;
     
     mycss_selectors_parser_check_and_set_bad_parent_selector(entry, entry->selectors->list_last);

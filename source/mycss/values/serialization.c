@@ -38,10 +38,10 @@ void mycss_serialization_length(mycss_values_length_t* value, FILE* fh)
 void mycss_serialization_percentage(mycss_values_percentage_t* value, FILE* fh)
 {
     if(value->is_float) {
-        fprintf(fh, "%0.4f", value->f);
+        fprintf(fh, "%0.4f%%", value->f);
     }
     else {
-        fprintf(fh, "%d", value->i);
+        fprintf(fh, "%d%%", value->i);
     }
 }
 

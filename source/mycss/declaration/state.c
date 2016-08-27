@@ -103,7 +103,7 @@ bool mycss_declaration_state_colon_important(mycss_entry_t* entry, mycss_token_t
             myhtml_string_destroy(&str, false);
             
             entry->parser = mycss_declaration_state_colon_delim_after_important;
-            (*entry->declaration->entry)->is_important = true;
+            (entry->declaration->entry_last)->is_important = true;
             
             return true;
         }
@@ -157,6 +157,8 @@ bool mycss_declaration_state_find_ending(mycss_entry_t* entry, mycss_token_t* to
     }
     else if(token->type == entry->declaration->ending_token) {
         mycss_entry_parser_list_pop(entry);
+        mycss_declaration_parser_end(entry, token);
+        
         return true;
     }
     
@@ -166,7 +168,7 @@ bool mycss_declaration_state_find_ending(mycss_entry_t* entry, mycss_token_t* to
 
 bool mycss_declaration_state_parse_error(mycss_entry_t* entry, mycss_token_t* token, bool last_response)
 {
-    (*entry->declaration->entry)->flags = MyCSS_DECLARATION_FLAGS_BAD;
+    (entry->declaration->entry_last)->flags = MyCSS_DECLARATION_FLAGS_BAD;
     
     entry->parser = mycss_declaration_state_find_ending;
     return false;
@@ -207,8 +209,10 @@ bool mycss_declaration_state_drop_component_value(mycss_entry_t* entry, mycss_to
         }
         default: {
             if(mycss_entry_parser_list_current_is_local(entry) == false) {
-                if(token->type == entry->declaration->ending_token)
+                if(token->type == entry->declaration->ending_token) {
                     mycss_entry_parser_list_pop(entry);
+                    mycss_declaration_parser_end(entry, token);
+                }
             }
             else {
                 if(token->type == entry->parser_ending_token)
