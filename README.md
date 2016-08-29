@@ -4,21 +4,25 @@ MyCSS is a fast CSS Parser implemented as a pure C99 library with the ability to
 
 By default MyCSS depends of one [MyHTML] library.
 
+This is one of module of the project [Modest]
+
 ## Now
 
 ```text
-The current version is 0.0.9 - this is devel version
+The current version is 0.1.1
 Release will have major version number 1
 ```
 
 ## Features
 
 - By [CSS3 specification]
+- Modules: [Selectors Level 4], [Namespace], [Values], [Box] and work in always process
 - Two API - [high] and [low]-level
 - Support [parsing by chunks]
 - Support 39 character encoding by specification [encoding.spec.whatwg.org]
 - Support detect encodings
-- C99 support
+- C99 support 
+- See [Modest] for full capacity
 
 ## Support encodings for InputStream
 
@@ -89,7 +93,6 @@ See [examples] directory
 
 ## Future
 
-- [Selectors Level 4]
 - [Media Queries Level 4]
 - [CSS Backgrounds and Borders Module Level 3]
 - [CSS Color Module Level 3]
@@ -151,9 +154,13 @@ See the [LICENSE] file.
 [MyHTML]: https://github.com/lexborisov/myhtml
 [parsing by chunks]: https://github.com/lexborisov/mycss/blob/master/examples/tokenizer_chunk_high_level.c
 [encoding.spec.whatwg.org]: https://encoding.spec.whatwg.org/
+[Modest]: https://github.com/lexborisov/Modest
 [support encodings]: https://github.com/lexborisov/myhtml#support-encodings-for-inputstream
 [examples]: https://github.com/lexborisov/mycss/blob/master/examples/
-[Selectors Level 4]: https://www.w3.org/TR/selectors4/
+[Selectors Level 4]: https://drafts.csswg.org/selectors/
+[Namespace]: https://drafts.csswg.org/css-namespaces/
+[Values]: https://drafts.csswg.org/css-values/
+[Box]: https://drafts.csswg.org/css-box/
 [Media Queries Level 4]: https://www.w3.org/TR/mediaqueries-4/
 [CSS Backgrounds and Borders Module Level 3]: https://www.w3.org/TR/css3-background/
 [CSS Color Module Level 3]: https://www.w3.org/TR/css3-color/

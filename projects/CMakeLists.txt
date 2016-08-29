@@ -10,8 +10,8 @@ set(MyCSS_PROJECT_API_HEADER "${MyCSS_PROJECT_DIR_ROOT}/include/mycss")
 set(MyCSS_PROJECT_SOURCE "${MyCSS_PROJECT_DIR_ROOT}/source")
 
 set(MyCSS_VERSION_MAJOR 0)
-set(MyCSS_VERSION_MINOR 0)
-set(MyCSS_VERSION_PATCH 9)
+set(MyCSS_VERSION_MINOR 1)
+set(MyCSS_VERSION_PATCH 1)
 set(MyCSS_VERSION_STRING "${MyCSS_VERSION_MAJOR}.${MyCSS_VERSION_MINOR}.${MyCSS_VERSION_PATCH}")
 
 project(${MyCSS_PROJECT_NAME})
@@ -47,14 +47,7 @@ option(MyCSS_INSTALL_HEADER "Install header files" OFF)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MyCSS_OPTIMIZATION_LEVEL}")
 
 include_directories(${MyCSS_PROJECT_SOURCE})
-FILE(GLOB ALL_SOURCE_LIST 
-  "${MyCSS_PROJECT_SOURCE}/mycss/*.c"
-  "${MyCSS_PROJECT_SOURCE}/mycss/selectors/*.c"
-  "${MyCSS_PROJECT_SOURCE}/mycss/namespace/*.c"
-  "${MyCSS_PROJECT_SOURCE}/mycss/media/*.c"
-  "${MyCSS_PROJECT_SOURCE}/mycss/values/*.c"
-  "${MyCSS_PROJECT_SOURCE}/mycss/property/*.c"
-  "${MyCSS_PROJECT_SOURCE}/mycss/declaration/*.c")
+FILE(GLOB_RECURSE ALL_SOURCE_LIST "${MyCSS_PROJECT_SOURCE}/*.c")
 
 if (!UNIX AND WIN32)
   if(${CMAKE_CL_64})
