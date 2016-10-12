@@ -93,10 +93,10 @@ int main(int argc, const char * argv[])
     }
     
     /* print result */
-    fprintf(stdout, "Result:\n");
+    printf("Result:\n");
     mycss_namespace_print_stylesheet(&entry->stylesheet->ns_stylesheet, stdout);
     mycss_stylesheet_print(entry->stylesheet, stdout);
-    fprintf(stdout, "\n");
+    printf("\n");
     
     // destroy all
     mycss_entry_destroy(entry, true);

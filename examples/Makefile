@@ -2,15 +2,13 @@ TARGET := examples
 SRCDIR := examples
 
 CC ?= gcc
-LIBS := ../lib/libmycss_static.a
+LIBS := ../lib/libmycss_static.a -lmyhtml
 LDLIBS := $(LIBS)
 
 MyCSS_OPTIMIZATION_LEVEL ?= -O2
 
 CFLAGS ?= -Wall -Werror
 CFLAGS += $(MyCSS_OPTIMIZATION_LEVEL) -fPIC --std=c99 -I../include
-
-LDFLAGS += -lmyhtml
 
 MyCSS_BUILD_WITHOUT_THREADS ?= NO
 ifeq ($(MyCSS_BUILD_WITHOUT_THREADS),YES)
