@@ -28,19 +28,10 @@ extern "C" {
 
 #include "myhtml/myosi.h"
 
-
 // base
 /*
  Very important!!!
- 
- for myhtml             0..00ffff;      MyHTML_STATUS_OK    == 0x000000
- for mycss and modules  010000..01ffff; MyCSS_STATUS_OK     == 0x000000
- for modest             020000..02ffff; MODEST_STATUS_OK    == 0x000000
- for myrender           030000..03ffff; MyRENDER_STATUS_OK  == 0x000000
- for mydom              040000..04ffff; MyDOM_STATUS_OK     == 0x000000
- for mynetwork          050000..05ffff; MyNETWORK_STATUS_OK == 0x000000
- for myecma             060000..06ffff; MyECMA_STATUS_OK    == 0x000000
- not occupied           070000..
+ see modest/myosi.h:modest_status_t
 */
 enum mycss_status {
     MyCSS_STATUS_OK                                     = 0x000000,
@@ -272,6 +263,7 @@ typedef mycss_token_t * (*mycss_token_ready_callback_f)(mycss_entry_t* entry, my
 typedef size_t (*mycss_string_process_state_f)(myhtml_string_t* str, const char* data, size_t length, size_t size, mycss_string_res_t *out_res);
 typedef bool (*mycss_parser_token_f)(mycss_entry_t* entry, mycss_token_t* token, bool last_response);
 typedef bool (*mycss_an_plus_b_state_f)(mycss_entry_t* entry, mycss_an_plus_b_t* anb, mycss_an_plus_b_entry_t* anb_entry, mycss_token_t* token);
+typedef void (*mycss_callback_serialization_f)(const char* buffer, size_t size, void* ctx);
 
 #ifdef __cplusplus
 } /* extern "C" */

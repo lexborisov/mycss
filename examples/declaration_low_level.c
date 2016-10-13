@@ -25,6 +25,11 @@
 #include <mycss/mycss.h>
 #include <mycss/declaration/init.h>
 
+void serialization_callback(const char* data, size_t len, void* ctx)
+{
+    printf("%.*s", (int)len, data);
+}
+
 int main(int argc, const char * argv[])
 {
     const char *declaration = "width : 100%; height: 1.2em";
@@ -51,7 +56,7 @@ int main(int argc, const char * argv[])
 
     /* print result */
     printf("Result:\n\t");
-    mycss_declaration_entries_print(entry->declaration, dec_entry, stdout);
+    mycss_declaration_serialization_entries(entry, dec_entry, serialization_callback, NULL);
     printf("\n");
 
     // destroy all

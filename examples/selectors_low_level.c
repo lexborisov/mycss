@@ -25,6 +25,11 @@
 #include <mycss/mycss.h>
 #include <mycss/selectors/init.h>
 
+void serialization_callback(const char* data, size_t len, void* ctx)
+{
+    printf("%.*s", (int)len, data);
+}
+
 int main(int argc, const char * argv[])
 {
     const char *selector = "#hash.class >> [class ~= bebebe]:has( :not( p:last-child  ):nth-child(2n+1))";
@@ -50,7 +55,7 @@ int main(int argc, const char * argv[])
 
     /* print result */
     printf("Result:\n\t");
-    mycss_selectors_print_list(entry->selectors, list, stdout);
+    mycss_selectors_serialization_list(entry->selectors, list, serialization_callback, NULL);
     printf("\n");
 
     // destroy all

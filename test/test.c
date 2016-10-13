@@ -364,9 +364,9 @@ void test_print_selector(mycss_selectors_t* selectors, mycss_selectors_entry_t* 
 void test_result_entry_print(mycss_entry_t* entry, mycss_selectors_list_t* selectors_list, myhtml_string_t* str)
 {
     while(selectors_list) {
-        for(size_t i = 0; i < selectors_list->selector_list_length; i++) {
+        for(size_t i = 0; i < selectors_list->entries_list_length; i++) {
 
-            mycss_selectors_entry_t* selector = selectors_list->selector_list[i];
+            mycss_selectors_entry_t* selector = selectors_list->entries_list[i].entry;
 
             while(selector) {
                 test_print_selector(entry->selectors, selector, str);
@@ -379,7 +379,7 @@ void test_result_entry_print(mycss_entry_t* entry, mycss_selectors_list_t* selec
                 selector = selector->next;
             }
 
-            if((i + 1) != selectors_list->selector_list_length)
+            if((i + 1) != selectors_list->entries_list_length)
                 myhtml_string_append(str, ",\n", 2);
         }
 

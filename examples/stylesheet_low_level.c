@@ -24,6 +24,11 @@
 
 #include <mycss/mycss.h>
 
+void serialization_callback(const char* data, size_t len, void* ctx)
+{
+    printf("%.*s", (int)len, data);
+}
+
 int main(int argc, const char * argv[])
 {
     const char *css =
@@ -52,8 +57,8 @@ body > div[id*=mu i]:not(:nth-child(2n+1)) {width: 1.4%}";
 
     /* print result */
     printf("Result:\n");
-    mycss_namespace_print_stylesheet(&entry->stylesheet->ns_stylesheet, stdout);
-    mycss_stylesheet_print(entry->stylesheet, stdout);
+    mycss_namespace_serialization_stylesheet(&entry->stylesheet->ns_stylesheet, serialization_callback, NULL);
+    mycss_stylesheet_serialization(entry->stylesheet, serialization_callback, NULL);
     printf("\n");
 
     // destroy all

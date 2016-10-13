@@ -9,8 +9,11 @@ use MyHTML::Base;
 use HTML::MyHTML;
 
 # The Code
-my $STATIC_DECLARATION_NAME_INDEX_LENGTH = 19;
-my $STATIC_DECLARATION_VALUE_INDEX_LENGTH = 19;
+#my $SAVE_TO_DIR = "../source/mycss";
+my $SAVE_TO_DIR = "/new/C-git/Modest/source/mycss";
+
+my $STATIC_DECLARATION_NAME_INDEX_LENGTH = 263;
+my $STATIC_DECLARATION_VALUE_INDEX_LENGTH = 227;
 
 my $PREFIX_PROPERTY_PARSER = "mycss_property_parser_";
 
@@ -26,8 +29,8 @@ my $ENUM_VALUE = "mycss_property";
 # The Code
 my ($tree, $node) = load_properties("data/property.txt");
 
-$STATIC_DECLARATION_NAME_INDEX_LENGTH = test_name_result($tree, $node);
-$STATIC_DECLARATION_VALUE_INDEX_LENGTH = test_value_result($tree, $node);
+#$STATIC_DECLARATION_NAME_INDEX_LENGTH = test_name_result($tree, $node);
+#$STATIC_DECLARATION_VALUE_INDEX_LENGTH = test_value_result($tree, $node);
 
 my ($index_name, $index_value) = create_const_file($tree, $node, 1);
 create_resource_file($tree, $node, $index_name, $index_value);
@@ -35,7 +38,7 @@ create_resource_file($tree, $node, $index_name, $index_value);
 sub create_const_file {
         my ($tree, $node, $save_result) = @_;
         
-        my $utils = MyHTML::Base->new(dirs => {source => "../source/mycss", template => "tmpl"});
+        my $utils = MyHTML::Base->new(dirs => {source => $SAVE_TO_DIR, template => "tmpl"});
         my $data_const = $utils->read_tmpl("property_const.h");
         
         my ($enum_name, $index_name) = create_name_enum($tree, $node);
@@ -55,10 +58,10 @@ sub create_const_file {
 sub create_resource_file {
         my ($tree, $node, $index_name, $index_value) = @_;
         
-        my $utils = MyHTML::Base->new(dirs => {source => "../source/mycss", template => "tmpl"});
+        my $utils = MyHTML::Base->new(dirs => {source => $SAVE_TO_DIR, template => "tmpl"});
         my $data_const = $utils->read_tmpl("property_resources.h");
         
-        my $result_name = create_name_result($tree, $node, $STATIC_DECLARATION_NAME_INDEX_LENGTH);
+        my ($result_name, $index_by_name) = create_name_result($tree, $node, $STATIC_DECLARATION_NAME_INDEX_LENGTH);
         my $static_list_name = create_static_list_index_for_name($result_name, $STATIC_DECLARATION_NAME_INDEX_LENGTH);
         
         my $result_value = create_value_result($tree, $node, $STATIC_DECLARATION_VALUE_INDEX_LENGTH);
@@ -67,13 +70,63 @@ sub create_resource_file {
         $utils->save_src("property/resources.h", $data_const, {
                 BODY => join("\n",
                         $static_list_name, 
-                        $static_list_value,
-                        create_index($index_name, "mycss_property_index_type_name"),
-                        create_index($index_value, "mycss_property_index_type_value")
+                        $static_list_value
                 ),
                 DEFINED => "#define MyCSS_PROPERTY_STATIC_INDEX_FOR_SEARCH_SIZE $STATIC_DECLARATION_NAME_INDEX_LENGTH\n".
                 "#define MyCSS_PROPERTY_VALUE_STATIC_INDEX_FOR_SEARCH_SIZE $STATIC_DECLARATION_VALUE_INDEX_LENGTH"
         });
+        
+        create_resource_name_file($index_name, $index_value);
+        create_serialization_file($index_name, $index_by_name);
+        #print_mycss_functions($index_name);
+        #print_modest_style_map($index_name);
+}
+
+sub create_resource_name_file {
+        my ($index_name, $index_value) = @_;
+        
+        my $utils = MyHTML::Base->new(dirs => {source => $SAVE_TO_DIR, template => "tmpl"});
+        my $data_const = $utils->read_tmpl("property_resources_name.h");
+        
+        $utils->save_src("property/resources_name.h", $data_const, {
+                BODY => join("\n",
+                        create_index($index_name, "mycss_property_index_type_name"),
+                        create_index($index_value, "mycss_property_index_type_value")
+                ),
+        });
+}
+
+sub create_serialization_file {
+        my ($index_name, $index_by_name) = @_;
+        
+        my $utils = MyHTML::Base->new(dirs => {source => $SAVE_TO_DIR, template => "tmpl"});
+        my $data_const = $utils->read_tmpl("declaration_serialization_resources.h");
+        
+        $utils->save_src("declaration/serialization_resources.h", $data_const, {
+                BODY => create_serialization_index($index_name, $index_by_name, "mycss_declaration_serialization_map_by_type")
+        });
+}
+
+sub create_serialization_index {
+        my ($index_name, $index_by_name, $var_name) = @_;
+        
+        my @res;
+        foreach my $name (@$index_name) {
+                $name = "undef" unless $name;
+                $name = lc(name_to_norm($name));
+                
+                if (exists $index_by_name->{$name}->{serialize} && $index_by_name->{$name}->{serialize}) {
+                        push @res, $index_by_name->{$name}->{serialize};
+                }
+                else {
+                        push @res, "undef";
+                }
+        }
+        
+        return
+        "static mycss_declaration_serialization_f $var_name\[] = \n{\n\tmycss_declaration_serialization_".
+        join(",\n\tmycss_declaration_serialization_", @res).
+        "\n};\n";
 }
 
 sub create_index {
@@ -90,9 +143,67 @@ sub create_index {
         "\n};\n";
 }
 
+sub print_mycss_functions {
+        my ($index) = @_;
+        
+        my @res;
+        foreach my $name (@$index) {
+                $name = "undef" unless $name;
+                $name = name_to_norm($name);
+                
+                push @res, qq~mycss_property_parser_$name~;
+        }
+        
+        pop @res;
+        
+        foreach my $name (@res) {
+                print qq~bool $name(mycss_entry_t* entry, mycss_token_t* token, bool last_response);\n~;
+        }
+        
+        print "\n\n";
+        
+        foreach my $name (@res) {
+                print qq~bool $name(mycss_entry_t* entry, mycss_token_t* token, bool last_response)\n{\n~;
+                print "\treturn mycss_property_shared_switch_to_parse_error(entry);\n";
+                print "}\n\n";
+        }
+}
+
+sub print_modest_style_map {
+        my ($index) = @_;
+        
+        my @res;
+        foreach my $name (@$index) {
+                $name = "undef" unless $name;
+                $name = name_to_norm($name);
+                
+                push @res, qq~modest_style_map_collate_declaration_$name~;
+        }
+        
+        pop @res;
+        
+        print
+        "static const modest_style_map_collate_f modest_style_map_static_collate_declaration\[] = \n{\n\t".
+        join(",\n\t", @res).
+        "\n};\n\n";
+        
+        foreach my $name (@res) {
+                print qq~void $name(myhtml_tree_node_t* node, modest_finder_thread_declaration_t* thr_dec);\n~;
+        }
+        
+        print "\n\n";
+        
+        foreach my $name (@res) {
+                print qq~void $name(myhtml_tree_node_t* node, modest_finder_thread_declaration_t* thr_dec)\n{\n~;
+                print "";
+                print "}\n\n";
+        }
+}
+
 sub create_name_result {
         my ($tree, $node, $index_length) = @_;
         my $result = {};
+        my $index_by_name = {};
         
         while($node) {
                 my $info = $node->info($tree);
@@ -112,10 +223,12 @@ sub create_name_result {
                 my $id = get_index_id($name, $index_length);
                 push @{$result->{$id}}, [$name, length($name), $parser];
                 
+                $index_by_name->{ name_to_norm($name) }->{serialize} = $info->{attr}->{serialize};
+                
                 $node = $node->next;
         }
         
-        $result;
+        ($result, $index_by_name);
 }
 
 sub create_name_enum {
@@ -172,17 +285,19 @@ sub create_value_result {
                         next;
                 }
                 
-                my $val_list = split_value_only_ident(lc($info->{attr}->{value}));
-                
-                foreach my $val (@$val_list) {
-                        next if exists $exists->{$val};
+                if($info->{attr}->{value}) {
+                        my $val_list = split_value_only_ident(lc($info->{attr}->{value}));
                         
-                        my $id = get_index_id($val, $index_length);
-                        push @{$result->{$id}}, [$val, length($val)];
-                        
-                        $exists->{$val} = 1;
+                        foreach my $val (@$val_list) {
+                                next if exists $exists->{$val};
+                                
+                                my $id = get_index_id($val, $index_length);
+                                push @{$result->{$id}}, [$val, length($val)];
+                                
+                                $exists->{$val} = 1;
+                        }
                 }
-                
+
                 $node = $node->next;
         }
         
@@ -209,11 +324,13 @@ sub create_value_enum {
                         next;
                 }
                 
-                my $val_list = split_value(lc($info->{attr}->{value}));
-                
-                foreach my $val (@$val_list) {
-                        $all_prop{$val} = 1;
-                        push @{$by_prop->{ $info->{attr}->{name} }}, $val;
+                if ($info->{attr}->{value}) {
+                        my $val_list = split_value(lc($info->{attr}->{value}));
+                        
+                        foreach my $val (@$val_list) {
+                                $all_prop{$val} = 1;
+                                push @{$by_prop->{ $info->{attr}->{name} }}, $val;
+                        }
                 }
                 
                 $node = $node->next;
@@ -263,6 +380,9 @@ sub split_value {
         my ($value) = @_;
         my @res;
         
+        $value =~ s/^\s+//;
+        $value =~ s/\s+$//;
+        
         $value =~ s/[\|\[\]]+//g;
         $value =~ s/\{[0-9,\s]+\}//g;
         $value =~ s/\#\d+?//g;
@@ -282,6 +402,9 @@ sub split_value_only_ident {
         my ($value) = @_;
         my @res;
         
+        $value =~ s/^\s+//;
+        $value =~ s/\s+$//;
+        
         $value =~ s/[\|\[\]]+//g;
         $value =~ s/\{[0-9,\s]+\}//g;
         $value =~ s/\#\d+?//g;
@@ -300,7 +423,7 @@ sub test_name_result {
         my $op = [0, undef];
         
         foreach my $idx (1..2048) {
-                my $result = create_name_result($tree, $node, $idx);
+                my ($result, $index_by_name) = create_name_result($tree, $node, $idx);
                 my $res_max = test_result_max_value($result, 0);
                 
                 if(!defined($op->[1]) || $op->[1] > $res_max) {
