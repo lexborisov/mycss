@@ -1,3 +1,9 @@
+<global type="value" value="inherit | initial | unset | auto | none | 
+first | start | last | first-except | 
+<length> | <percentage> | <custom-ident> | <color> | <image> | <image-list> | <number> | <url> | 
+<resolution> | <image-function> | <image-set-function> | <element-function> | 
+<cross-fade-function> | <linear-gradient-function> | <radial-gradient-function>"></global>
+
 <!-- Writing -->
 <!-- https://drafts.csswg.org/css-writing-modes/#propdef-direction -->
 <property name="direction" value="ltr | rtl" initial="ltr"></property>
@@ -18,7 +24,7 @@
 
 <!-- Basic User Interface -->
 <!-- https://drafts.csswg.org/css-ui/#propdef-box-sizing -->
-<property name="box-sizing" value="content-box | border-box" initial="content-box"></property>
+<property name="box-sizing" value="content-box | border-box | inherit | initial | unset" initial="content-box"></property>
 <!-- https://drafts.csswg.org/css-ui/#propdef-outline -->
 <property name="outline" value="" initial=""></property>
 <!-- https://drafts.csswg.org/css-ui/#propdef-outline-width -->
@@ -39,7 +45,7 @@ context-menu | help | pointer | progress | wait |
 cell | crosshair | text | vertical-text | 
 alias | copy | move | no-drop | not-allowed | grab | grabbing | 
 e-resize | n-resize | ne-resize | nw-resize | s-resize | se-resize | sw-resize | w-resize | ew-resize | ns-resize | nesw-resize | nwse-resize | col-resize | row-resize | all-scroll |
-zoom-in | zoom-out" initial="auto"></property>
+zoom-in | zoom-out | inherit | initial | unset" initial="auto"></property>
 <!-- https://drafts.csswg.org/css-ui/#propdef-caret-color -->
 <property name="caret-color" value="auto" initial="auto"></property>
 <!-- https://drafts.csswg.org/css-ui/#propdef-nav-up -->
@@ -93,15 +99,15 @@ zoom-in | zoom-out" initial="auto"></property>
 
 <!-- Text Decoration -->
 <!-- https://drafts.csswg.org/css-text-decor/#propdef-text-decoration-line -->
-<property name="text-decoration-line" value="none | underline | overline | line-through | blink " initial="none"></property>
+<property name="text-decoration-line" value="none | underline | overline | line-through | blink | inherit | initial | unset" initial="none" serialize="text_decoration_line"></property>
 <!-- https://drafts.csswg.org/css-text-decor/#propdef-text-decoration-color -->
-<property name="text-decoration-color" value="currentcolor" initial="currentcolor"></property>
+<property name="text-decoration-color" value="currentcolor | inherit | initial | unset" initial="currentcolor"></property>
 <!-- https://drafts.csswg.org/css-text-decor/#propdef-text-decoration-style -->
-<property name="text-decoration-styl" value="solid | double | dotted | dashed | wavy" initial="solid"></property>
-<!-- https://drafts.csswg.org/css-text-decor/#propdef-text-decoration -->
-<property name="text-decoration" value="" initial=""></property>
+<property name="text-decoration-style" value="solid | double | dotted | dashed | wavy | inherit | initial | unset" initial="solid"></property>
 <!-- https://drafts.csswg.org/css-text-decor/#propdef-text-decoration-skip -->
-<property name="text-decoration-skip" value="none | objects | spaces | ink | edges | box-decoration" initial="objects"></property>
+<property name="text-decoration-skip" value="none | objects | spaces | ink | edges | box-decoration | inherit | initial | unset" initial="objects" serialize="text_decoration_skip"></property>
+<!-- https://drafts.csswg.org/css-text-decor/#propdef-text-decoration -->
+<property name="text-decoration" value="" initial="" serialize="text_decoration"></property>
 <!-- https://drafts.csswg.org/css-text-decor/#propdef-text-underline-position -->
 <property name="text-underline-position" value="auto | under | left | right" initial="auto"></property>
 <!-- https://drafts.csswg.org/css-text-decor/#propdef-text-emphasis-style -->
@@ -133,11 +139,11 @@ zoom-in | zoom-out" initial="auto"></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-word-wrap -->
 <property name="word-wrap" value="normal | break-word | break-spaces" initial="normal"></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-text-align -->
-<property name="text-align" value="start | end | left | right | center | justify | match-parent | justify-all" initial="start"></property>
+<property name="text-align" value="start | end | left | right | center | justify | match-parent | justify-all | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-text-align-all -->
-<property name="text-align-all" value="start | end | left | right | center | justify | match-parent" initial="start"></property>
+<property name="text-align-all" value="start | end | left | right | center | justify | match-parent | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-text-align-last -->
-<property name="text-align-last" value="auto | start | end | left | right | center | justify" initial="auto"></property>
+<property name="text-align-last" value="auto | start | end | left | right | center | justify | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-text-justify -->
 <property name="text-justify" value="auto | none | inter-word | inter-character" initial="auto"></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-word-spacing -->
@@ -249,7 +255,7 @@ zoom-in | zoom-out" initial="auto"></property>
 
 <!-- Positioned Layout -->
 <!-- https://drafts.csswg.org/css-position/#propdef-position -->
-<property name="position" value="static | relative | absolute | sticky | fixed" initial="static"></property>
+<property name="position" value="static | relative | absolute | sticky | fixed | inherit | initial | unset" initial="static"></property>
 <!-- https://drafts.csswg.org/css-position/#propdef-top -->
 <property name="top" value="auto" initial="auto"></property>
 <!-- https://drafts.csswg.org/css-position/#propdef-right -->
@@ -267,7 +273,7 @@ zoom-in | zoom-out" initial="auto"></property>
 <!-- https://drafts.csswg.org/css-position/#propdef-offset-end -->
 <property name="offset-end" value="auto" initial="auto"></property>
 <!-- https://drafts.csswg.org/css-position/#propdef-z-index -->
-<property name="z-index" value="auto" initial="auto"></property>
+<property name="z-index" value="auto | inherit | initial | unset" initial="auto"></property>
 
 <!-- Lists -->
 <!-- https://drafts.csswg.org/css-lists/#propdef-list-style-image -->
@@ -314,7 +320,7 @@ zoom-in | zoom-out" initial="auto"></property>
 
 <!-- Color -->
 <!-- https://drafts.csswg.org/css-color/#propdef-color -->
-<property name="color" value="currentcolor" initial=""></property>
+<property name="color" value="<color>" initial=""></property>
 <!-- https://drafts.csswg.org/css-color/#propdef-opacity -->
 <property name="opacity" value="" initial="1"></property>
 <!-- https://drafts.csswg.org/css-color/#propdef-color-adjust -->
@@ -375,23 +381,23 @@ zoom-in | zoom-out" initial="auto"></property>
 
 <!-- Background -->
 <!-- https://drafts.csswg.org/css-backgrounds/#background -->
-<property name="background" value="" initial=""></property>
+<property name="background" value="repeat-x | repeat-y | repeat | space | round | no-repeat | scroll | fixed | local | auto | cover | contain | inherit | initial | unset" initial="" serialize="background" destroy="background"></property>
 <!-- https://drafts.csswg.org/css-backgrounds/#background-size -->
-<property name="background-size" value="auto | cover | contain" initial="auto"></property>
+<property name="background-size" value="auto | cover | contain | inherit | initial | unset" initial="auto" serialize="background_size" destroy="background_size"></property>
 <!-- https://drafts.csswg.org/css-backgrounds/#background-origin -->
-<property name="background-origin" value="border-box | padding-box | content-box" initial="padding-box"></property>
+<property name="background-origin" value="border-box | padding-box | content-box | inherit | initial | unset" initial="padding-box" serialize="type_list" destroy="type_list"></property>
 <!-- https://drafts.csswg.org/css-backgrounds/#background-clip -->
-<property name="background-clip" value="border-box | padding-box | content-box" initial="border-box"></property>
+<property name="background-clip" value="border-box | padding-box | content-box | inherit | initial | unset" initial="border-box" serialize="type_list" destroy="type_list"></property>
 <!-- https://drafts.csswg.org/css-backgrounds/#background-position -->
-<property name="background-position" value="left | center | right | top | bottom" initial="0% 0%"></property>
+<property name="background-position" value="left | center | right | top | bottom | inherit | initial | unset" initial="" serialize="background_position" destroy="background_position"></property>
 <!-- https://drafts.csswg.org/css-backgrounds/#background-attachment -->
-<property name="background-attachment" value="scroll | fixed | local" initial="scroll"></property>
+<property name="background-attachment" value="scroll | fixed | local | inherit | initial | unset" initial="scroll" serialize="type_list" destroy="type_list"></property>
 <!-- https://drafts.csswg.org/css-backgrounds/#background-repeat -->
-<property name="background-repeat" value="repeat-x | repeat-y | repeat | space | round | no-repeat" initial="repeat"></property>
+<property name="background-repeat" value="repeat-x | repeat-y | repeat | space | round | no-repeat | inherit | initial | unset" initial="repeat" serialize="background_repeat" destroy="background_repeat"></property>
 <!-- https://drafts.csswg.org/css-backgrounds/#background-image -->
-<property name="background-image" value="none" initial="none"></property>
+<property name="background-image" value="<image> | none | inherit | initial | unset" initial="" serialize="background_image" destroy="background_image"></property>
 <!-- https://drafts.csswg.org/css-backgrounds/#background-color -->
-<property name="background-color" value="none" initial="transparent"></property>
+<property name="background-color" value="<color> | inherit | initial | unset" initial="transparent"></property>
 
 <!-- Borders -->
 <!-- https://drafts.csswg.org/css-backgrounds/#border -->
@@ -402,32 +408,32 @@ zoom-in | zoom-out" initial="auto"></property>
 <property name="border-left" value="" initial=""></property>
 
 <!-- https://drafts.csswg.org/css-backgrounds/#border-width -->
-<property name="border-width" value="" initial=""></property>
-<property name="border-top-width" value="" initial=""></property>
-<property name="border-right-width" value="" initial=""></property>
-<property name="border-bottom-width" value="" initial=""></property>
-<property name="border-left-width" value="" initial=""></property>
+<property name="border-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="" serialize="shorthand_four" destroy="border_width"></property>
+<property name="border-top-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="medium"></property>
+<property name="border-right-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="medium"></property>
+<property name="border-bottom-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="medium"></property>
+<property name="border-left-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="medium"></property>
 
 <!-- https://drafts.csswg.org/css-backgrounds/#border-style -->
-<property name="border-style" value="" initial=""></property>
-<property name="border-top-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset" initial="none"></property>
-<property name="border-right-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset" initial="none"></property>
-<property name="border-bottom-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset" initial="none"></property>
-<property name="border-left-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset" initial="none"></property>
+<property name="border-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="" serialize="shorthand_four" destroy="border_style"></property>
+<property name="border-top-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="none"></property>
+<property name="border-right-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="none"></property>
+<property name="border-bottom-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="none"></property>
+<property name="border-left-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="none"></property>
 
 <!-- https://drafts.csswg.org/css-backgrounds/#border-color -->
-<property name="border-color" value="" initial=""></property>
-<property name="border-top-color" value="" initial=""></property>
-<property name="border-right-color" value="" initial=""></property>
-<property name="border-bottom-color" value="" initial=""></property>
-<property name="border-left-color" value="" initial=""></property>
+<property name="border-color" value="<color> | inherit | initial | unset" initial="" serialize="shorthand_four" destroy="border_color"></property>
+<property name="border-top-color" value="<color> | inherit | initial | unset" initial=""></property>
+<property name="border-right-color" value="<color> | inherit | initial | unset" initial=""></property>
+<property name="border-bottom-color" value="<color> | inherit | initial | unset" initial=""></property>
+<property name="border-left-color" value="<color> | inherit | initial | unset" initial=""></property>
 
 <!-- https://drafts.csswg.org/css-backgrounds/#border-radius -->
-<property name="border-radius" value="" initial=""></property>
-<property name="border-top-left-radius" value="" initial=""></property>
-<property name="border-top-right-radius" value="" initial=""></property>
-<property name="border-bottom-right-radius" value="" initial=""></property>
-<property name="border-bottom-left-radius" value="" initial=""></property>
+<property name="border-radius" value="" initial="" serialize="border_radius"></property>
+<property name="border-top-left-radius" value="<length> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_top_left_radius"></property>
+<property name="border-top-right-radius" value="<length> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_top_right_radius"></property>
+<property name="border-bottom-right-radius" value="<length> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_bottom_right_radius"></property>
+<property name="border-bottom-left-radius" value="<length> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_bottom_left_radius"></property>
 
 <!-- https://drafts.csswg.org/css-backgrounds/#border-image -->
 <property name="border-image" value="" initial=""></property>
@@ -445,57 +451,57 @@ zoom-in | zoom-out" initial="auto"></property>
 
 <!-- Padding -->
 <!-- https://drafts.csswg.org/css-box/#propdef-padding -->
-<property name="padding" value="" initial="" serialize="padding"></property>
+<property name="padding" value="<length> | <percentage> | inherit | initial | unset" initial="" serialize="shorthand_four" destroy="padding"></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-padding-top -->
-<property name="padding-top" value="<length> | <percentage> | inherit" initial="0" serialize="padding_x"></property>
+<property name="padding-top" value="<length> | <percentage> | inherit | initial | unset" initial="0"></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-padding-right -->
-<property name="padding-right" value="<length> | <percentage> | inherit" initial="0"></property>
+<property name="padding-right" value="<length> | <percentage> | inherit | initial | unset" initial="0"></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-padding-bottom -->
-<property name="padding-bottom" value="<length> | <percentage> | inherit" initial="0"></property>
+<property name="padding-bottom" value="<length> | <percentage> | inherit | initial | unset" initial="0"></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-padding-left -->
-<property name="padding-left" value="<length> | <percentage> | inherit" initial="0"></property>
+<property name="padding-left" value="<length> | <percentage> | inherit | initial | unset" initial="0"></property>
 
-<!-- Padding -->
+<!-- Margin -->
 <!-- https://drafts.csswg.org/css-box/#propdef-margin -->
-<property name="margin" value="" initial=""></property>
+<property name="margin" value="<length> | <percentage> | inherit | initial | unset | auto" initial="" serialize="shorthand_four" destroy="margin"></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-margin-top -->
-<property name="margin-top" value="auto" initial="0"></property>
+<property name="margin-top" value="<length> | <percentage> | inherit | initial | unset | auto" initial="0"></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-margin-right -->
-<property name="margin-right" value="auto" initial="0"></property>
+<property name="margin-right" value="<length> | <percentage> | inherit | initial | unset | auto" initial="0"></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-margin-bottom -->
-<property name="margin-bottom" value="auto" initial="0"></property>
+<property name="margin-bottom" value="<length> | <percentage> | inherit | initial | unset | auto" initial="0"></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-margin-left -->
-<property name="margin-left" value="auto" initial="0"></property>
+<property name="margin-left" value="<length> | <percentage> | inherit | initial | unset | auto" initial="0"></property>
 
 <!-- https://drafts.csswg.org/css-box/#propdef-width -->
-<property name="width" value="<length> | <percentage> | available | min-content | max-content | fit-content | auto | inherit" initial="auto"></property>
+<property name="width" value="<length> | <percentage> | available | min-content | max-content | fit-content | auto | inherit | initial | unset" initial="auto"></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-height -->
-<property name="height" value="<length> | <percentage> | available | min-content | max-content | fit-content | complex | auto | inherit" initial="auto"></property>
+<property name="height" value="<length> | <percentage> | available | min-content | max-content | fit-content | complex | auto | inherit | initial | unset" initial="auto"></property>
 
 <!-- https://drafts.csswg.org/css-box/#propdef-min-width -->
-<property name="min-width" value="border-box | content-box | available | min-content | max-content | fit-content" initial="0"></property>
+<property name="min-width" value="<length> | <percentage> | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-min-height -->
-<property name="min-height" value="border-box | content-box | available | min-content | max-content | fit-content" initial="0"></property>
+<property name="min-height" value="<length> | <percentage> | inherit | initial | unset" initial=""></property>
 
 <!-- https://drafts.csswg.org/css-box/#propdef-max-width -->
-<property name="max-width" value="border-box | content-box | available | min-content | max-content | fit-content | none" initial="none"></property>
+<property name="max-width" value="<length> | <percentage> | none | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-max-height -->
-<property name="max-height" value="border-box | content-box | available | min-content | max-content | fit-content | none" initial="none"></property>
+<property name="max-height" value="<length> | <percentage> | none | inherit | initial | unset" initial=""></property>
 
 <!-- https://drafts.csswg.org/css-box/#propdef-float -->
-<property name="float" value="left | right | top | bottom | start | end | none" initial="none"></property>
+<property name="float" value="left | right | top | bottom | start | end | none | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-clear -->
-<property name="clear" value="none | left | right | both" initial="none"></property>
+<property name="clear" value="none | left | right | both | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-clear-after -->
-<property name="clear-after" value="none | left | right | top | bottom | inside | outside | start | end | both | descendants" initial="none"></property>
+<property name="clear-after" value="none | left | right | top | bottom | inside | outside | start | end | both | descendants | inherit | initial | unset" initial=""></property>
 
 <!-- Overflow -->
 <!-- https://drafts.csswg.org/css-box/#propdef-overflow -->
-<property name="overflow" value="visible | hidden | scroll | auto | no-display | no-content" initial=""></property>
+<property name="overflow" value="visible | hidden | scroll | auto | no-display | no-content | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-overflow-x -->
-<property name="overflow-x" value="visible | hidden | scroll | auto | no-display | no-content" initial="visible"></property>
+<property name="overflow-x" value="visible | hidden | scroll | auto | no-display | no-content | inherit | initial | unset" initial="visible"></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-overflow-y -->
-<property name="overflow-y" value="visible | hidden | scroll | auto | no-display | no-content" initial="visible"></property>
+<property name="overflow-y" value="visible | hidden | scroll | auto | no-display | no-content | inherit | initial | unset" initial="visible"></property>
 <!-- https://drafts.csswg.org/css-overflow/#propdef-continue -->
 <property name="continue" value="auto | overflow | paginate | fragments | discard" initial="auto"></property>
 <!-- https://drafts.csswg.org/css-overflow/#propdef-max-lines -->
@@ -503,16 +509,16 @@ zoom-in | zoom-out" initial="auto"></property>
 
 
 <!-- https://drafts.csswg.org/css-box/#propdef-visibility -->
-<property name="visibility" value="visible | hidden | collapse" initial="visible"></property>
+<property name="visibility" value="visible | hidden | collapse | inherit | initial | unset" initial="visible"></property>
 
 <!-- https://drafts.csswg.org/css-box/#propdef-float-displace -->
-<property name="float-displace" value="line | indent | block | block-within-page" initial="line"></property>
+<property name="float-displace" value="line | indent | block | block-within-page | inherit | initial | unset" initial="line"></property>
 
 <!-- https://drafts.csswg.org/css-box/#propdef-indent-edge-reset -->
 <property name="indent-edge-reset" value="none | margin-edge | border-edge | padding-edge | content-edge" initial="none"></property>
 
 <!-- https://drafts.csswg.org/css-display/#propdef-display -->
-<property name="display" value="block | inline | run-in | flow | flow-root | table | flex | grid | ruby | list-item | table-row-group | table-header-group | table-footer-group | table-row | table-cell | table-column-group | table-column | table-caption | ruby-base | ruby-text | ruby-base-container | ruby-text-container | contents | none | inline-block | inline-list-item | inline-table | inline-flex | inline-grid" initial="inline"></property>
+<property name="display" value="none | block | inline | run-in | flow | flow-root | table | flex | grid | ruby | list-item | table-row-group | table-header-group | table-footer-group | table-row | table-cell | table-column-group | table-column | table-caption | ruby-base | ruby-text | ruby-base-container | ruby-text-container | contents | inline-block | inline-list-item | inline-table | inline-flex | inline-grid | inherit | initial | unset" initial="inline"></property>
 
 <!-- https://drafts.csswg.org/css-display/#propdef-box-suppress -->
 <property name="box-suppress" value="show | discard | hide" initial="show"></property>
@@ -546,21 +552,21 @@ zoom-in | zoom-out" initial="auto"></property>
 
 <!-- Font -->
 <!-- https://drafts.csswg.org/css-fonts/Fonts.html#propdef-font -->
-<property name="font" value="caption | icon | menu | message-box | small-caption | status-bar | normal | small-caps" initial=""></property>
+<property name="font" value="caption | icon | menu | message-box | small-caption | status-bar | normal | small-caps | inherit | initial | unse" initial="" serialize="font" destroy="font"></property>
 <!-- https://drafts.csswg.org/css-fonts/Fonts.html#propdef-font-synthesis -->
 <property name="font-synthesis" value="none | weight | style" initial="weight style"></property>
 <!-- https://drafts.csswg.org/css-fonts/Fonts.html#propdef-font-family -->
-<property name="font-family" value="" initial=""></property>
+<property name="font-family" value="<family-name> | <generic-family> | serif | sans-serif | cursive | fantasy | monospace | inherit | initial | unse" initial="" serialize="font_family"></property>
 <!-- https://drafts.csswg.org/css-fonts/Fonts.html#propdef-font-weight -->
-<property name="font-weight" value="normal | bold | bolder | lighter | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900" initial="normal"></property>
+<property name="font-weight" value="normal | bold | bolder | lighter | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | inherit | initial | unset" initial="normal"></property>
 <!-- https://drafts.csswg.org/css-fonts/Fonts.html#propdef-font-stretch -->
 <property name="font-stretch" value="normal | ultra-condensed | extra-condensed | condensed | semi-condensed | semi-expanded | expanded | extra-expanded | ultra-expanded" initial="normal"></property>
 <!-- https://drafts.csswg.org/css-fonts/Fonts.html#propdef-font-style -->
-<property name="font-style" value="normal | italic | oblique" initial="normal"></property>
+<property name="font-style" value="normal | italic | oblique | inherit | initial | unset" initial="normal"></property>
 <!-- https://drafts.csswg.org/css-fonts/Fonts.html#propdef-font-size -->
-<property name="font-size" value="xx-small | x-small | small | medium | large | x-large | xx-large | larger | smaller" initial="medium"></property>
+<property name="font-size" value="<length> | <percentage> | xx-small | x-small | small | medium | large | x-large | xx-large | larger | smaller | inherit | initial | unset" initial="medium"></property>
 <!-- https://drafts.csswg.org/css-fonts/Fonts.html#propdef-font-size-adjust -->
-<property name="font-size-adjust" value="none" initial="none"></property>
+<property name="font-size-adjust" value="<number> | none | inherit | initial | unset" initial=""></property>
 
 <!-- https://drafts.csswg.org/css-fonts/Fonts.html#propdef-font-kerning -->
 <property name="font-kerning" value="auto | normal | none" initial="auto"></property>
@@ -584,9 +590,9 @@ zoom-in | zoom-out" initial="auto"></property>
 <property name="font-language-override" value="normal" initial="normal"></property>
 
 <!-- https://drafts.csswg.org/css21/visudet.html#propdef-line-height -->
-<property name="line-height" value="normal | inherit" initial="normal"></property>
+<property name="line-height" value="<number> | <length> | <percentage> | normal | inherit | initial | unset" initial="normal"></property>
 <!-- https://drafts.csswg.org/css21/visudet.html#propdef-vertical-align -->
-<property name="vertical-align" value="baseline | sub | super | top | text-top | middle | bottom | text-bottom" initial="baseline"></property>
+<property name="vertical-align" value="<length> | <percentage> | baseline | sub | super | top | text-top | middle | bottom | text-bottom | inherit | initial | unset" initial="baseline"></property>
 
 <!-- SVG Painting: Filling, Stroking and Marker Symbols -->
 <!-- https://www.w3.org/TR/SVG/painting.html#FillProperty -->

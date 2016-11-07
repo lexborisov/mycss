@@ -32,8 +32,8 @@ my ($tree, $node) = load_properties("data/property.txt");
 #$STATIC_DECLARATION_NAME_INDEX_LENGTH = test_name_result($tree, $node);
 #$STATIC_DECLARATION_VALUE_INDEX_LENGTH = test_value_result($tree, $node);
 
-my ($index_name, $index_value) = create_const_file($tree, $node, 1);
-create_resource_file($tree, $node, $index_name, $index_value);
+my ($index_name, $index_value, undef, $index_value_ids) = create_const_file($tree, $node, 1);
+create_resource_file($tree, $node, $index_name, $index_value, undef, $index_value_ids);
 
 sub create_const_file {
         my ($tree, $node, $save_result) = @_;
@@ -42,7 +42,7 @@ sub create_const_file {
         my $data_const = $utils->read_tmpl("property_const.h");
         
         my ($enum_name, $index_name) = create_name_enum($tree, $node);
-        my ($enum_value, $index_value) = create_value_enum($tree, $node);
+        my ($enum_value, $index_value, $index_value_ids) = create_value_enum($tree, $node);
         
         if ($save_result){
                 my @res;
@@ -52,11 +52,11 @@ sub create_const_file {
                 $utils->save_src("property/const.h", $data_const, {BODY => join("", @res)});
 		}
         
-        ($index_name, $index_value);
+        ($index_name, $index_value, undef, $index_value_ids);
 }
 
 sub create_resource_file {
-        my ($tree, $node, $index_name, $index_value) = @_;
+        my ($tree, $node, $index_name, $index_value, $index_name_ids, $index_value_ids) = @_;
         
         my $utils = MyHTML::Base->new(dirs => {source => $SAVE_TO_DIR, template => "tmpl"});
         my $data_const = $utils->read_tmpl("property_resources.h");
@@ -64,7 +64,7 @@ sub create_resource_file {
         my ($result_name, $index_by_name) = create_name_result($tree, $node, $STATIC_DECLARATION_NAME_INDEX_LENGTH);
         my $static_list_name = create_static_list_index_for_name($result_name, $STATIC_DECLARATION_NAME_INDEX_LENGTH);
         
-        my $result_value = create_value_result($tree, $node, $STATIC_DECLARATION_VALUE_INDEX_LENGTH);
+        my $result_value = create_value_result($tree, $node, $STATIC_DECLARATION_VALUE_INDEX_LENGTH, $index_value_ids);
         my $static_list_value = create_static_list_index_for_value($result_value, $STATIC_DECLARATION_VALUE_INDEX_LENGTH);
         
         $utils->save_src("property/resources.h", $data_const, {
@@ -78,6 +78,7 @@ sub create_resource_file {
         
         create_resource_name_file($index_name, $index_value);
         create_serialization_file($index_name, $index_by_name);
+        create_destroy_file($index_name, $index_by_name);
         #print_mycss_functions($index_name);
         #print_modest_style_map($index_name);
 }
@@ -107,13 +108,30 @@ sub create_serialization_file {
         });
 }
 
+sub create_destroy_file {
+        my ($index_name, $index_by_name) = @_;
+        
+        my $utils = MyHTML::Base->new(dirs => {source => $SAVE_TO_DIR, template => "tmpl"});
+        my $data_const = $utils->read_tmpl("declaration_destroy_resources.h");
+        
+        $utils->save_src("declaration/entry_destroy_resources.h", $data_const, {
+                BODY => create_destroy_index($index_name, $index_by_name, "mycss_declaration_entry_destroy_map_by_type")
+        });
+}
+
 sub create_serialization_index {
         my ($index_name, $index_by_name, $var_name) = @_;
         
         my @res;
-        foreach my $name (@$index_name) {
-                $name = "undef" unless $name;
-                $name = lc(name_to_norm($name));
+        foreach my $val (@$index_name) {
+                my $name = "";
+                
+                unless ($val->[0]) {
+                        $name = "undef";
+                }
+                else {
+                        $name = lc(name_to_norm($val->[0]));
+                }
                 
                 if (exists $index_by_name->{$name}->{serialize} && $index_by_name->{$name}->{serialize}) {
                         push @res, $index_by_name->{$name}->{serialize};
@@ -129,11 +147,47 @@ sub create_serialization_index {
         "\n};\n";
 }
 
+sub create_destroy_index {
+        my ($index_name, $index_by_name, $var_name) = @_;
+        
+        my @res;
+        foreach my $val (@$index_name) {
+                my $name = "";
+                
+                unless ($val->[0]) {
+                        $name = "undef";
+                }
+                else {
+                        $name = lc(name_to_norm($val->[0]));
+                }
+                
+                if (exists $index_by_name->{$name}->{destroy} && $index_by_name->{$name}->{destroy}) {
+                        push @res, $index_by_name->{$name}->{destroy};
+                }
+                else {
+                        push @res, "undef";
+                }
+        }
+        
+        return
+        "static mycss_callback_declaration_destroy_f $var_name\[] = \n{\n\tmycss_declaration_entry_destroy_".
+        join(",\n\tmycss_declaration_entry_destroy_", @res).
+        "\n};\n";
+}
+
 sub create_index {
         my ($index, $var_name) = @_;
         
         my @res;
-        foreach my $name (@$index) {
+        foreach my $val (@$index) {
+                my $name = $val->[0];
+                
+                $name =~ s/_/-/g;
+                
+                if ($name =~ s/^-//) {
+                    $name = "<$name>";
+                }
+                
                 push @res, qq~\t"$name"~;
         }
         
@@ -223,7 +277,10 @@ sub create_name_result {
                 my $id = get_index_id($name, $index_length);
                 push @{$result->{$id}}, [$name, length($name), $parser];
                 
-                $index_by_name->{ name_to_norm($name) }->{serialize} = $info->{attr}->{serialize};
+                $index_by_name->{ name_to_norm($name) } = {
+                        serialize => $info->{attr}->{serialize},
+                        destroy => $info->{attr}->{destroy}
+                };
                 
                 $node = $node->next;
         }
@@ -237,7 +294,7 @@ sub create_name_enum {
         my $idx = 1;
         my $res = [];
         my @for_sort;
-        my @index = ("");
+        my @index = (["", "0x0000"]);
         
         while($node) {
                 my $info = $node->info($tree);
@@ -257,12 +314,13 @@ sub create_name_enum {
         
         push @$res, [$norm_prefix ."_UNDEF", "0x0000"];
         foreach my $name (sort {$a cmp $b} @for_sort) {
-                push @$res, [$norm_prefix ."_". uc(name_to_norm($name)), sprintf("0x%04x", $idx++)];
+                my $id = sprintf("0x%04x", $idx++);
+                push @$res, [$norm_prefix ."_". uc(name_to_norm($name)), $id];
                 
-                push @index, $name;
+                push @index, [lc($name), $id];
         }
         push @$res, [$norm_prefix ."_LAST_ENTRY", sprintf("0x%04x", $idx++)];
-        push @index, "";
+        push @index, ["", "0x0000"];
         
         my @return;
         push @return, "enum $ENUM_NAME {\n\t";
@@ -273,7 +331,7 @@ sub create_name_enum {
 }
 
 sub create_value_result {
-        my ($tree, $node, $index_length) = @_;
+        my ($tree, $node, $index_length, $index_value_ids) = @_;
         my $result = {};
         my $exists = {};
         
@@ -286,15 +344,18 @@ sub create_value_result {
                 }
                 
                 if($info->{attr}->{value}) {
-                        my $val_list = split_value_only_ident(lc($info->{attr}->{value}));
+                        my $val_list = split_value(lc($info->{attr}->{value}));
                         
                         foreach my $val (@$val_list) {
-                                next if exists $exists->{$val};
+                                next if exists $exists->{$val->[0]};
                                 
-                                my $id = get_index_id($val, $index_length);
-                                push @{$result->{$id}}, [$val, length($val)];
+                                my $name = $val->[0];
+                                $name =~ s/_/-/g;
                                 
-                                $exists->{$val} = 1;
+                                my $id = get_index_id($val->[0], $index_length);
+                                push @{$result->{$id}}, [lc($name), length($val->[0]), $index_value_ids->{ $val->[0] }];
+                                
+                                $exists->{$val->[0]} = 1;
                         }
                 }
 
@@ -304,6 +365,37 @@ sub create_value_result {
         $result;
 }
 
+sub create_value_enum_property {
+        my ($info, $all_prop, $by_prop) = @_;
+        
+        if($info->{attr}->{value}) {
+                my $val_list = split_value(lc($info->{attr}->{value}));
+                
+                foreach my $val (@$val_list) {
+                        next unless defined $val->[0];
+                        push @{$by_prop->{ $info->{attr}->{name} }}, $val;
+                        
+                        $all_prop->{ $val->[0] } = 0
+                                unless exists $all_prop->{ $val->[0] };
+                }
+        }
+}
+
+sub create_value_enum_global {
+        my ($info, $all_prop, $by_prop) = @_;
+        return unless exists $info->{attr}->{type} && $info->{attr}->{value};
+        
+        if($info->{attr}->{value}) {
+                my $val_list = split_value(lc($info->{attr}->{value}));
+                
+                foreach my $val (@$val_list) {
+                        next unless defined $val->[0];
+                        
+                        $all_prop->{ $val->[0] } = 1;
+                }
+        }
+}
+
 sub create_value_enum {
         my ($tree, $node) = @_;
         
@@ -311,27 +403,21 @@ sub create_value_enum {
         my $res = [];
         
         my $by_prop = {};
-        my $index_val = {};
-        my @index = ("");
+        my $index_ids = {};
+        my @index = (["", "0x0000"]);
         
         my %all_prop;
         
         while($node) {
                 my $info = $node->info($tree);
                 
-                if($info->{tag} ne "property") {
-                        $node = $node->next;
-                        next;
+                if($info->{tag} eq "property") {
+                        create_value_enum_property($info, \%all_prop, $by_prop);
                 }
-                
-                if ($info->{attr}->{value}) {
-                        my $val_list = split_value(lc($info->{attr}->{value}));
-                        
-                        foreach my $val (@$val_list) {
-                                $all_prop{$val} = 1;
-                                push @{$by_prop->{ $info->{attr}->{name} }}, $val;
-                        }
+                elsif($info->{tag} eq "global") {
+                        create_value_enum_global($info, \%all_prop, $by_prop);
                 }
+
                 
                 $node = $node->next;
         }
@@ -342,15 +428,18 @@ sub create_value_enum {
         push @$res, [$norm_prefix ."_VALUE_UNDEF", "0x0000"];
         foreach my $name (sort {$a cmp $b} keys %all_prop) {
                 my $id = sprintf("0x%04x", $idx++);
-                my $norm_name = $norm_prefix ."_VALUE_". uc(name_to_norm($name));
+                 my $norm_name = $norm_prefix ."_VALUE_". $name;
+                 
+                if($all_prop{$name}) {
+                        push @$res, [$norm_name, $id];
+                }
                 
-                push @$res, [$norm_name, $id];
-                push @index, $name;
+                $index_ids->{$name} = $id;
+                push @index, [lc($name), $id];
                 
-                $index_val->{$norm_name} = $id;
         }
-        push @$res, [$norm_prefix ."_VALUE_LAST_ENTRY", sprintf("0x%04x", $idx++)];
-        push @index, "";
+        push @$res, [$norm_prefix ."_VALUE_LAST_ENTRY", sprintf("0x%04x", $idx)];
+        push @index, ["", "0x0000"];
         
         my @return;
         push @return, "enum $ENUM_VALUE\_value {\n\t";
@@ -359,13 +448,15 @@ sub create_value_enum {
         
         foreach my $key (sort {$a cmp $b} keys %$by_prop)
         {
+                my $idx = $idx;
                 my $norm_key = name_to_norm($key);
+                
                 $res = [];
                 
-                foreach my $name (sort {$a cmp $b} @{$by_prop->{$key}}) {
-                        my $norm_name = $norm_prefix ."_VALUE_". uc(name_to_norm($name));
-                        
-                        push @$res, [$norm_prefix ."_". uc($norm_key) ."_". uc(name_to_norm($name)), $index_val->{$norm_name}];
+                foreach my $val (sort {$a cmp $b} @{$by_prop->{$key}})
+                {
+                        my $name = $val->[0];
+                        push @$res, [$norm_prefix ."_". uc($norm_key) ."_$name", $index_ids->{$name}];
                 }
                 
                 push @return, "enum $ENUM_VALUE\_$norm_key {\n\t";
@@ -373,7 +464,7 @@ sub create_value_enum {
                 push @return, "}\ntypedef $ENUM_VALUE\_$norm_key\_t;\n\n";
         }
         
-        (\@return, \@index);
+        (\@return, \@index, $index_ids);
 }
 
 sub split_value {
@@ -383,39 +474,68 @@ sub split_value {
         $value =~ s/^\s+//;
         $value =~ s/\s+$//;
         
-        $value =~ s/[\|\[\]]+//g;
-        $value =~ s/\{[0-9,\s]+\}//g;
-        $value =~ s/\#\d+?//g;
-                
-        foreach my $val (split /\s+/, $value) {
-                if($val =~ s/^<([^>]+)>$/$1/) {
-                        $val = "$val";
-                }
-                
-                push @res, $val;
-        }
+        my @abc = split //, $value;
+        
+        my $state = \&split_value_state_1;
+        while ($state = $state->(\@abc, \@res)) {}
         
         \@res;
 }
 
-sub split_value_only_ident {
-        my ($value) = @_;
-        my @res;
+sub split_value_state_1 {
+        my ($abc, $res) = @_;
         
-        $value =~ s/^\s+//;
-        $value =~ s/\s+$//;
+        my $inc = 0;
+        my @name;
         
-        $value =~ s/[\|\[\]]+//g;
-        $value =~ s/\{[0-9,\s]+\}//g;
-        $value =~ s/\#\d+?//g;
+        foreach my $char (@$abc) {
+                if($char eq "|") {
+                        my $name = join "", @name;
+                        
+                        if ($name =~ /\S/) {
+                            push @$res, [uc(name_to_norm( $name )), $inc];
+                        }
+                        
+                        @name = ();
+                        next;
+                }
+                elsif($char eq "[") {
+                        $inc++;
+                        next;
+                }
+                elsif($char eq "]") {
+                        my $name = join "", @name;
+                        
+                        if ($name =~ /\S/) {
+                            push @$res, [uc(name_to_norm( $name )), $inc];
+                        }
+                        
+                        @name = ();
+                        
+                        $inc--;
+                        next;
+                }
+                elsif($char eq "<") {
+                        push @name, "_";
+                        next;
+                }
+                elsif($char eq ">") {
+                        next;
+                }
+                elsif($char eq " " || $char eq "\t" || $char eq "\n" || $char eq "\r") {
+                        next;
+                }
                 
-        foreach my $val (split /\s+/, $value) {
-                next if $val =~ /^<([^>]+)>$/;
-                
-                push @res, $val;
+                push @name, $char;
         }
         
-        \@res;
+        my $name = join "", @name;
+        
+        if ($name =~ /\S/) {
+            push @$res, [uc(name_to_norm( $name )), $inc];
+        }
+        
+        undef;
 }
 
 sub test_name_result {
@@ -551,7 +671,7 @@ sub create_static_list_index_for_value {
         
         my $struct = create_static_list_index($result,
         sub {
-                return $PREFIX_PROPERTY_VALUE . uc(name_to_norm($_[0][0]));
+                return $_[0][2];
         },
         sub {
                 return $PREFIX_PROPERTY_VALUE_UNDEF;
