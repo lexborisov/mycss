@@ -6,11 +6,11 @@ first | start | last | first-except |
 
 <!-- Writing -->
 <!-- https://drafts.csswg.org/css-writing-modes/#propdef-direction -->
-<property name="direction" value="ltr | rtl" initial="ltr"></property>
+<property name="direction" value="ltr | rtl | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-writing-modes/#propdef-unicode-bidi -->
-<property name="unicode-bidi" value="normal | embed | isolate | bidi-override | isolate-override | plaintext" initial="normal"></property>
+<property name="unicode-bidi" value="normal | embed | isolate | bidi-override | isolate-override | plaintext | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-writing-modes/#propdef-writing-mode -->
-<property name="writing-mode" value="horizontal-tb | vertical-rl | vertical-lr | sideways-rl | sideways-lr" initial="horizontal-tb"></property>
+<property name="writing-mode" value="horizontal-tb | vertical-rl | vertical-lr | sideways-rl | sideways-lr" initial=""></property>
 <!-- https://drafts.csswg.org/css-writing-modes/#propdef-text-orientation -->
 <property name="text-orientation" value="mixed | upright | sideways" initial="mixed"></property>
 <!-- https://drafts.csswg.org/css-writing-modes/#propdef-glyph-orientation-vertical -->
@@ -123,21 +123,21 @@ zoom-in | zoom-out | inherit | initial | unset" initial="auto"></property>
 
 <!-- Text -->
 <!-- https://drafts.csswg.org/css-text/#propdef-text-transform -->
-<property name="text-transform" value="none | capitalize | uppercase | lowercase | full-width" initial="none"></property>
+<property name="text-transform" value="none | capitalize | uppercase | lowercase | full-width | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-white-space -->
-<property name="white-space" value="normal | pre | nowrap | pre-wrap | pre-line" initial="normal"></property>
+<property name="white-space" value="normal | pre | nowrap | pre-wrap | pre-line | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-tab-size -->
-<property name="tab-size" value="" initial="8"></property>
+<property name="tab-size" value="<number> | <length> | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-word-break -->
-<property name="word-break" value="normal | keep-all | break-all" initial="normal"></property>
+<property name="word-break" value="normal | keep-all | break-all | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-line-break -->
-<property name="line-break" value="auto | loose | normal | strict" initial="auto"></property>
+<property name="line-break" value="auto | loose | normal | strict | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-hyphens -->
-<property name="hyphens" value="none | manual | auto" initial="manual"></property>
+<property name="hyphens" value="none | manual | auto | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-overflow-wrap -->
-<property name="overflow-wrap" value="normal | break-word | break-spaces" initial="normal"></property>
+<property name="overflow-wrap" value="normal | break-word | break-spaces | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-word-wrap -->
-<property name="word-wrap" value="normal | break-word | break-spaces" initial="normal"></property>
+<property name="word-wrap" value="normal | break-word | break-spaces | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-text-align -->
 <property name="text-align" value="start | end | left | right | center | justify | match-parent | justify-all | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-text-align-all -->
@@ -145,11 +145,11 @@ zoom-in | zoom-out | inherit | initial | unset" initial="auto"></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-text-align-last -->
 <property name="text-align-last" value="auto | start | end | left | right | center | justify | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-text-justify -->
-<property name="text-justify" value="auto | none | inter-word | inter-character" initial="auto"></property>
+<property name="text-justify" value="auto | none | inter-word | inter-character | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-word-spacing -->
-<property name="word-spacing" value="normal" initial="normal"></property>
+<property name="word-spacing" value="<length> | <percentage> | normal | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-letter-spacing -->
-<property name="letter-spacing" value="normal" initial="normal"></property>
+<property name="letter-spacing" value="<length> | normal | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-text-indent -->
 <property name="text-indent" value="hanging | each-line" initial="0"></property>
 <!-- https://drafts.csswg.org/css-text/#propdef-hanging-punctuation -->
@@ -401,11 +401,11 @@ zoom-in | zoom-out | inherit | initial | unset" initial="auto"></property>
 
 <!-- Borders -->
 <!-- https://drafts.csswg.org/css-backgrounds/#border -->
-<property name="border" value="" initial=""></property>
-<property name="border-top" value="" initial=""></property>
-<property name="border-right" value="" initial=""></property>
-<property name="border-bottom" value="" initial=""></property>
-<property name="border-left" value="" initial=""></property>
+<property name="border" value="<color> | <length> | thin | medium | thick | none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="" serialize="border_x" destroy="border_x"></property>
+<property name="border-top" value="<color> | <length> | thin | medium | thick | none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="" serialize="border_x" destroy="border_x"></property>
+<property name="border-right" value="<color> | <length> | thin | medium | thick | none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="" serialize="border_x" destroy="border_x"></property>
+<property name="border-bottom" value="<color> | <length> | thin | medium | thick | none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="" serialize="border_x" destroy="border_x"></property>
+<property name="border-left" value="<color> | <length> | thin | medium | thick | none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="" serialize="border_x" destroy="border_x"></property>
 
 <!-- https://drafts.csswg.org/css-backgrounds/#border-width -->
 <property name="border-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="" serialize="shorthand_four" destroy="border_width"></property>
@@ -429,11 +429,11 @@ zoom-in | zoom-out | inherit | initial | unset" initial="auto"></property>
 <property name="border-left-color" value="<color> | inherit | initial | unset" initial=""></property>
 
 <!-- https://drafts.csswg.org/css-backgrounds/#border-radius -->
-<property name="border-radius" value="" initial="" serialize="border_radius"></property>
-<property name="border-top-left-radius" value="<length> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_top_left_radius"></property>
-<property name="border-top-right-radius" value="<length> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_top_right_radius"></property>
-<property name="border-bottom-right-radius" value="<length> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_bottom_right_radius"></property>
-<property name="border-bottom-left-radius" value="<length> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_bottom_left_radius"></property>
+<property name="border-radius" value="<length> | <percentage> | inherit | initial | unset" initial="" serialize="border_radius"></property>
+<property name="border-top-left-radius" value="<length> | <percentage> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_top_left_radius"></property>
+<property name="border-top-right-radius" value="<length> | <percentage> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_top_right_radius"></property>
+<property name="border-bottom-right-radius" value="<length> | <percentage> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_bottom_right_radius"></property>
+<property name="border-bottom-left-radius" value="<length> | <percentage> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_bottom_left_radius"></property>
 
 <!-- https://drafts.csswg.org/css-backgrounds/#border-image -->
 <property name="border-image" value="" initial=""></property>
