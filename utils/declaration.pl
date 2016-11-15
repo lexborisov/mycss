@@ -12,8 +12,8 @@ use HTML::MyHTML;
 #my $SAVE_TO_DIR = "../source/mycss";
 my $SAVE_TO_DIR = "/new/C-git/Modest/source/mycss";
 
-my $STATIC_DECLARATION_NAME_INDEX_LENGTH = 263;
-my $STATIC_DECLARATION_VALUE_INDEX_LENGTH = 227;
+my $STATIC_DECLARATION_NAME_INDEX_LENGTH = 373;
+my $STATIC_DECLARATION_VALUE_INDEX_LENGTH = 397;
 
 my $PREFIX_PROPERTY_PARSER = "mycss_property_parser_";
 
@@ -80,7 +80,7 @@ sub create_resource_file {
         create_serialization_file($index_name, $index_by_name);
         create_destroy_file($index_name, $index_by_name);
         #print_mycss_functions($index_name);
-        #print_modest_style_map($index_name);
+        print_modest_style_map($index_name);
 }
 
 sub create_resource_name_file {
@@ -201,8 +201,8 @@ sub print_mycss_functions {
         my ($index) = @_;
         
         my @res;
-        foreach my $name (@$index) {
-                $name = "undef" unless $name;
+        foreach my $entry (@$index) {
+                my $name = $entry->[0] ? $entry->[0] : "undef";
                 $name = name_to_norm($name);
                 
                 push @res, qq~mycss_property_parser_$name~;
@@ -227,8 +227,8 @@ sub print_modest_style_map {
         my ($index) = @_;
         
         my @res;
-        foreach my $name (@$index) {
-                $name = "undef" unless $name;
+        foreach my $entry (@$index) {
+                my $name = $entry->[0] ? $entry->[0] : "undef";
                 $name = name_to_norm($name);
                 
                 push @res, qq~modest_style_map_collate_declaration_$name~;
@@ -242,13 +242,13 @@ sub print_modest_style_map {
         "\n};\n\n";
         
         foreach my $name (@res) {
-                print qq~void $name(myhtml_tree_node_t* node, modest_finder_thread_declaration_t* thr_dec);\n~;
+                print qq~void $name(modest_t* modest, myhtml_tree_node_t* node, mycss_declaration_entry_t* decl, modest_style_raw_specificity_t* spec);\n~;
         }
         
         print "\n\n";
         
         foreach my $name (@res) {
-                print qq~void $name(myhtml_tree_node_t* node, modest_finder_thread_declaration_t* thr_dec)\n{\n~;
+                print qq~void $name(modest_t* modest, myhtml_tree_node_t* node, mycss_declaration_entry_t* decl, modest_style_raw_specificity_t* spec)\n{\n~;
                 print "";
                 print "}\n\n";
         }

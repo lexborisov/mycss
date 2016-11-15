@@ -10,11 +10,11 @@ first | start | last | first-except |
 <!-- https://drafts.csswg.org/css-writing-modes/#propdef-unicode-bidi -->
 <property name="unicode-bidi" value="normal | embed | isolate | bidi-override | isolate-override | plaintext | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-writing-modes/#propdef-writing-mode -->
-<property name="writing-mode" value="horizontal-tb | vertical-rl | vertical-lr | sideways-rl | sideways-lr" initial=""></property>
+<property name="writing-mode" value="horizontal-tb | vertical-rl | vertical-lr | sideways-rl | sideways-lr | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-writing-modes/#propdef-text-orientation -->
-<property name="text-orientation" value="mixed | upright | sideways" initial="mixed"></property>
+<property name="text-orientation" value="mixed | upright | sideways | inherit | initial | unset" initial="mixed"></property>
 <!-- https://drafts.csswg.org/css-writing-modes/#propdef-glyph-orientation-vertical -->
-<property name="glyph-orientation-vertical" value="auto | 0deg | 90deg | 0 | 90" initial=""></property>
+<property name="glyph-orientation-vertical" value="auto | 0deg | 90deg | 0 | 90 | inherit | initial | unset" initial=""></property>
 <!-- https://drafts.csswg.org/css-writing-modes/#propdef-text-combine-upright -->
 <property name="text-combine-upright" value="none | all | digits" initial="none"></property>
 
@@ -407,12 +407,24 @@ zoom-in | zoom-out | inherit | initial | unset" initial="auto"></property>
 <property name="border-bottom" value="<color> | <length> | thin | medium | thick | none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="" serialize="border_x" destroy="border_x"></property>
 <property name="border-left" value="<color> | <length> | thin | medium | thick | none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="" serialize="border_x" destroy="border_x"></property>
 
+<!-- https://drafts.csswg.org/css-logical-props/#propdef-border-block-start -->
+<property name="border-block-start" value="<color> | <length> | thin | medium | thick | none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="" serialize="border_x" destroy="border_x"></property>
+<property name="border-block-end" value="<color> | <length> | thin | medium | thick | none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="" serialize="border_x" destroy="border_x"></property>
+<property name="border-inline-start" value="<color> | <length> | thin | medium | thick | none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="" serialize="border_x" destroy="border_x"></property>
+<property name="border-inline-end" value="<color> | <length> | thin | medium | thick | none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="" serialize="border_x" destroy="border_x"></property>
+
 <!-- https://drafts.csswg.org/css-backgrounds/#border-width -->
 <property name="border-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="" serialize="shorthand_four" destroy="border_width"></property>
 <property name="border-top-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="medium"></property>
 <property name="border-right-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="medium"></property>
 <property name="border-bottom-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="medium"></property>
 <property name="border-left-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="medium"></property>
+
+<!-- https://drafts.csswg.org/css-logical-props/#propdef-border-block-start-width -->
+<property name="border-block-start-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="medium" serialize="shorthand_four" destroy="border_width"></property>
+<property name="border-block-end-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="medium" serialize="shorthand_four" destroy="border_width"></property>
+<property name="border-inline-start-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="medium" serialize="shorthand_four" destroy="border_width"></property>
+<property name="border-inline-end-width" value="<length> | thin | medium | thick | inherit | initial | unset" initial="medium" serialize="shorthand_four" destroy="border_width"></property>
 
 <!-- https://drafts.csswg.org/css-backgrounds/#border-style -->
 <property name="border-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="" serialize="shorthand_four" destroy="border_style"></property>
@@ -421,6 +433,12 @@ zoom-in | zoom-out | inherit | initial | unset" initial="auto"></property>
 <property name="border-bottom-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="none"></property>
 <property name="border-left-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="none"></property>
 
+<!-- https://drafts.csswg.org/css-logical-props/#propdef-border-block-start-style -->
+<property name="border-block-start-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="none" serialize="shorthand_four" destroy="border_style"></property>
+<property name="border-block-end-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="none" serialize="shorthand_four" destroy="border_style"></property>
+<property name="border-inline-start-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="none" serialize="shorthand_four" destroy="border_style"></property>
+<property name="border-inline-end-style" value="none | hidden | dotted | dashed | solid | double | groove | ridge | inset | outset | inherit | initial | unset" initial="none" serialize="shorthand_four" destroy="border_style"></property>
+
 <!-- https://drafts.csswg.org/css-backgrounds/#border-color -->
 <property name="border-color" value="<color> | inherit | initial | unset" initial="" serialize="shorthand_four" destroy="border_color"></property>
 <property name="border-top-color" value="<color> | inherit | initial | unset" initial=""></property>
@@ -428,12 +446,20 @@ zoom-in | zoom-out | inherit | initial | unset" initial="auto"></property>
 <property name="border-bottom-color" value="<color> | inherit | initial | unset" initial=""></property>
 <property name="border-left-color" value="<color> | inherit | initial | unset" initial=""></property>
 
+<!-- https://drafts.csswg.org/css-logical-props/#propdef-border-block-start-color -->
+<property name="border-block-start-color" value="<color> | inherit | initial | unset" initial="" serialize="shorthand_four" destroy="border_color"></property>
+<property name="border-block-end-color" value="<color> | inherit | initial | unset" initial="" serialize="shorthand_four" destroy="border_color"></property>
+<property name="border-inline-start-color" value="<color> | inherit | initial | unset" initial="" serialize="shorthand_four" destroy="border_color"></property>
+<property name="border-inline-end-color" value="<color> | inherit | initial | unset" initial="" serialize="shorthand_four" destroy="border_color"></property>
+
 <!-- https://drafts.csswg.org/css-backgrounds/#border-radius -->
 <property name="border-radius" value="<length> | <percentage> | inherit | initial | unset" initial="" serialize="border_radius"></property>
 <property name="border-top-left-radius" value="<length> | <percentage> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_top_left_radius"></property>
 <property name="border-top-right-radius" value="<length> | <percentage> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_top_right_radius"></property>
 <property name="border-bottom-right-radius" value="<length> | <percentage> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_bottom_right_radius"></property>
 <property name="border-bottom-left-radius" value="<length> | <percentage> | inherit | initial | unset" initial="" serialize="shorthand_two_type" destroy="border_bottom_left_radius"></property>
+
+
 
 <!-- https://drafts.csswg.org/css-backgrounds/#border-image -->
 <property name="border-image" value="" initial=""></property>
@@ -461,6 +487,15 @@ zoom-in | zoom-out | inherit | initial | unset" initial="auto"></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-padding-left -->
 <property name="padding-left" value="<length> | <percentage> | inherit | initial | unset" initial="0"></property>
 
+<!-- https://drafts.csswg.org/css-logical-props/#propdef-padding-block-start -->
+<property name="padding-block-start" value="<length> | <percentage> | inherit | initial | unset" initial="0"></property>
+<!-- https://drafts.csswg.org/css-logical-props/#propdef-padding-block-end -->
+<property name="padding-block-end" value="<length> | <percentage> | inherit | initial | unset" initial="0"></property>
+<!-- https://drafts.csswg.org/css-logical-props/#propdef-padding-inline-start -->
+<property name="padding-inline-start" value="<length> | <percentage> | inherit | initial | unset" initial="0"></property>
+<!-- https://drafts.csswg.org/css-logical-props/#propdef-padding-inline-end -->
+<property name="padding-inline-end" value="<length> | <percentage> | inherit | initial | unset" initial="0"></property>
+
 <!-- Margin -->
 <!-- https://drafts.csswg.org/css-box/#propdef-margin -->
 <property name="margin" value="<length> | <percentage> | inherit | initial | unset | auto" initial="" serialize="shorthand_four" destroy="margin"></property>
@@ -472,6 +507,15 @@ zoom-in | zoom-out | inherit | initial | unset" initial="auto"></property>
 <property name="margin-bottom" value="<length> | <percentage> | inherit | initial | unset | auto" initial="0"></property>
 <!-- https://drafts.csswg.org/css-box/#propdef-margin-left -->
 <property name="margin-left" value="<length> | <percentage> | inherit | initial | unset | auto" initial="0"></property>
+
+<!-- https://drafts.csswg.org/css-logical-props/#propdef-margin-block-start -->
+<property name="margin-block-start" value="<length> | <percentage> | inherit | initial | unset | auto" initial="0"></property>
+<!-- https://drafts.csswg.org/css-logical-props/#propdef-margin-block-end -->
+<property name="margin-block-end" value="<length> | <percentage> | inherit | initial | unset | auto" initial="0"></property>
+<!-- https://drafts.csswg.org/css-logical-props/#propdef-margin-inline-start -->
+<property name="margin-inline-start" value="<length> | <percentage> | inherit | initial | unset | auto" initial="0"></property>
+<!-- https://drafts.csswg.org/css-logical-props/#propdef-margin-inline-end -->
+<property name="margin-inline-end" value="<length> | <percentage> | inherit | initial | unset | auto" initial="0"></property>
 
 <!-- https://drafts.csswg.org/css-box/#propdef-width -->
 <property name="width" value="<length> | <percentage> | available | min-content | max-content | fit-content | auto | inherit | initial | unset" initial="auto"></property>
