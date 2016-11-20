@@ -79,8 +79,9 @@ sub create_resource_file {
         create_resource_name_file($index_name, $index_value);
         create_serialization_file($index_name, $index_by_name);
         create_destroy_file($index_name, $index_by_name);
+        create_default_file($index_name, $index_by_name);
         #print_mycss_functions($index_name);
-        print_modest_style_map($index_name);
+        print_modest_style_map($index_name, $index_by_name);
 }
 
 sub create_resource_name_file {
@@ -119,6 +120,17 @@ sub create_destroy_file {
         });
 }
 
+sub create_default_file {
+        my ($index_name, $index_by_name) = @_;
+        
+        my $utils = MyHTML::Base->new(dirs => {source => $SAVE_TO_DIR, template => "tmpl"});
+        my $data_const = $utils->read_tmpl("declaration_default_resources.h");
+        
+        $utils->save_src("declaration/default_resources.h", $data_const, {
+                BODY => create_default_index($index_name, $index_by_name, "mycss_declaration_default_entry_index_type")
+        });
+}
+
 sub create_serialization_index {
         my ($index_name, $index_by_name, $var_name) = @_;
         
@@ -142,7 +154,7 @@ sub create_serialization_index {
         }
         
         return
-        "static mycss_declaration_serialization_f $var_name\[] = \n{\n\tmycss_declaration_serialization_".
+        "static mycss_declaration_serialization_f $var_name\[MyCSS_PROPERTY_TYPE_LAST_ENTRY] = \n{\n\tmycss_declaration_serialization_".
         join(",\n\tmycss_declaration_serialization_", @res).
         "\n};\n";
 }
@@ -170,8 +182,36 @@ sub create_destroy_index {
         }
         
         return
-        "static mycss_callback_declaration_destroy_f $var_name\[] = \n{\n\tmycss_declaration_entry_destroy_".
+        "static mycss_callback_declaration_destroy_f $var_name\[MyCSS_PROPERTY_TYPE_LAST_ENTRY] = \n{\n\tmycss_declaration_entry_destroy_".
         join(",\n\tmycss_declaration_entry_destroy_", @res).
+        "\n};\n";
+}
+
+sub create_default_index {
+        my ($index_name, $index_by_name, $var_name) = @_;
+        
+        my @res;
+        foreach my $val (@$index_name) {
+                my $name = "";
+                
+                unless ($val->[0]) {
+                        $name = "undef";
+                }
+                else {
+                        $name = lc(name_to_norm($val->[0]));
+                }
+                
+                if (exists $index_by_name->{$name}->{default} && $index_by_name->{$name}->{default}) {
+                        push @res, $index_by_name->{$name}->{default};
+                }
+                else {
+                        push @res, "undef";
+                }
+        }
+        
+        return
+        "static mycss_declaration_entry_t * $var_name\[MyCSS_PROPERTY_TYPE_LAST_ENTRY] = \n{\n\t&mycss_declaration_default_entry_".
+        join(",\n\t&mycss_declaration_default_entry_", @res).
         "\n};\n";
 }
 
@@ -208,8 +248,6 @@ sub print_mycss_functions {
                 push @res, qq~mycss_property_parser_$name~;
         }
         
-        pop @res;
-        
         foreach my $name (@res) {
                 print qq~bool $name(mycss_entry_t* entry, mycss_token_t* token, bool last_response);\n~;
         }
@@ -224,34 +262,32 @@ sub print_mycss_functions {
 }
 
 sub print_modest_style_map {
-        my ($index) = @_;
+        my ($index, $index_by_name) = @_;
         
         my @res;
         foreach my $entry (@$index) {
-                my $name = $entry->[0] ? $entry->[0] : "undef";
-                $name = name_to_norm($name);
+                my $name = "";
                 
-                push @res, qq~modest_style_map_collate_declaration_$name~;
+                unless ($entry->[0]) {
+                        $name = "undef";
+                }
+                else {
+                        $name = lc(name_to_norm($entry->[0]));
+                }
+                
+                if (exists $index_by_name->{$name}->{map} && $index_by_name->{$name}->{map}) {
+                        push @res, $index_by_name->{$name}->{map};
+                }
+                else {
+                        push @res, "for_all";
+                }
         }
-        
-        pop @res;
         
         print
-        "static const modest_style_map_collate_f modest_style_map_static_collate_declaration\[] = \n{\n\t".
-        join(",\n\t", @res).
+        "static const modest_style_map_collate_f modest_style_map_static_collate_declaration\[MyCSS_PROPERTY_TYPE_LAST_ENTRY] = \n{\n\t".
+        "modest_style_map_collate_declaration_".
+        join(",\n\tmodest_style_map_collate_declaration_", @res).
         "\n};\n\n";
-        
-        foreach my $name (@res) {
-                print qq~void $name(modest_t* modest, myhtml_tree_node_t* node, mycss_declaration_entry_t* decl, modest_style_raw_specificity_t* spec);\n~;
-        }
-        
-        print "\n\n";
-        
-        foreach my $name (@res) {
-                print qq~void $name(modest_t* modest, myhtml_tree_node_t* node, mycss_declaration_entry_t* decl, modest_style_raw_specificity_t* spec)\n{\n~;
-                print "";
-                print "}\n\n";
-        }
 }
 
 sub create_name_result {
@@ -278,8 +314,10 @@ sub create_name_result {
                 push @{$result->{$id}}, [$name, length($name), $parser];
                 
                 $index_by_name->{ name_to_norm($name) } = {
+                        default   => $info->{attr}->{default},
                         serialize => $info->{attr}->{serialize},
-                        destroy => $info->{attr}->{destroy}
+                        destroy   => $info->{attr}->{destroy},
+                        map       => $info->{attr}->{map}
                 };
                 
                 $node = $node->next;
@@ -320,7 +358,7 @@ sub create_name_enum {
                 push @index, [lc($name), $id];
         }
         push @$res, [$norm_prefix ."_LAST_ENTRY", sprintf("0x%04x", $idx++)];
-        push @index, ["", "0x0000"];
+        #push @index, ["", "0x0000"];
         
         my @return;
         push @return, "enum $ENUM_NAME {\n\t";
