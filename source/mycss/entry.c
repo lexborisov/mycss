@@ -115,6 +115,7 @@ mycss_status_t mycss_entry_init(mycss_t* mycss, mycss_entry_t* entry)
 
 mycss_status_t mycss_entry_clean(mycss_entry_t* entry)
 {
+    mcobject_clean(entry->mcobject_incoming_buffer);
     mycss_entry_parser_list_clean(entry->parser_list);
     
     /* CSS Modules */
@@ -203,6 +204,12 @@ mycss_entry_t * mycss_entry_destroy(mycss_entry_t* entry, bool self_destroy)
 void mycss_entry_end(mycss_entry_t* entry)
 {
     /* need some code */
+}
+
+/* api */
+mycss_selectors_t * mycss_entry_selectors(mycss_entry_t* entry)
+{
+    return entry->selectors;
 }
 
 myhtml_string_t * mycss_entry_string_create_and_init(mycss_entry_t* entry, size_t string_size)
