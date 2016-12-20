@@ -1,22 +1,16 @@
-# Fast C/C++ CSS Parser (Cascading Style Sheets)
+# MyCSS — a pure C CSS parser
 
 MyCSS is a fast CSS Parser implemented as a pure C99 library with the ability to build without dependencies.
 
-By default MyCSS depends of one [MyHTML] library.
+* Mailing List: [https://groups.google.com/forum/#!forum/modest-engine](https://groups.google.com/forum/#!forum/modest-engine)
+* IRC: [#modest-engine on `irc.freenode.net <http://freenode.net>`](http://webchat.freenode.net?channels=%23modest-engine)
+* Or you can ask questions on [stackoverflow.com](https://stackoverflow.com/questions/ask?tags=myhtml) by myhtml tag
 
-This is one of module of the project [Modest]
-
-## Now
-
-```text
-The current version is 0.1.1
-Release will have major version number 1
-```
+By default MyCSS depends of [MyHTML] library. This is one of module of the [Modest] project.
 
 ## Features
 
-- By [CSS3 specification]
-- Modules: [Selectors Level 4], [Namespace], [Values], [Box] and work in always process
+- Modules: [CSS Syntax], [Selectors Level 4], [Namespace], [Values], [Box] and other
 - Two API - [high] and [low]-level
 - Support [parsing by chunks]
 - Support 39 character encoding by specification [encoding.spec.whatwg.org]
@@ -32,72 +26,21 @@ See MyHTML [support encodings]
 
 **Program working in UTF-8 and returns all in UTF-8**
 
-## Build and Installation
-
-**Make**
-
-```bash
-make
-```
-
-If successful copy lib/* and include/* at the right place for you
-
-Flags that can be passed to make:
-- `MyCSS_OPTIMIZATION_LEVEL=-O2` set compiler optimization level. Default: -O2
-- `MyCSS_BUILD_WITHOUT_THREADS=YES` build without POSIX Threads. Default: NO
-
-*for example*
-```bash
-make MyCSS_BUILD_WITHOUT_THREADS=NO
-```
-
-```bash
-cp lib/* /usr/local/lib
-cp -r include/* /usr/local/include
-```
-
-**CMake**
-
-In mycss/project directory:
-
-```bash
-cmake .
-make
-sudo make install
-```
-
-Flags that can be passed to CMake:
-- `MyCSS_OPTIMIZATION_LEVEL=-O2` set compiler optimization level. Default: -O2
-- `CMAKE_INSTALL_LIBDIR=lib` set path to install created library. Default: lib
-- `MyCSS_BUILD_SHARED=ON` build shared library. Default: ON
-- `MyCSS_BUILD_STATIC=ON` build static library. Default: ON
-- `MyCSS_INSTALL_HEADER=OFF` install header files. Default OFF
-- `MyCSS_BUILD_WITHOUT_THREADS=YES` build without POSIX Threads. Default: NO
-
-*for example*
-```bash
-cmake . -DCMAKE_INSTALL_LIBDIR=lib64 -DMyCSS_INSTALL_HEADER=ON
-```
-
 ## Dependencies
 
-By default only on [MyHTML]
+[MyHTML]
 
-## In other languages, external bindings
+## Installation
+
+See [INSTALL.md](https://github.com/lexborisov/mycss/blob/master/INSTALL.md)
+
+## External Bindings and Wrappers
 
 All in our hands!
 
 ## Examples
 
 See [examples] directory
-
-## Future
-
-- [Media Queries Level 4]
-- [CSS Backgrounds and Borders Module Level 3]
-- [CSS Color Module Level 3]
-- [CSS Fonts Module Level 3]
-- and many other modules for Cascading Style Sheets
 
 **Simple example**
 
@@ -110,19 +53,18 @@ See [examples] directory
 
 int main(int argc, const char * argv[])
 {
-    // work data
     char *css = "#ident [name=\"best-name\"] {rgba(0, 0, 0, 0.1);}";
     
     // base init
     mycss_t *mycss = mycss_create();
     mycss_status_t status = mycss_init(mycss);
     
-    // currenе entry work init
+    // current entry, work init
     mycss_entry_t *entry = mycss_entry_create();
     status = mycss_entry_init(mycss, entry);
     
     mycss_parse(entry, MyHTML_ENCODING_UTF_8, css, strlen(css));
-
+    
     // release resurces
     mycss_entry_destroy(entry, true);
     mycss_destroy(mycss, true);
@@ -148,7 +90,7 @@ You should have received a copy of the GNU Lesser General Public License along w
 See the [LICENSE] file.
 
 
-[CSS3 specification]: https://www.w3.org/TR/css-syntax-3/
+[CSS Syntax]: https://www.w3.org/TR/css-syntax-3/
 [high]: https://github.com/lexborisov/mycss/blob/master/include/mycss/api.h
 [low]: https://github.com/lexborisov/mycss/tree/master/include/mycss
 [MyHTML]: https://github.com/lexborisov/myhtml
@@ -161,8 +103,4 @@ See the [LICENSE] file.
 [Namespace]: https://drafts.csswg.org/css-namespaces/
 [Values]: https://drafts.csswg.org/css-values/
 [Box]: https://drafts.csswg.org/css-box/
-[Media Queries Level 4]: https://www.w3.org/TR/mediaqueries-4/
-[CSS Backgrounds and Borders Module Level 3]: https://www.w3.org/TR/css3-background/
-[CSS Color Module Level 3]: https://www.w3.org/TR/css3-color/
-[CSS Fonts Module Level 3]: https://www.w3.org/TR/css-fonts-3/
 [LICENSE]: https://github.com/lexborisov/mycss/blob/master/LICENSE
